@@ -7,6 +7,7 @@ let running=true;
 let phase=0;
 let candidateInitialized=false;
 let orbitScanInitialized=false;
+let lifeSeeded=localStorage.getItem("trisolaris-life-seeded")==="true";
 let hitTargets=[];
 let selectedFocus=null;
 
@@ -31,7 +32,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase4-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase4b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -59,7 +60,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase4-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase4b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -387,7 +388,17 @@ function initCandidate(){
     $("#greenhouse").value=h.greenhouse_k;
     if(!$("#pressure").value) $("#pressure").value="1.00";
     if(!$("#water").value) $("#water").value="1.00";
-    ["axis","albedo","greenhouse","pressure","water"].forEach(id=>$("#"+id).addEventListener("input",renderCandidate));
+    ["axis","albedo","greenhouse","pressure","water","oxygen","nutrients"].forEach(id=>$("#"+id).addEventListener("input",renderCandidate));
+    const seedBtn=$("#seedLifeBtn");
+    seedBtn.setAttribute("aria-pressed",String(lifeSeeded));
+    seedBtn.textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
+    seedBtn.addEventListener("click",()=>{
+      lifeSeeded=!lifeSeeded;
+      localStorage.setItem("trisolaris-life-seeded",String(lifeSeeded));
+      seedBtn.setAttribute("aria-pressed",String(lifeSeeded));
+      seedBtn.textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
+      renderCandidate();
+    });
     initOrbitWindow();
     candidateInitialized=true;
   }
@@ -977,6 +988,214 @@ function renderSurfaceWorld(){
     stat("Productividad potencial",bioPct+"%","MODELED · no vida observada");
 }
 
+function oxygenSupport(oxygenFraction,midpoint,width){
+  const x=(oxygenFraction-midpoint)/Math.max(width,1e-6);
+  return 1/(1+Math.exp(-x));
+}
+
+function evaluateFoodWeb(surface,{oxygenFraction=.21,nutrientAvailability=1,seeded=false}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const s=surface.summary;
+  const liquid=clamp(s.liquidArea);
+  const productivity=clamp(s.biospherePotential);
+  const refugia=clamp(s.refugiaFraction);
+  const retention=clamp(s.retentionProxy);
+  const hydro=clamp(s.hydroCycle);
+  const nutrient=clamp(1-Math.exp(-Math.max(0,nutrientAvailability)));
+
+  const anaerobic=clamp(.20+.35*refugia+.20*liquid+.15*retention+.10*nutrient);
+  const photo=clamp(productivity*(.55+.45*nutrient)*(.55+.45*hydro));
+  const aquaticPrimary=clamp(liquid*productivity*(.50+.50*nutrient));
+  const decomposers=clamp(Math.sqrt(Math.max(0,photo*Math.max(.05,hydro)))*(.55+.45*nutrient));
+  const aerobicMicrobes=clamp(anaerobic*oxygenSupport(oxygenFraction,.005,.004)*(.65+.35*retention));
+  const grazers=clamp(photo*oxygenSupport(oxygenFraction,.025,.015)*(.60+.40*refugia));
+  const aquaticConsumers=clamp(aquaticPrimary*oxygenSupport(oxygenFraction,.02,.012)*(.55+.45*liquid));
+  const predators=clamp(Math.max(grazers,aquaticConsumers)*productivity*oxygenSupport(oxygenFraction,.10,.035));
+  const largeAerobic=clamp(predators*oxygenSupport(oxygenFraction,.16,.025)*(.55+.45*retention));
+
+  const guilds=[
+    {id:"anaerobic_microbes",name:"Microbios anaerobios",level:0,support:anaerobic},
+    {id:"aerobic_microbes",name:"Microbios aerobios",level:0,support:aerobicMicrobes},
+    {id:"primary_producers",name:"Productores primarios",level:1,support:photo},
+    {id:"aquatic_primary",name:"Productores acuáticos",level:1,support:aquaticPrimary},
+    {id:"decomposers",name:"Descomponedores",level:1,support:decomposers},
+    {id:"grazers",name:"Consumidores primarios",level:2,support:grazers},
+    {id:"aquatic_consumers",name:"Consumidores acuáticos",level:2,support:aquaticConsumers},
+    {id:"predators",name:"Depredadores",level:3,support:predators},
+    {id:"large_aerobic",name:"Fauna aerobia grande",level:4,support:largeAerobic}
+  ];
+
+  let depth=-1;
+  if(largeAerobic>=.35)depth=4;
+  else if(predators>=.25)depth=3;
+  else if(Math.max(grazers,aquaticConsumers)>=.25)depth=2;
+  else if(Math.max(photo,aquaticPrimary,decomposers)>=.20)depth=1;
+  else if(anaerobic>=.15)depth=0;
+
+  const links=[
+    ["primary_producers","grazers"],
+    ["aquatic_primary","aquatic_consumers"],
+    ["grazers","predators"],
+    ["aquatic_consumers","predators"],
+    ["predators","decomposers"],
+    ["grazers","decomposers"],
+    ["primary_producers","decomposers"]
+  ];
+
+  return {
+    guilds,links,
+    summary:{
+      depth,
+      supported:guilds.filter(g=>g.support>=.25),
+      maxSupport:Math.max(...guilds.map(g=>g.support),0),
+      seeded
+    }
+  };
+}
+
+function renderFoodWeb(){
+  const canvas=$("#foodWebCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value;
+  const albedo=+$("#albedo").value;
+  const gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value;
+  const water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100;
+  const nutrients=+$("#nutrients").value;
+
+  $("#oxygenOut").textContent=(oxygen*100).toFixed(1)+"%";
+  $("#nutrientOut").textContent=nutrients.toFixed(2)+"×";
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{
+    pressureBar:pressure,
+    waterOceans:water,
+    stellarFluxEarth:point.flux,
+    spectralFactor:.55
+  });
+  const web=evaluateFoodWeb(surface,{
+    oxygenFraction:oxygen,
+    nutrientAvailability:nutrients,
+    seeded:lifeSeeded
+  });
+
+  const supported=web.summary.supported;
+  const depth=web.summary.depth;
+
+  $("#ecologyHeadline").textContent=depth>=3
+    ?"La energía alcanza niveles tróficos superiores"
+    :depth>=1
+      ?"La red potencial se sostiene cerca de la base"
+      :depth===0
+        ?"Solo aparece soporte microbiano robusto"
+        :"La red ecológica superficial queda muy limitada";
+
+  $("#ecologyText").textContent=lifeSeeded
+    ?`La biosfera experimental está activa. Bajo estos supuestos, ${supported.length} de 9 gremios superan 25% de soporte ambiental.`
+    :`El ambiente podría dar soporte significativo a ${supported.length} de 9 gremios, pero TRISOLARIS no asume que la vida haya surgido.`;
+
+  $("#ecologyState").textContent=lifeSeeded
+    ?"Biosfera experimental sembrada — escenario hipotético."
+    :"Capacidad ambiental solamente — la vida no se asume.";
+
+  $("#ecologyDetail").textContent=depth>=4
+    ?"El ambiente permite explorar una cadena potencial desde productores hasta fauna aerobia grande. Esto no predice especies."
+    :depth>=3
+      ?"Existe soporte potencial para productores, consumidores y depredadores, pero la complejidad sigue condicionada por energía, oxígeno y agua."
+      :depth>=1
+        ?"La base productiva existe, pero los niveles consumidores superiores siguen restringidos."
+        :"La energía ecológica disponible es demasiado limitada para construir una red trófica extensa.";
+
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#060b0f";
+  ctx.fillRect(0,0,w,h);
+
+  const positions={
+    anaerobic_microbes:[125,130],
+    aerobic_microbes:[125,360],
+    primary_producers:[360,95],
+    aquatic_primary:[360,250],
+    decomposers:[360,405],
+    grazers:[630,130],
+    aquatic_consumers:[630,350],
+    predators:[885,240],
+    large_aerobic:[1080,240]
+  };
+
+  const guildMap=Object.fromEntries(web.guilds.map(g=>[g.id,g]));
+
+  // links
+  web.links.forEach(([source,target])=>{
+    const s=guildMap[source],t=guildMap[target];
+    const [x1,y1]=positions[source];
+    const [x2,y2]=positions[target];
+    const strength=Math.min(s.support,t.support);
+    ctx.strokeStyle=lifeSeeded
+      ?`rgba(118,183,143,${.10+.55*strength})`
+      :`rgba(132,151,160,${.08+.28*strength})`;
+    ctx.lineWidth=1+4*strength;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    const mx=(x1+x2)/2;
+    ctx.bezierCurveTo(mx,y1,mx,y2,x2,y2);
+    ctx.stroke();
+  });
+
+  // nodes
+  web.guilds.forEach(g=>{
+    const [x,y]=positions[g.id];
+    const radius=20+28*g.support;
+    const strong=g.support>=.25;
+    const fill=strong
+      ?(lifeSeeded?"rgba(88,165,112,.88)":"rgba(79,128,104,.52)")
+      :"rgba(86,98,106,.38)";
+
+    const glow=ctx.createRadialGradient(x,y,0,x,y,radius*2.1);
+    glow.addColorStop(0,strong?"rgba(91,190,126,.16)":"rgba(120,135,145,.08)");
+    glow.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=glow;
+    ctx.beginPath();ctx.arc(x,y,radius*2.1,0,Math.PI*2);ctx.fill();
+
+    ctx.fillStyle=fill;
+    ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle=strong?"rgba(183,224,197,.55)":"rgba(159,172,179,.24)";
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    ctx.fillStyle="rgba(238,243,246,.94)";
+    ctx.font="700 13px system-ui";
+    ctx.textAlign="center";
+    ctx.fillText(g.name,x,y+radius+22);
+
+    ctx.fillStyle="rgba(153,168,177,.94)";
+    ctx.font="12px system-ui";
+    ctx.fillText(Math.round(g.support*100)+"%",x,y+5);
+  });
+  ctx.textAlign="left";
+
+  ctx.fillStyle="rgba(129,143,152,.9)";
+  ctx.font="11px system-ui";
+  ctx.fillText("Base metabólica",60,30);
+  ctx.fillText("Productores / reciclaje",290,30);
+  ctx.fillText("Consumidores",595,30);
+  ctx.fillText("Depredación",835,30);
+  ctx.fillText("Alta demanda",1030,30);
+
+  const maxPct=Math.round(web.summary.maxSupport*100);
+  $("#ecologyMetrics").innerHTML=
+    stat("Oxígeno", (oxygen*100).toFixed(1)+"%","supuesto")+
+    stat("Nutrientes",nutrients.toFixed(2)+"×","control relativo")+
+    stat("Gremios >25%",supported.length+" / 9")+
+    stat("Profundidad trófica",depth<0?"—":"nivel "+depth,"potencial")+
+    stat("Soporte máximo",maxPct+"%","MODELED")+
+    stat("Estado de vida",lifeSeeded?"sembrada":"no asumida","SPECULATIVE");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -1071,6 +1290,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  renderFoodWeb();
   renderSurfaceWorld();
   renderClimateWorld();
   renderOrbitWindow();
