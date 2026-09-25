@@ -26,3 +26,11 @@ jobs:
           test -f frontend/index.html
           test -f frontend/styles.css
           test -f frontend/app.js
+          test -f docs/index.html
+          test -f docs/styles.css
+          test -f docs/app.js
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check frontend/app.js
+          node --check docs/app.js
