@@ -357,7 +357,7 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function loadResearchRelease()", app)
         self.assertIn("function renderResearchRelease()", app)
         self.assertIn("loadResearchRelease();", app)
-        self.assertIn("cannot automatically mark", (ROOT / "docs/RESEARCH_RELEASE_MODEL.md").read_text(encoding="utf-8"))
+        self.assertIn("must not automatically mark", (ROOT / "docs/RESEARCH_RELEASE_MODEL.md").read_text(encoding="utf-8"))
 
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
