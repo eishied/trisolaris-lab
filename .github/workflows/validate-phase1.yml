@@ -11,18 +11,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install science engine
+        run: python -m pip install --disable-pip-version-check -r requirements-science.txt
+
       - name: Validate Python
         run: |
           python -m py_compile pipelines/nasa_exoplanet/fetch_system.py
           python -m py_compile pipelines/nasa_exoplanet/build_frontend_dataset.py
           python -m py_compile engine/orbital/screen.py
+          python -m py_compile engine/orbital/nbody.py
           python -m py_compile pipelines/orbital/build_screen.py
+          python -m py_compile pipelines/orbital/build_nbody_ensemble.py
 
-      - name: Run orbital unit tests
+      - name: Run unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
 
       - name: Build orbital baseline
         run: python pipelines/orbital/build_screen.py
+
+      - name: Smoke-test N-body pipeline
+        run: python pipelines/orbital/build_nbody_ensemble.py --runs 2 --years 2 --samples 16
 
       - name: Validate JSON
         run: |
@@ -31,6 +39,8 @@ jobs:
           python -m json.tool docs/data/ltt1445.json > /dev/null
           python -m json.tool frontend/data/orbital-screen.json > /dev/null
           python -m json.tool docs/data/orbital-screen.json > /dev/null
+          python -m json.tool frontend/data/nbody-ensemble.json > /dev/null
+          python -m json.tool docs/data/nbody-ensemble.json > /dev/null
 
       - name: Validate public app files
         run: |
@@ -45,6 +55,7 @@ jobs:
           cmp frontend/app.js docs/app.js
           cmp frontend/data/ltt1445.json docs/data/ltt1445.json
           cmp frontend/data/orbital-screen.json docs/data/orbital-screen.json
+          cmp frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
 
       - name: Validate JavaScript syntax
         run: |
