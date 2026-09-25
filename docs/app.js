@@ -26,6 +26,151 @@ let historyPlaybackTimer=null;
 let interplanetaryLaunchActive=localStorage.getItem("trisolaris-interplanetary-launch")==="true";
 let selectedInterplanetaryWorldId=localStorage.getItem("trisolaris-interplanetary-world")||"OBS-1";
 
+
+let contextKind=localStorage.getItem("trisolaris-context-kind")||"system";
+let contextWorldName=localStorage.getItem("trisolaris-context-world")||null;
+
+function contextFact(label,value,note=""){
+  return '<div class="contextFact"><span>'+label+'</span><strong>'+value+'</strong>'+(note?'<em>'+note+'</em>':'')+'</div>';
+}
+
+function contextPlanet(){
+  if(!data||!contextWorldName)return null;
+  return (data.observed_planets||[]).find(p=>p.name===contextWorldName)||null;
+}
+
+function populateContextWorldChoices(){
+  const host=$("#contextWorldChoices");
+  if(!host||!data)return;
+  host.innerHTML=(data.observed_planets||[]).map(p=>
+    '<button class="contextChoice" type="button" data-context-kind="observed" data-world-name="'+p.name+'">'+p.name+'</button>'
+  ).join("");
+  host.querySelectorAll(".contextChoice").forEach(btn=>{
+    btn.addEventListener("click",()=>setContextView("observed",btn.dataset.worldName));
+  });
+}
+
+function renderContextSummary(){
+  if(!data)return;
+  const title=$("#contextTitle");
+  const desc=$("#contextDescription");
+  const facts=$("#contextFacts");
+  const badge=$("#contextEpistemic");
+  if(!title||!desc||!facts||!badge)return;
+
+  badge.className="contextEpistemic";
+  if(contextKind==="observed"){
+    const p=contextPlanet();
+    if(!p){
+      contextKind="system";
+      contextWorldName=null;
+      return renderContextSummary();
+    }
+    badge.textContent="OBSERVED";
+    badge.classList.add("observed");
+    title.textContent=p.name;
+    desc.textContent="Planeta confirmado. Esta vista muestra únicamente parámetros observacionales y de catálogo; no se le asignan población, biosfera o historia humana.";
+    facts.innerHTML=
+      contextFact("Órbita",fmt(p.period_days,3)+" días",fmt(p.semi_major_axis_au,4)+" AU")+
+      contextFact("Tamaño",fmt(p.radius_earth,2)+" R⊕",fmt(p.mass_earth,2)+" M⊕")+
+      contextFact("Teq",p.equilibrium_temperature_k==null?"—":fmt(p.equilibrium_temperature_k,0)+" K","no es temperatura superficial")+
+      contextFact("Fuente","NASA Exoplanet Archive","desc. "+(p.discovery_year??"—"));
+    return;
+  }
+
+  if(contextKind==="experimental"){
+    const h=data.hypothetical_experiment||{};
+    badge.textContent="SPECULATIVE";
+    badge.classList.add("speculative");
+    title.textContent="TRISOLARIS H-01";
+    desc.textContent="Mundo experimental del simulador. Aquí sí tienen sentido clima, biosfera, población, historia, migración y expansión extraplanetaria porque son capas modeladas sobre un escenario explícito.";
+    facts.innerHTML=
+      contextFact("Órbita",fmt(+($("#axis")?.value||h.semi_major_axis_au),3)+" AU","control experimental")+
+      contextFact("Albedo",fmt(+($("#albedo")?.value||h.albedo),2))+
+      contextFact("Invernadero","+"+fmt(+($("#greenhouse")?.value||h.greenhouse_k),0)+" K")+
+      contextFact("Estatus","Escenario","no planeta observado");
+    return;
+  }
+
+  if(contextKind==="research"){
+    badge.textContent="MODELED";
+    badge.classList.add("modeled");
+    title.textContent="Investigación y reproducibilidad";
+    desc.textContent="Replay, contrafactuales, umbrales, evidencia y publicación. Esta vista agrupa resultados sobre el modelo completo y evita mezclarlos con la ficha de un planeta observado.";
+    facts.innerHTML=
+      contextFact("Replay","64 historias","seed 1445")+
+      contextFact("Release",researchRelease?.publication_state||"RESEARCH_NOTE")+
+      contextFact("Nota",researchNote?.status||"RESEARCH_NOTE")+
+      contextFact("Revisión",manuscriptReviewGate?.summary ? manuscriptReviewGate.summary.human_checks_passed+" / "+manuscriptReviewGate.summary.human_checks_total : "pendiente");
+    return;
+  }
+
+  badge.textContent="SYSTEM";
+  badge.classList.add("literature");
+  title.textContent=data.system?.name||"LTT 1445 ABC";
+  desc.textContent="Vista general del sistema: arquitectura estelar, mundos confirmados y estabilidad. Los módulos humanos permanecen fuera de esta vista.";
+  facts.innerHTML=
+    contextFact("Estrellas",String((data.stars||[]).length),"sistema jerárquico")+
+    contextFact("Planetas",String((data.observed_planets||[]).length),"confirmados")+
+    contextFact("Distancia",fmt(data.system?.distance_pc,2)+" pc")+
+    contextFact("Datos","Observación + literatura");
+}
+
+function updateWorldChapterForContext(){
+  const chapter=$("#mundos");
+  if(!chapter)return;
+  const heading=chapter.querySelector(".chapterIntro h2");
+  const paragraph=chapter.querySelector(".chapterIntro div>p:last-child");
+  if(contextKind==="observed"&&contextPlanet()){
+    if(heading)heading.textContent="Ficha del mundo seleccionado.";
+    if(paragraph)paragraph.textContent="Solo se muestran los datos que pertenecen a este planeta confirmado. Las capas de biosfera, población y civilización no se transfieren desde H-01.";
+  }else{
+    if(heading)heading.textContent="Después miramos los mundos reales.";
+    if(paragraph)paragraph.textContent="Los planetas confirmados alrededor de LTT 1445 A son el ancla observacional. Selecciona uno para aislar su información y procedencia.";
+  }
+}
+
+function applyContextVisibility(){
+  document.body.dataset.contextView=contextKind;
+  $("[data-ui-scope]").forEach(section=>{
+    const scopes=(section.dataset.uiScope||"").split(/\s+/).filter(Boolean);
+    section.hidden=!scopes.includes(contextKind);
+  });
+  $(".contextChoice").forEach(btn=>{
+    const sameKind=btn.dataset.contextKind===contextKind;
+    const sameWorld=contextKind!=="observed"||btn.dataset.worldName===contextWorldName;
+    btn.classList.toggle("active",sameKind&&sameWorld);
+    btn.setAttribute("aria-pressed",String(sameKind&&sameWorld));
+  });
+  updateWorldChapterForContext();
+  renderContextSummary();
+}
+
+function setContextView(kind,worldName=null,{scroll=true}={}){
+  contextKind=kind;
+  contextWorldName=kind==="observed"?worldName:null;
+  localStorage.setItem("trisolaris-context-kind",contextKind);
+  if(contextWorldName)localStorage.setItem("trisolaris-context-world",contextWorldName);
+  else localStorage.removeItem("trisolaris-context-world");
+  applyContextVisibility();
+  safeRender("planets-context",renderPlanets);
+  if(scroll){
+    $("#contextSummary")?.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+function initContextNavigation(){
+  populateContextWorldChoices();
+  if(contextKind==="observed"&&!contextPlanet()){
+    contextKind="system";
+    contextWorldName=null;
+  }
+  $("#contextSwitcher .contextChoice:not([data-context-kind='observed'])").forEach(btn=>{
+    btn.addEventListener("click",()=>setContextView(btn.dataset.contextKind,btn.dataset.worldId||null));
+  });
+  applyContextVisibility();
+}
+
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const fmt=(v,d=2)=>v==null||Number.isNaN(Number(v))?"—":Number(v).toFixed(d);
@@ -59,7 +204,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=uxlight-v3-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -72,6 +217,7 @@ async function load(){
 
   try{
     renderAll();
+    initContextNavigation();
     requestAnimationFrame(loop);
     loadNbodyResult();
     loadResearchRelease();
@@ -91,7 +237,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=uxlight-v3-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -110,7 +256,7 @@ async function loadNbodyResult(){
 
 async function loadThresholdAtlas(){
   try{
-    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=uxlight-v3-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("threshold atlas not published");
     thresholdAtlas=await response.json();
     renderThresholdAtlas();
@@ -171,10 +317,11 @@ function renderThresholdAtlas(){
 
 async function loadManuscriptReviewGate(){
   try{
-    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=uxlight-v3-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("manuscript review gate not published");
     manuscriptReviewGate=await response.json();
     renderManuscriptReviewGate();
+    if(contextKind==="research")renderContextSummary();
   }catch(err){
     console.info("Manuscript review gate not available yet",err);
     const state=$("#manuscriptPromotionState");
@@ -209,10 +356,11 @@ function renderManuscriptReviewGate(){
 
 async function loadResearchNote(){
   try{
-    const response=await fetch(RESEARCH_NOTE_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_NOTE_URL+"?v=uxlight-v3-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("research note not published");
     researchNote=await response.json();
     renderResearchNote();
+    if(contextKind==="research")renderContextSummary();
   }catch(err){
     console.info("Research note summary not available yet",err);
     const status=$("#researchNoteStatus");
@@ -238,10 +386,11 @@ function renderResearchNote(){
 
 async function loadResearchRelease(){
   try{
-    const response=await fetch(RESEARCH_RELEASE_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_RELEASE_URL+"?v=uxlight-v3-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("research release not published");
     researchRelease=await response.json();
     renderResearchRelease();
+    if(contextKind==="research")renderContextSummary();
   }catch(err){
     console.info("Research release manifest not available yet",err);
     const state=$("#researchReleaseState");
@@ -476,6 +625,15 @@ function focusContent(target){
 }
 
 function openFocus(target,{scroll=true}={}){
+  if(target?.kind==="planet"){
+    setContextView("observed",target.name,{scroll});
+    return;
+  }
+  if(target?.kind==="hypothetical"){
+    selectedFocus=null;
+    setContextView("experimental",null,{scroll});
+    return;
+  }
   selectedFocus=target;
   const content=focusContent(target);
   $("#focusKicker").textContent=content.kicker;
@@ -501,7 +659,7 @@ function closeFocus(){
 function activateWorldFocus(){
   $$(".world[data-focus-name]").forEach(card=>{
     const activate=()=>{
-      openFocus({kind:"planet",name:card.dataset.focusName});
+      setContextView("observed",card.dataset.focusName);
     };
     card.addEventListener("click",activate);
     card.addEventListener("keydown",event=>{
@@ -539,8 +697,13 @@ function installCanvasFocus(){
 }
 
 function renderPlanets(){
-  const rows=data.observed_planets||[];
-  $("#planetCount").textContent=rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
+  const allRows=data.observed_planets||[];
+  const rows=contextKind==="observed"&&contextWorldName
+    ?allRows.filter(p=>p.name===contextWorldName)
+    :allRows;
+  $("#planetCount").textContent=contextKind==="observed"
+    ?(rows.length?"1 planeta seleccionado":"Sin coincidencia")
+    :rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
 
   if(!rows.length){
     $("#planetCards").innerHTML=`
@@ -599,7 +762,7 @@ function initCandidate(){
     if(!$("#water").value) $("#water").value="1.00";
     ["axis","albedo","greenhouse","pressure","water","oxygen","nutrients","techSupport","mobility","lineageYears"].forEach(id=>{
       const el=$("#"+id);
-      if(el) el.addEventListener("input",renderCandidate);
+      if(el) el.addEventListener("input",()=>{renderCandidate();if(contextKind==="experimental")renderContextSummary();});
     });
     const seedBtn=$("#seedLifeBtn");
     seedBtn.setAttribute("aria-pressed",String(lifeSeeded));
