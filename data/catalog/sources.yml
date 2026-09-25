@@ -1,0 +1,64 @@
+version: 1
+
+sources:
+  nasa_exoplanet_archive:
+    authority: NASA/IPAC
+    tier: 1
+    epistemic_level: OBSERVED
+    access:
+      protocol: TAP
+      endpoint: https://exoplanetarchive.ipac.caltech.edu/TAP
+    tables:
+      - ps
+      - pscomppars
+      - toi
+    domains:
+      - exoplanets
+      - host_stars
+      - orbital_parameters
+    citation_required: true
+
+  gaia_archive:
+    authority: ESA
+    tier: 1
+    epistemic_level: OBSERVED
+    access:
+      protocol: TAP+
+      endpoint: https://gea.esac.esa.int/tap-server/tap
+    domains:
+      - astrometry
+      - photometry
+      - radial_velocity
+      - stellar_parameters
+      - multiplicity
+    citation_required: true
+
+  mast_tess:
+    authority: STScI/NASA
+    tier: 1
+    epistemic_level: OBSERVED
+    domains:
+      - light_curves
+      - time_series
+      - stellar_variability
+      - transit_products
+    citation_required: true
+
+  nasa_giss_rocke3d:
+    authority: NASA GISS
+    tier: 1
+    epistemic_level: LITERATURE
+    domains:
+      - planetary_climate
+      - climate_validation
+    citation_required: true
+
+  nasa_ads:
+    authority: SAO/NASA
+    tier: 1
+    epistemic_level: LITERATURE
+    domains:
+      - bibliography
+      - literature_search
+      - citation_graph
+    citation_required: false
