@@ -1,0 +1,22 @@
+:root{
+  color-scheme:dark;
+  --bg:#061018;--panel:#0b1822;--panel2:#0e202c;--line:#23404f;
+  --text:#edf6fb;--muted:#93a9b5;--cyan:#68d2ff;--green:#6dd7a2;
+  --amber:#f0bf67;--violet:#bd92ff;--red:#ec7f7f;
+}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#102431 0,#061018 38%);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
+.topbar{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;padding:28px clamp(18px,4vw,64px);border-bottom:1px solid var(--line);background:rgba(5,14,20,.78);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
+h1{margin:3px 0 6px;font-size:clamp(26px,4vw,44px);letter-spacing:-.03em}.topbar p{margin:0;color:var(--muted);max-width:850px}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--cyan);font-weight:800}
+.layout{width:min(1460px,96vw);margin:22px auto 60px;display:grid;grid-template-columns:2fr 1fr;gap:14px}.panel{background:linear-gradient(180deg,rgba(16,35,47,.97),rgba(8,23,32,.97));border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.15)}.full{grid-column:1/-1}.hero{min-height:520px}
+.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}.panel h2{margin:0 0 5px;font-size:18px}.panel h3{margin:8px 0 5px}.muted{color:var(--muted);margin:0}
+canvas{width:100%;height:auto;background:radial-gradient(circle at 45% 45%,#0c1d28 0,#02070b 72%);border:1px solid #193241;border-radius:13px;margin-top:12px}
+button{background:#173342;color:var(--text);border:1px solid #31566a;border-radius:9px;padding:8px 12px;cursor:pointer}button:hover{background:#1d4053}
+.badge,.tag{display:inline-flex;align-items:center;border-radius:999px;border:1px solid;padding:4px 9px;font-size:10px;font-weight:800;letter-spacing:.08em;white-space:nowrap}.observed{color:#8ae4b8;border-color:#3f8764;background:#0d2a1e}.literature{color:#f5ca78;border-color:#896b32;background:#2b210f}.derived{color:#7fdfff;border-color:#32718a;background:#0b2734}.speculative{color:#c9a7ff;border-color:#70509d;background:#25183a}
+.legend{display:flex;flex-wrap:wrap;gap:13px;color:var(--muted);font-size:11px;margin-top:10px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.stats.wide{grid-template-columns:repeat(5,minmax(0,1fr))}.stat{background:#07131c;border:1px solid #1f3948;border-radius:11px;padding:10px}.stat small{display:block;color:var(--muted);margin-bottom:3px}.stat strong{font-size:17px}.stat em{display:block;font-style:normal;color:var(--muted);font-size:11px}
+.callout{margin-top:12px;padding:12px;border-left:3px solid var(--cyan);background:#07131c;border-radius:8px;color:#cfe0e8}
+.tableWrap{overflow:auto;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:900px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1c3442}th{color:#9db4c1;font-size:11px;text-transform:uppercase;letter-spacing:.06em}td{white-space:nowrap}
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}.controls label{display:grid;grid-template-columns:1fr auto;gap:6px 10px;background:#07131c;border:1px solid #1f3948;border-radius:11px;padding:10px}.controls input{grid-column:1/-1;width:100%}.controls output{color:var(--cyan);font-weight:800}
+.provenanceGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.provenanceGrid article{background:#07131c;border:1px solid #1f3948;border-radius:12px;padding:12px}.provenanceGrid p{color:#b8cad3;margin:0}
+code{color:#98dcff}footer{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:20px clamp(18px,4vw,64px);color:#78909d}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.full{grid-column:auto}.stats.wide{grid-template-columns:repeat(2,1fr)}.controls,.provenanceGrid{grid-template-columns:1fr}.topbar{position:relative;flex-direction:column}.hero{min-height:auto}}
