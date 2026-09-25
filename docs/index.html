@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase12a-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase12b-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -967,6 +967,19 @@
 
         <div id="thresholdGrid" class="thresholdGrid"></div>
 
+
+        <div class="thresholdRefinement">
+          <div class="thresholdRefinementHead">
+            <div>
+              <span>ADAPTIVE REFINEMENT · PHASE 12.1</span>
+              <strong>Tres transiciones distintas: salir, persistir y divergir.</strong>
+            </div>
+            <p>El barrido grueso aporta el intervalo. La refinación usa bisección con la misma semilla para estrechar cada cruce al 50% del ensemble.</p>
+          </div>
+          <div id="thresholdRefinementGrid" class="thresholdRefinementGrid"></div>
+          <p id="thresholdRefinementInterpretation" class="thresholdRefinementInterpretation">Cargando intervalos refinados…</p>
+        </div>
+
         <div class="thresholdAtlasNarrative">
           <span>Lectura causal</span>
           <strong id="thresholdInterpretation">Cargando atlas de transiciones…</strong>
@@ -1147,6 +1160,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase12a-20260925"></script>
+  <script type="module" src="./app.js?v=phase12b-20260925"></script>
 </body>
 </html>
