@@ -168,10 +168,33 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function renderLineageInspector()", app)
         self.assertIn("function drawRepresentativePortrait(", app)
 
+    def test_reveal_is_progressive_enhancement(self):
+        css = (ROOT / "frontend/styles.css").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertIn(".reveal{opacity:1;transform:none}", css)
+        self.assertIn(".reveal.reveal-ready{opacity:0", css)
+        self.assertIn("IntersectionObserver", app)
+        self.assertIn("never leave scientific modules hidden", app)
+
+    def test_planetary_history_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "planetHistoryCanvas",
+            "planetHistoryMode",
+            "planetHistoryPopulations",
+            "historyEvents",
+            "planetHistoryMetrics",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function simulatePlanetaryHistory(", app)
+        self.assertIn("function renderPlanetaryHistory()", app)
+        self.assertIn('safeRender("planetary-history",renderPlanetaryHistory)', app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase6d-20260925", html)
-        self.assertIn("app.js?v=phase6d-20260925", html)
+        self.assertIn("styles.css?v=phase7-20260925", html)
+        self.assertIn("app.js?v=phase7-20260925", html)
 
 
 if __name__ == "__main__":
