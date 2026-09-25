@@ -2129,3 +2129,99 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .evolutionaryReplaySummary article+article,
   .evolutionaryReplayNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
+
+
+.counterfactualReplay{
+  margin-top:34px;
+  padding-top:30px;
+  border-top:1px solid var(--line)
+}
+.counterfactualHead{
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:30px;
+  align-items:end
+}
+.counterfactualHead h4{
+  margin:7px 0 0;
+  font-size:clamp(28px,3.5vw,44px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.counterfactualHead>p{
+  margin:0;
+  color:#8f9da6;
+  font-size:13px
+}
+.counterfactualControls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  margin-top:22px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.counterfactualControls label{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px 16px;
+  padding:15px 18px 15px 0
+}
+.counterfactualControls label+label{
+  border-left:1px solid var(--line);
+  padding-left:18px
+}
+.counterfactualControls span{
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.counterfactualControls select{
+  grid-column:1/-1;
+  background:#080d12;
+  color:#dce4e8;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:8px 10px
+}
+.counterfactualControls input{grid-column:1/-1;width:100%}
+.counterfactualControls output{color:#dce4e8;font-size:12px}
+.counterfactualSummary{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  border-bottom:1px solid var(--line)
+}
+.counterfactualSummary article{padding:16px 18px 16px 0}
+.counterfactualSummary article+article{border-left:1px solid var(--line);padding-left:18px}
+.counterfactualSummary span{
+  display:block;color:#71808a;font-size:9px;letter-spacing:.1em;text-transform:uppercase
+}
+.counterfactualSummary strong{
+  display:block;margin-top:6px;color:#e2e9ec;font-size:16px;line-height:1.35
+}
+.counterfactualDeltas{margin-top:18px;border:1px solid var(--line)}
+.counterfactualDeltaRow{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  padding:12px 15px;
+  background:#080d12
+}
+.counterfactualDeltaRow+.counterfactualDeltaRow{border-top:1px solid var(--line)}
+.counterfactualDeltaRow span{color:#87949d;font-size:11px}
+.counterfactualDeltaRow strong{color:#dce4e8;font-size:12px}
+.counterfactualInterpretation{
+  margin:16px 0 0;
+  color:#a8b4bb;
+  font-size:13px;
+  line-height:1.5
+}
+@media(max-width:780px){
+  .counterfactualHead,
+  .counterfactualControls,
+  .counterfactualSummary{grid-template-columns:1fr}
+  .counterfactualControls label,
+  .counterfactualControls label+label{border-left:0;padding:14px 0}
+  .counterfactualControls label+label{border-top:1px solid var(--line)}
+  .counterfactualSummary article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
+}

@@ -87,6 +87,9 @@ jobs:
       - name: Build evolutionary replay baseline
         run: python pipelines/evolution/build_evolutionary_replay_baseline.py
 
+      - name: Build paired counterfactual replay baseline
+        run: python pipelines/evolution/build_counterfactual_replay_baseline.py
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
@@ -108,6 +111,7 @@ jobs:
             frontend/data/interplanetary-network-baseline.json docs/data/interplanetary-network-baseline.json
             frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
             frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
+            frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
           )
           if git diff --quiet -- "${FILES[@]}" && git ls-files --others --exclude-standard -- "${FILES[@]}" | grep -q '^$'; then
             echo "No scientific-data changes detected."
@@ -116,5 +120,5 @@ jobs:
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
           git add "${FILES[@]}"
-          git commit -m "data: refresh orbital, climate, ecology, settlement, lineage, multiplanetary and replay baselines"
+          git commit -m "data: refresh orbital, climate, ecology, settlement, lineage, multiplanetary, replay and counterfactual baselines"
           git push

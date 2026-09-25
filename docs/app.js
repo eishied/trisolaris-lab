@@ -51,7 +51,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase10a-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase10b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -79,7 +79,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase10a-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase10b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -536,6 +536,11 @@ function initCandidate(){
     if(replaySeed)replaySeed.addEventListener("change",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
     const replayRunBtn=$("#replayRunBtn");
     if(replayRunBtn)replayRunBtn.addEventListener("click",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
+
+    const counterfactualParameter=$("#counterfactualParameter");
+    if(counterfactualParameter)counterfactualParameter.addEventListener("change",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
+    const counterfactualDelta=$("#counterfactualDelta");
+    if(counterfactualDelta)counterfactualDelta.addEventListener("input",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
 
     const humanBtn=$("#seedHumansBtn");
     if(humanBtn){
@@ -3875,6 +3880,78 @@ function renderEvolutionaryReplay(){
     stat("Contingencia",Math.round(replay.contingency*100)+"%","entropía normalizada")+
     stat("Divergencia media",Math.round(replay.meanDivergence*100)+"%","proxy")+
     stat("Divergencia máxima",Math.round(replay.maxDivergence*100)+"%","proxy");
+
+  renderCounterfactual(world,society,{
+    years,runs,seed,uncertainty,founderSize,
+    exchangeStrength:exchange,resupplyStrength:resupply,infrastructureShock:shock
+  });
+}
+
+
+function runCounterfactualReplayLive(world,society,{
+  parameter="capability",delta=.20,years=0,runs=64,seed=1445,uncertainty=.25,
+  founderSize=500,exchangeStrength=.30,resupplyStrength=.35,infrastructureShock=0
+}={}){
+  let altSociety=society;
+  let altFounder=founderSize,altExchange=exchangeStrength,altResupply=resupplyStrength,altShock=infrastructureShock;
+  if(parameter==="capability")altSociety=replayScaledSociety(society,1+delta);
+  else if(parameter==="founder_size")altFounder=Math.max(2,Math.round(founderSize*(1+delta)));
+  else if(parameter==="exchange_strength")altExchange=Math.max(0,Math.min(1,exchangeStrength+.5*delta));
+  else if(parameter==="resupply_strength")altResupply=Math.max(0,Math.min(1,resupplyStrength+.5*delta));
+  else if(parameter==="infrastructure_shock")altShock=Math.max(0,Math.min(1,infrastructureShock+.5*delta));
+
+  const reference=runEvolutionaryReplayLive(world,society,{
+    years,runs,seed,uncertainty,founderSize,exchangeStrength,resupplyStrength,infrastructureShock
+  });
+  const intervention=runEvolutionaryReplayLive(world,altSociety,{
+    years,runs,seed,uncertainty,founderSize:altFounder,exchangeStrength:altExchange,
+    resupplyStrength:altResupply,infrastructureShock:altShock
+  });
+
+  let flips=0,scoreDelta=0,divergenceDelta=0;
+  reference.records.forEach((left,i)=>{
+    const right=intervention.records[i];
+    if(left.outcome!==right.outcome)flips++;
+    scoreDelta+=right.outcomeScore-left.outcomeScore;
+    divergenceDelta+=(right.divergence||0)-(left.divergence||0);
+  });
+  const deltas={};
+  Object.keys(reference.frequencies).forEach(code=>{
+    deltas[code]=(intervention.frequencies[code]||0)-(reference.frequencies[code]||0);
+  });
+  return {
+    reference,intervention,deltas,
+    flipRate:flips/runs,
+    scoreDelta:scoreDelta/runs,
+    divergenceDelta:divergenceDelta/runs
+  };
+}
+
+function renderCounterfactual(world,society,replayContext){
+  const root=$("#counterfactualDeltas");
+  if(!root)return;
+  const parameter=$("#counterfactualParameter")?.value||"capability";
+  const delta=(+($("#counterfactualDelta")?.value||20))/100;
+  $("#counterfactualDeltaOut").textContent=(delta>=0?"+":"")+Math.round(delta*100)+"%";
+
+  const result=runCounterfactualReplayLive(world,society,{...replayContext,parameter,delta});
+  $("#counterfactualFlipRate").textContent=Math.round(result.flipRate*100)+"%";
+  $("#counterfactualReference").textContent=replayOutcomeLabel(result.reference.dominant);
+  $("#counterfactualIntervention").textContent=replayOutcomeLabel(result.intervention.dominant);
+  $("#counterfactualDivergenceDelta").textContent=(result.divergenceDelta>=0?"+":"")+fmt(result.divergenceDelta*100,1)+" pp";
+
+  root.innerHTML=Object.entries(result.deltas).map(([code,value])=>
+    '<div class="counterfactualDeltaRow"><span>'+replayOutcomeLabel(code)+'</span><strong>'+
+    (value>=0?"+":"")+fmt(value*100,1)+' pp</strong></div>'
+  ).join("");
+
+  let text="La intervención cambia pocas historias dentro del sobre ensayado.";
+  if(result.flipRate>=.40)text="La intervención cruza umbrales importantes: una parte grande de las historias cambia de clase.";
+  else if(result.flipRate>=.15)text="La intervención modifica una fracción visible de las historias, aunque el sistema conserva parte de su trayectoria original.";
+  if(result.reference.dominant!==result.intervention.dominant){
+    text+=" El desenlace dominante del ensemble también cambia.";
+  }
+  $("#counterfactualInterpretation").textContent=text+" Esto describe causalidad interna del modelo, no un efecto real estimado.";
 }
 
 function candidateLabel(score,celsius){
