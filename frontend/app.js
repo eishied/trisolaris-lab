@@ -625,6 +625,15 @@ function focusContent(target){
 }
 
 function openFocus(target,{scroll=true}={}){
+  if(target?.kind==="planet"){
+    setContextView("observed",target.name,{scroll});
+    return;
+  }
+  if(target?.kind==="hypothetical"){
+    selectedFocus=null;
+    setContextView("experimental",null,{scroll});
+    return;
+  }
   selectedFocus=target;
   const content=focusContent(target);
   $("#focusKicker").textContent=content.kicker;
@@ -650,7 +659,7 @@ function closeFocus(){
 function activateWorldFocus(){
   $$(".world[data-focus-name]").forEach(card=>{
     const activate=()=>{
-      openFocus({kind:"planet",name:card.dataset.focusName});
+      setContextView("observed",card.dataset.focusName);
     };
     card.addEventListener("click",activate);
     card.addEventListener("keydown",event=>{
@@ -688,8 +697,13 @@ function installCanvasFocus(){
 }
 
 function renderPlanets(){
-  const rows=data.observed_planets||[];
-  $("#planetCount").textContent=rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
+  const allRows=data.observed_planets||[];
+  const rows=contextKind==="observed"&&contextWorldName
+    ?allRows.filter(p=>p.name===contextWorldName)
+    :allRows;
+  $("#planetCount").textContent=contextKind==="observed"
+    ?(rows.length?"1 planeta seleccionado":"Sin coincidencia")
+    :rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
 
   if(!rows.length){
     $("#planetCards").innerHTML=`
