@@ -48,7 +48,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase7-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase7b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -76,7 +76,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase7-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase7b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -2722,6 +2722,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  safeRender("planetary-history",renderPlanetaryHistory);
   safeRender("lineage-inspector",renderLineageInspector);
   safeRender("genetics",renderGenetics);
   safeRender("lineages",renderLineages);
@@ -2930,7 +2931,7 @@ $("#pauseBtn").addEventListener("click",()=>{
 });
 
 function activateRevealObserver(){
-  const items=$(".reveal:not([data-observed])");
+  const items=$$(".reveal:not([data-observed])");
   if(!items.length)return;
 
   // Content is visible by default. Animation is progressive enhancement only.
@@ -2960,14 +2961,14 @@ function activateRevealObserver(){
 
   // iOS/in-app browser fallback: never leave scientific modules hidden.
   window.setTimeout(()=>{
-    $(".reveal.reveal-ready:not(.in)").forEach(item=>{
+    $$(".reveal.reveal-ready:not(.in)").forEach(item=>{
       item.classList.add("in");
       item.classList.remove("reveal-ready");
     });
   },1400);
 }
 
-$(".chapter").forEach(el=>el.classList.add("reveal"));
+$$(".chapter").forEach(el=>el.classList.add("reveal"));
 activateRevealObserver();
 
 const logo=$(".noodboxLogo");
