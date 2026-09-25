@@ -47,13 +47,16 @@ jobs:
       - name: Build surface systems baseline
         run: python pipelines/planetary/build_surface_baseline.py
 
+      - name: Build ecology baseline
+        run: python pipelines/ecology/build_foodweb_baseline.py
+
       - name: Build food-web baseline
         run: python pipelines/ecology/build_foodweb_baseline.py
 
       - name: Commit derived datasets if changed
         shell: bash
         run: |
-          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json frontend/data/climate-baseline.json docs/data/climate-baseline.json frontend/data/surface-baseline.json docs/data/surface-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json; then
+          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json frontend/data/climate-baseline.json docs/data/climate-baseline.json frontend/data/surface-baseline.json docs/data/surface-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json; then
             echo "No scientific-data changes detected."
             exit 0
           fi
