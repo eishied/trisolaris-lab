@@ -221,7 +221,7 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function simulateDemography(", app)
         self.assertIn("function demographicVulnerability(", app)
         self.assertIn("historyPlaybackTimer", app)
-        self.assertIn('"population":"población / capacidad"', app)
+        self.assertIn('population:"población / capacidad"', app)
 
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
