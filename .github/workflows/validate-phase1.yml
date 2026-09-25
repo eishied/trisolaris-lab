@@ -50,6 +50,8 @@ jobs:
           python -m py_compile pipelines/evolution/build_counterfactual_replay_baseline.py
           python -m py_compile engine/research/release.py
           python -m py_compile pipelines/research/build_research_release_baseline.py
+          python -m py_compile engine/research/note_builder.py
+          python -m py_compile pipelines/research/build_research_note.py
           python -m py_compile engine/evolution/lineages.py
           python -m py_compile pipelines/evolution/build_lineage_baseline.py
           python -m py_compile engine/evolution/popgen.py
@@ -79,6 +81,7 @@ jobs:
           python pipelines/evolution/build_evolutionary_replay_baseline.py
           python pipelines/evolution/build_counterfactual_replay_baseline.py
           python pipelines/research/build_research_release_baseline.py
+          python pipelines/research/build_research_note.py
 
       - name: Validate JSON
         run: |
@@ -104,6 +107,11 @@ jobs:
             frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
             frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
             research/evidence/research-release-baseline.json
+            frontend/data/research-note-baseline.json docs/data/research-note-baseline.json
+            publications/research-notes/RN-TRISOLARIS-0001/metadata.json
+            publications/research-notes/RN-TRISOLARIS-0001/evidence.json
+            publications/research-notes/RN-TRISOLARIS-0001/experiments.json
+            publications/research-notes/RN-TRISOLARIS-0001/summary.json
           )
           for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
@@ -133,6 +141,19 @@ jobs:
           cmp frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
           cmp frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
           cmp frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
+          cmp frontend/data/research-note-baseline.json docs/data/research-note-baseline.json
+
+      - name: Validate research note package
+        run: |
+          test -s publications/research-notes/RN-TRISOLARIS-0001/paper.md
+          test -s publications/research-notes/RN-TRISOLARIS-0001/references.bib
+          test -s publications/research-notes/RN-TRISOLARIS-0001/REPRODUCE.md
+          test -s publications/research-notes/RN-TRISOLARIS-0001/tables/outcome-frequencies.tsv
+          test -s publications/research-notes/RN-TRISOLARIS-0001/tables/counterfactual-deltas.tsv
+          test -s publications/research-notes/RN-TRISOLARIS-0001/figures/replay-outcomes.svg
+          test -s publications/research-notes/RN-TRISOLARIS-0001/figures/counterfactual-deltas.svg
+          grep -q "status: RESEARCH_NOTE" publications/research-notes/RN-TRISOLARIS-0001/paper.md
+          grep -q "arxiv_ready: false" publications/research-notes/RN-TRISOLARIS-0001/paper.md
 
       - name: Validate JavaScript syntax
         run: |
