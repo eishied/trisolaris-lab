@@ -15,12 +15,22 @@ jobs:
         run: |
           python -m py_compile pipelines/nasa_exoplanet/fetch_system.py
           python -m py_compile pipelines/nasa_exoplanet/build_frontend_dataset.py
+          python -m py_compile engine/orbital/screen.py
+          python -m py_compile pipelines/orbital/build_screen.py
+
+      - name: Run orbital unit tests
+        run: python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Build orbital baseline
+        run: python pipelines/orbital/build_screen.py
 
       - name: Validate JSON
         run: |
           python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
           python -m json.tool frontend/data/ltt1445.json > /dev/null
           python -m json.tool docs/data/ltt1445.json > /dev/null
+          python -m json.tool frontend/data/orbital-screen.json > /dev/null
+          python -m json.tool docs/data/orbital-screen.json > /dev/null
 
       - name: Validate public app files
         run: |
@@ -34,6 +44,7 @@ jobs:
           cmp frontend/styles.css docs/styles.css
           cmp frontend/app.js docs/app.js
           cmp frontend/data/ltt1445.json docs/data/ltt1445.json
+          cmp frontend/data/orbital-screen.json docs/data/orbital-screen.json
 
       - name: Validate JavaScript syntax
         run: |
