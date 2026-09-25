@@ -15,6 +15,8 @@ let selectedLineageId=null;
 let selectedPartnerId=null;
 let admixtureActive=localStorage.getItem("trisolaris-admixture-active")==="true";
 let historyPlaybackTimer=null;
+let interplanetaryLaunchActive=localStorage.getItem("trisolaris-interplanetary-launch")==="true";
+let selectedInterplanetaryWorldId=localStorage.getItem("trisolaris-interplanetary-world")||"OBS-1";
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -49,7 +51,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase8a-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase9a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -77,7 +79,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase8a-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase9a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -443,11 +445,11 @@ function initCandidate(){
 
     const historyMode=$("#planetHistoryMode");
     if(historyMode){
-      historyMode.addEventListener("change",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);});
+      historyMode.addEventListener("change",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);});
     }
     const historyPlayback=$("#historyPlayback");
     if(historyPlayback){
-      historyPlayback.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);});
+      historyPlayback.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);});
     }
     const historyDisturbance=$("#historyDisturbance");
     if(historyDisturbance){
@@ -455,12 +457,12 @@ function initCandidate(){
         const severity=$("#historySeverity");
         if(historyDisturbance.value==="none"&&severity) severity.value="0";
         safeRender("planetary-history",renderPlanetaryHistory);
-        safeRender("astroanthropology",renderAstroanthropology);
+        safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
       });
     }
     const historySeverity=$("#historySeverity");
     if(historySeverity){
-      historySeverity.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);});
+      historySeverity.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);});
     }
     const historyPlayBtn=$("#historyPlayBtn");
     if(historyPlayBtn){
@@ -481,7 +483,7 @@ function initCandidate(){
           const next=Math.min(100,+control.value+1);
           control.value=String(next);
           safeRender("planetary-history",renderPlanetaryHistory);
-          safeRender("astroanthropology",renderAstroanthropology);
+          safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
           if(next>=100){
             window.clearInterval(historyPlaybackTimer);
             historyPlaybackTimer=null;
@@ -492,6 +494,31 @@ function initCandidate(){
       });
     }
     initPlanetHistoryCanvas();
+
+    const interplanetaryDestination=$("#interplanetaryDestination");
+    if(interplanetaryDestination){
+      interplanetaryDestination.addEventListener("change",()=>{
+        selectedInterplanetaryWorldId=interplanetaryDestination.value||"OBS-1";
+        localStorage.setItem("trisolaris-interplanetary-world",selectedInterplanetaryWorldId);
+        safeRender("interplanetary",renderInterplanetary);
+      });
+    }
+    const interplanetaryFounder=$("#interplanetaryFounder");
+    if(interplanetaryFounder){
+      interplanetaryFounder.addEventListener("input",()=>safeRender("interplanetary",renderInterplanetary));
+    }
+    const interplanetaryExchange=$("#interplanetaryExchange");
+    if(interplanetaryExchange){
+      interplanetaryExchange.addEventListener("input",()=>safeRender("interplanetary",renderInterplanetary));
+    }
+    const interplanetaryLaunchBtn=$("#interplanetaryLaunchBtn");
+    if(interplanetaryLaunchBtn){
+      interplanetaryLaunchBtn.addEventListener("click",()=>{
+        interplanetaryLaunchActive=!interplanetaryLaunchActive;
+        localStorage.setItem("trisolaris-interplanetary-launch",String(interplanetaryLaunchActive));
+        safeRender("interplanetary",renderInterplanetary);
+      });
+    }
 
     const humanBtn=$("#seedHumansBtn");
     if(humanBtn){
@@ -1928,7 +1955,7 @@ function renderLineages(){
     renderGenetics();
     renderLineageInspector();
     safeRender("planetary-history",renderPlanetaryHistory);
-    safeRender("astroanthropology",renderAstroanthropology);
+    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
   }));
   renderLineageDetail(model);
 
@@ -2890,7 +2917,7 @@ function initPlanetHistoryCanvas(){
     safeRender("genetics",renderGenetics);
     safeRender("lineage-inspector",renderLineageInspector);
     safeRender("planetary-history",renderPlanetaryHistory);
-    safeRender("astroanthropology",renderAstroanthropology);
+    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
   });
 }
 
@@ -3128,7 +3155,7 @@ function renderAstroanthropology(){
     safeRender("genetics",renderGenetics);
     safeRender("lineage-inspector",renderLineageInspector);
     safeRender("planetary-history",renderPlanetaryHistory);
-    safeRender("astroanthropology",renderAstroanthropology);
+    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
   }));
 
   $("#astroAnthroSelected").textContent=selected.populationAlias+" · "+selected.lineageName;
@@ -3168,6 +3195,255 @@ function renderAstroanthropology(){
     stat("Dependencia técnica",Math.round(s.meanTechnologyDependence*100)+"%")+
     stat("Intercambio cultural",Math.round(s.meanCulturalExchange*100)+"%","funcional, no ranking");
 }
+
+
+function interplanetaryHohmannDays(originAu,targetAu,starMassSolar){
+  if(originAu<=0||targetAu<=0||starMassSolar<=0)return null;
+  const transferAxis=.5*(originAu+targetAu);
+  return .5*Math.sqrt(Math.pow(transferAxis,3)/starMassSolar)*365.25;
+}
+
+function interplanetaryWorldCatalog(){
+  const A=data.stars.find(star=>star.id==="A")||{mass_solar:.257};
+  const originAu=+$("#axis").value;
+  const originPoint=evaluateOrbitPoint(originAu,+$("#albedo").value,+$("#greenhouse").value);
+  const worlds=[{
+    worldId:"H-01",
+    name:"TRISOLARIS H-01",
+    role:"origin",
+    epistemicLevel:"SPECULATIVE",
+    semiMajorAxisAu:originAu,
+    equilibriumTemperatureK:originPoint.teq,
+    gravityEarth:null,
+    thermalSupport:null,
+    gravitySupport:null,
+    settlementBurden:0,
+    controlledHabitatRequired:false,
+    transferDays:0,
+    assessment:"Mundo experimental de origen · sus condiciones responden a los controles del laboratorio."
+  }];
+
+  (data.observed_planets||[]).forEach((planet,index)=>{
+    const teq=planet.equilibrium_temperature_k;
+    const gravity=planet.mass_earth&&planet.radius_earth?planet.mass_earth/Math.pow(planet.radius_earth,2):null;
+    const thermal=teq==null?0:Math.exp(-Math.pow((teq-288)/95,2));
+    const gravitySupport=gravity==null?.45:Math.exp(-Math.pow((gravity-1)/.70,2));
+    const burden=Math.max(0,Math.min(1,.56*(1-thermal)+.16*(1-gravitySupport)+.28));
+    const controlled=burden>=.55||(teq!=null&&teq>=360);
+    worlds.push({
+      worldId:"OBS-"+(index+1),
+      name:planet.name,
+      role:"destination",
+      epistemicLevel:planet.epistemic_level||"OBSERVED",
+      semiMajorAxisAu:planet.semi_major_axis_au,
+      equilibriumTemperatureK:teq,
+      gravityEarth:gravity,
+      thermalSupport:thermal,
+      gravitySupport,
+      settlementBurden:burden,
+      controlledHabitatRequired:controlled,
+      transferDays:interplanetaryHohmannDays(originAu,planet.semi_major_axis_au,A.mass_solar||.257),
+      assessment:controlled
+        ?"El cribado no respalda asentamiento superficial natural; el escenario exige hábitat controlado."
+        :"La superficie sigue siendo incierta y requiere evidencia atmosférica y climática."
+    });
+  });
+  return worlds;
+}
+
+function interplanetaryReadiness(society){
+  const portfolio=society.technologyPortfolio||{};
+  return Math.max(0,Math.min(1,
+    .27*(society.technicalBalance||0)+
+    .23*(society.knowledgeRetention||0)+
+    .22*(society.systemRedundancy||0)+
+    .18*(portfolio["Infraestructura"]||0)+
+    .10*(portfolio["Movilidad"]||0)
+  ));
+}
+
+function simulateInterplanetarySettlement(world,society,{years=0,founderSize=500,exchangeStrength=.30,launchActive=false}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const readiness=interplanetaryReadiness(society);
+  const knowledge=clamp(society.knowledgeRetention||0);
+  const redundancy=clamp(society.systemRedundancy||0);
+  const technical=clamp(society.technicalBalance||0);
+  const burden=clamp(world.settlementBurden||0);
+  const launchThreshold=.34+.08*burden;
+  const launchFeasible=readiness>=launchThreshold;
+  const transferSurvival=clamp(.50+.22*readiness+.14*knowledge+.14*redundancy-.30*burden);
+  const survivors=launchActive&&launchFeasible?Math.max(0,Math.round(founderSize*transferSurvival)):0;
+  const effectiveFounders=survivors?Math.round(survivors*(.48+.22*redundancy)):0;
+  const habitatCapacity=clamp(.34*readiness+.26*technical+.22*redundancy+.18*knowledge-.34*burden);
+  const persists=!!(launchActive&&launchFeasible&&survivors>=40&&habitatCapacity>=.16);
+
+  let contactCapacity=0,isolation=0,geneFlow=0,founderEffect=0,divergence=0,technologyContinuity=0;
+  if(persists){
+    contactCapacity=clamp(exchangeStrength*(.42+.38*readiness+.20*technical));
+    isolation=clamp(1-contactCapacity);
+    geneFlow=clamp(contactCapacity*Math.min(1,survivors/Math.max(100,founderSize))*(.60+.40*redundancy));
+    founderEffect=clamp(Math.sqrt(120/Math.max(120,effectiveFounders))*(1-.45*geneFlow));
+    const timeFactor=years?1-Math.exp(-years/18000):0;
+    divergence=clamp(timeFactor*isolation*(.48*founderEffect+.32*burden+.20*(1-geneFlow)));
+    technologyContinuity=clamp(.46*knowledge+.30*technical+.24*redundancy-.26*burden+.20*contactCapacity);
+  }
+
+  const branchEmerges=!!(persists&&years>=5000&&isolation>=.48&&divergence>=.34);
+  let status="assessment-only";
+  if(launchActive&&!launchFeasible)status="launch-not-feasible";
+  else if(launchActive&&survivors<40)status="transfer-bottleneck";
+  else if(launchActive&&!persists)status="settlement-failed";
+  else if(branchEmerges)status="persistent-offworld-branch";
+  else if(persists)status="persistent-settlement";
+
+  return {
+    status,readiness,launchThreshold,launchFeasible,transferSurvival,survivors,effectiveFounders,
+    habitatCapacity,persists,contactCapacity,isolation,geneFlow,founderEffect,divergence,
+    technologyContinuity,branchEmerges,
+    branchId:branchEmerges?(society.lineageId+"-"+world.worldId):null
+  };
+}
+
+function interplanetaryStatusLabel(status){
+  return ({
+    "assessment-only":"Evaluación sin salida",
+    "launch-not-feasible":"Salida no viable",
+    "transfer-bottleneck":"Cuello de botella en tránsito",
+    "settlement-failed":"El asentamiento no persiste",
+    "persistent-settlement":"Asentamiento persistente",
+    "persistent-offworld-branch":"Rama extraplanetaria persistente"
+  })[status]||status;
+}
+
+function renderInterplanetary(){
+  const root=$("#interplanetaryWorldList");
+  if(!root||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const totalYears=+$("#lineageYears").value;
+  const playback=Math.max(0,Math.min(1,(+($("#historyPlayback")?.value||100))/100));
+  const viewYears=totalYears*playback;
+  const disturbance=$("#historyDisturbance")?.value||"none";
+  const severity=disturbance==="none"?0:Math.max(0,Math.min(1,(+($("#historySeverity")?.value||0))/100));
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const lineageModel=simulateLineages(network,{years:viewYears,technologyBuffer:tech});
+  const history=simulatePlanetaryHistory(network,lineageModel,{years:viewYears,technologySupport:tech,mobility});
+  const demography=simulateDemography(history,{totalYears,viewYears,disturbance,severity});
+  const anthropology=simulateAstroanthropology(history,demography,{years:viewYears,exchangeStrength:1});
+
+  if(!anthropology.societies.length){
+    root.innerHTML='<article class="interplanetaryWorld"><span>Sin población de origen</span><strong>H-01 todavía no sostiene una población viable</strong><p>La historia extraplanetaria no se inventa si el origen no existe.</p></article>';
+    $("#interplanetaryPopulation").textContent="—";
+    $("#interplanetaryStatus").textContent="Sin población de origen";
+    $("#interplanetaryBranch").textContent="No aplica";
+    $("#interplanetaryMetrics").innerHTML="";
+    return;
+  }
+
+  if(!selectedLineageId||!anthropology.societies.some(s=>s.lineageId===selectedLineageId)){
+    selectedLineageId=anthropology.societies[0].lineageId;
+  }
+  const society=anthropology.societies.find(s=>s.lineageId===selectedLineageId);
+  const worlds=interplanetaryWorldCatalog();
+  const destinations=worlds.filter(world=>world.role==="destination");
+  if(!selectedInterplanetaryWorldId||!destinations.some(world=>world.worldId===selectedInterplanetaryWorldId)){
+    selectedInterplanetaryWorldId=destinations[0]?.worldId||null;
+  }
+  const destination=destinations.find(world=>world.worldId===selectedInterplanetaryWorldId)||destinations[0];
+  if(!destination)return;
+
+  const destinationSelect=$("#interplanetaryDestination");
+  destinationSelect.innerHTML=destinations.map(world=>
+    '<option value="'+world.worldId+'"'+(world.worldId===selectedInterplanetaryWorldId?" selected":"")+'>'+world.name+'</option>'
+  ).join("");
+
+  const founderSize=+($("#interplanetaryFounder")?.value||500);
+  const exchange=(+($("#interplanetaryExchange")?.value||30))/100;
+  $("#interplanetaryFounderOut").textContent=founderSize.toLocaleString("es-ES")+" personas";
+  $("#interplanetaryExchangeOut").textContent=Math.round(exchange*100)+"%";
+
+  root.innerHTML=worlds.map(world=>{
+    const meta=world.role==="origin"
+      ?"Origen · "+world.epistemicLevel
+      :world.epistemicLevel+" · "+fmt(world.semiMajorAxisAu,3)+" AU";
+    const detail=world.role==="origin"
+      ?"Condiciones interactivas del experimento."
+      :(world.controlledHabitatRequired?"Hábitat controlado requerido":"Condiciones superficiales todavía inciertas");
+    const burden=world.role==="origin"
+      ?"Base de salida"
+      :"Carga de asentamiento "+Math.round(world.settlementBurden*100)+"%";
+    return '<article class="interplanetaryWorld" aria-current="'+(world.worldId===selectedInterplanetaryWorldId)+'">'+
+      '<span>'+meta+'</span><strong>'+world.name+'</strong><p>'+detail+'</p><em>'+burden+'</em></article>';
+  }).join("");
+
+  const result=simulateInterplanetarySettlement(destination,society,{
+    years:viewYears,
+    founderSize,
+    exchangeStrength:exchange,
+    launchActive:interplanetaryLaunchActive
+  });
+
+  const launchBtn=$("#interplanetaryLaunchBtn");
+  launchBtn.setAttribute("aria-pressed",String(interplanetaryLaunchActive));
+  launchBtn.textContent=interplanetaryLaunchActive?"Detener intento de asentamiento":"Preparar intento de asentamiento";
+
+  $("#interplanetaryPopulation").textContent=society.populationAlias+" · "+society.lineageName;
+  $("#interplanetaryStatus").textContent=interplanetaryStatusLabel(result.status);
+  $("#interplanetaryBranch").textContent=result.branchEmerges
+    ?result.branchId+" · rama persistente"
+    :(result.persists?"Todavía no emerge":"No existe");
+
+  $("#interplanetaryDeparture").textContent=result.launchFeasible
+    ?"Preparación "+Math.round(result.readiness*100)+"% · supera el umbral del escenario."
+    :"Preparación "+Math.round(result.readiness*100)+"% · todavía no alcanza el umbral "+Math.round(result.launchThreshold*100)+"%.";
+  $("#interplanetaryTransfer").textContent=fmt(destination.transferDays,1)+" días";
+  $("#interplanetaryTransit").textContent="Transferencia de Hohmann idealizada · supervivencia modelada "+Math.round(result.transferSurvival*100)+"%.";
+  $("#interplanetaryArrival").textContent=interplanetaryLaunchActive
+    ?result.survivors.toLocaleString("es-ES")+" llegadas"
+    :founderSize.toLocaleString("es-ES")+" fundadores propuestos";
+  $("#interplanetaryHabitat").textContent=destination.assessment;
+  $("#interplanetaryHistory").textContent=result.persists
+    ?Math.round(result.divergence*100)+"% divergencia funcional/genética proxy"
+    :"Sin historia extraplanetaria persistente";
+  $("#interplanetaryIsolation").textContent=result.persists
+    ?"Aislamiento "+Math.round(result.isolation*100)+"% · flujo génico "+Math.round(result.geneFlow*100)+"%."
+    :"La divergencia queda en cero mientras el asentamiento no persista.";
+
+  $("#interplanetaryWhy").textContent=
+    society.populationAlias+" → preparación "+Math.round(result.readiness*100)+"% → "+destination.name+
+    " → carga "+Math.round(destination.settlementBurden*100)+"% → "+
+    interplanetaryStatusLabel(result.status).toLowerCase()+".";
+
+  let risk="La salida puede fallar antes de producir una población extraplanetaria.";
+  if(!result.launchFeasible)risk="La población no conserva todavía suficiente capacidad técnica, redundancia y conocimiento para sostener la salida.";
+  else if(destination.controlledHabitatRequired)risk="El destino exige soporte ambiental continuo; una pérdida prolongada de infraestructura puede terminar el asentamiento.";
+  if(result.persists&&result.technologyContinuity<.45)risk="El asentamiento persiste, pero la continuidad tecnológica queda frágil y puede perder capacidades críticas.";
+  $("#interplanetaryRisk").textContent=risk;
+
+  $("#interplanetaryMetrics").innerHTML=
+    stat("Destino",destination.name,destination.epistemicLevel)+
+    stat("Transferencia",fmt(destination.transferDays,2)+" d","Hohmann idealizada")+
+    stat("Carga de asentamiento",Math.round(destination.settlementBurden*100)+"%","DERIVED")+
+    stat("Preparación",Math.round(result.readiness*100)+"%","MODELED")+
+    stat("Fundadores",founderSize.toLocaleString("es-ES"),"explícito")+
+    stat("Llegadas",interplanetaryLaunchActive?result.survivors.toLocaleString("es-ES"):"—","MODELED")+
+    stat("Fundadores efectivos",result.effectiveFounders?result.effectiveFounders.toLocaleString("es-ES"):"—","proxy")+
+    stat("Continuidad técnica",result.persists?Math.round(result.technologyContinuity*100)+"%":"—")+
+    stat("Aislamiento",result.persists?Math.round(result.isolation*100)+"%":"—")+
+    stat("Flujo génico",result.persists?Math.round(result.geneFlow*100)+"%":"—")+
+    stat("Efecto fundador",result.persists?Math.round(result.founderEffect*100)+"%":"—","presión proxy")+
+    stat("Divergencia",result.persists?Math.round(result.divergence*100)+"%":"—","no especiación");
+}
+
 
 function candidateLabel(score,celsius){
   if(score>.78){
@@ -3264,7 +3540,7 @@ function renderCandidate(){
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
   safeRender("planetary-history",renderPlanetaryHistory);
-  safeRender("astroanthropology",renderAstroanthropology);
+  safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
   safeRender("lineage-inspector",renderLineageInspector);
   safeRender("genetics",renderGenetics);
   safeRender("lineages",renderLineages);
