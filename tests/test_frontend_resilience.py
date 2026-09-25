@@ -339,10 +339,30 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function renderCounterfactual(", app)
         self.assertIn("same seed", (ROOT / "docs/COUNTERFACTUAL_REPLAY_MODEL.md").read_text(encoding="utf-8"))
 
+    def test_phase11_research_release_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "researchReleaseHeadline",
+            "researchReleaseState",
+            "researchReleaseId",
+            "researchReleaseCommit",
+            "researchReleaseChecks",
+            "researchEvidenceLedger",
+            "researchClaims",
+            "researchValidationChecks",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("RESEARCH_RELEASE_URL", app)
+        self.assertIn("function loadResearchRelease()", app)
+        self.assertIn("function renderResearchRelease()", app)
+        self.assertIn("loadResearchRelease();", app)
+        self.assertIn("cannot automatically mark", (ROOT / "docs/RESEARCH_RELEASE_MODEL.md").read_text(encoding="utf-8"))
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase10b-20260925", html)
-        self.assertIn("app.js?v=phase10b-20260925", html)
+        self.assertIn("styles.css?v=phase11a-20260925", html)
+        self.assertIn("app.js?v=phase11a-20260925", html)
 
 
 if __name__ == "__main__":
