@@ -24,6 +24,8 @@ jobs:
           python -m py_compile pipelines/orbital/build_nbody_ensemble.py
           python -m py_compile engine/climate/latitudinal_ebm.py
           python -m py_compile pipelines/climate/build_climate_baseline.py
+          python -m py_compile engine/planetary/surface_systems.py
+          python -m py_compile pipelines/planetary/build_surface_baseline.py
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
@@ -37,6 +39,9 @@ jobs:
       - name: Build climate baseline
         run: python pipelines/climate/build_climate_baseline.py
 
+      - name: Build surface systems baseline
+        run: python pipelines/planetary/build_surface_baseline.py
+
       - name: Validate JSON
         run: |
           python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
@@ -48,6 +53,8 @@ jobs:
           python -m json.tool docs/data/nbody-ensemble.json > /dev/null
           python -m json.tool frontend/data/climate-baseline.json > /dev/null
           python -m json.tool docs/data/climate-baseline.json > /dev/null
+          python -m json.tool frontend/data/surface-baseline.json > /dev/null
+          python -m json.tool docs/data/surface-baseline.json > /dev/null
 
       - name: Validate public app files
         run: |
@@ -64,6 +71,7 @@ jobs:
           cmp frontend/data/orbital-screen.json docs/data/orbital-screen.json
           cmp frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
           cmp frontend/data/climate-baseline.json docs/data/climate-baseline.json
+          cmp frontend/data/surface-baseline.json docs/data/surface-baseline.json
 
       - name: Validate JavaScript syntax
         run: |

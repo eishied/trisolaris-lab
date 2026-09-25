@@ -502,3 +502,86 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .climateIntro{grid-template-columns:1fr;gap:9px}
   .climateIntro>p:last-child{grid-column:1;grid-row:auto}
 }
+
+
+.surfaceSystems{
+  margin-top:38px;
+  padding:38px 0 32px;
+  border-top:1px solid var(--line)
+}
+.surfaceIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
+  gap:36px;
+  align-items:end
+}
+.surfaceIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(30px,4vw,48px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.surfaceIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#97a5ae
+}
+.surfaceStage{
+  margin-top:24px;
+  overflow:hidden;
+  border-radius:30px;
+  border:1px solid var(--line);
+  background:
+    radial-gradient(circle at 24% 45%,rgba(71,145,170,.13),transparent 35%),
+    radial-gradient(circle at 75% 48%,rgba(72,140,92,.07),transparent 38%),
+    #060b0f
+}
+#surfaceCanvas{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:0;
+  background:transparent
+}
+.surfaceNarrative{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  border-top:1px solid var(--line);
+  margin-top:18px
+}
+.surfaceNarrative article{
+  padding:18px 20px 16px 0
+}
+.surfaceNarrative article+article{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.surfaceNarrative span{
+  display:block;
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:6px
+}
+.surfaceNarrative strong{
+  display:block;
+  font-size:17px;
+  line-height:1.35;
+  font-weight:650;
+  color:#d6dee3
+}
+.surfaceCaveat{
+  margin:13px 0 0;
+  color:#72808a;
+  font-size:11px
+}
+.surfaceSystems .metricGrid{margin-top:18px}
+@media(max-width:780px){
+  .surfaceIntro{grid-template-columns:1fr;gap:9px}
+  .surfaceIntro>p:last-child{grid-column:1;grid-row:auto}
+  .surfaceNarrative{grid-template-columns:1fr}
+  .surfaceNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
+}
