@@ -101,7 +101,7 @@ function renderContextSummary(){
       contextFact("Replay","64 historias","seed 1445")+
       contextFact("Release",researchRelease?.publication_state||"RESEARCH_NOTE")+
       contextFact("Nota",researchNote?.status||"RESEARCH_NOTE")+
-      contextFact("Revisión",manuscriptReviewGate?.summary?.human_checks_passed+" / "+manuscriptReviewGate?.summary?.human_checks_total||"pendiente");
+      contextFact("Revisión",manuscriptReviewGate?.summary ? manuscriptReviewGate.summary.human_checks_passed+" / "+manuscriptReviewGate.summary.human_checks_total : "pendiente");
     return;
   }
 
@@ -762,7 +762,7 @@ function initCandidate(){
     if(!$("#water").value) $("#water").value="1.00";
     ["axis","albedo","greenhouse","pressure","water","oxygen","nutrients","techSupport","mobility","lineageYears"].forEach(id=>{
       const el=$("#"+id);
-      if(el) el.addEventListener("input",renderCandidate);
+      if(el) el.addEventListener("input",()=>{renderCandidate();if(contextKind==="experimental")renderContextSummary();});
     });
     const seedBtn=$("#seedLifeBtn");
     seedBtn.setAttribute("aria-pressed",String(lifeSeeded));
