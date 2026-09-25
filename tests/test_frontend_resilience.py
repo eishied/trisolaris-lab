@@ -359,10 +359,32 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("loadResearchRelease();", app)
         self.assertIn("must not automatically mark", (ROOT / "docs/RESEARCH_RELEASE_MODEL.md").read_text(encoding="utf-8"))
 
+    def test_phase11_1_research_note_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "researchNoteTitle",
+            "researchNoteResult",
+            "researchNoteId",
+            "researchNoteRuns",
+            "researchNoteCounterfactual",
+            "researchNoteStatus",
+            "researchNoteLink",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("RESEARCH_NOTE_URL", app)
+        self.assertIn("function loadResearchNote()", app)
+        self.assertIn("function renderResearchNote()", app)
+        self.assertIn("loadResearchNote();", app)
+        self.assertIn(
+            "arxiv_ready = false",
+            (ROOT / "docs/RESEARCH_NOTE_BUILDER.md").read_text(encoding="utf-8"),
+        )
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase11a-20260925", html)
-        self.assertIn("app.js?v=phase11a-20260925", html)
+        self.assertIn("styles.css?v=phase11b-20260925", html)
+        self.assertIn("app.js?v=phase11b-20260925", html)
 
 
 if __name__ == "__main__":
