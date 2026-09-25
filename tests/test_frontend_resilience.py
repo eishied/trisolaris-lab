@@ -381,10 +381,32 @@ class FrontendResilienceTests(unittest.TestCase):
             (ROOT / "docs/RESEARCH_NOTE_BUILDER.md").read_text(encoding="utf-8"),
         )
 
+    def test_phase11_2_manuscript_review_gate_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "manuscriptPromotionState",
+            "manuscriptAutoChecks",
+            "manuscriptHumanChecks",
+            "manuscriptReviewer",
+            "manuscriptCurrentState",
+            "manuscriptHumanCheckList",
+            "manuscriptReviewExplanation",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("MANUSCRIPT_REVIEW_URL", app)
+        self.assertIn("function loadManuscriptReviewGate()", app)
+        self.assertIn("function renderManuscriptReviewGate()", app)
+        self.assertIn("loadManuscriptReviewGate();", app)
+        self.assertIn(
+            "cannot move a manuscript automatically",
+            (ROOT / "docs/MANUSCRIPT_REVIEW_GATE.md").read_text(encoding="utf-8"),
+        )
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase11b-20260925", html)
-        self.assertIn("app.js?v=phase11b-20260925", html)
+        self.assertIn("styles.css?v=phase11c-20260925", html)
+        self.assertIn("app.js?v=phase11c-20260925", html)
 
 
 if __name__ == "__main__":
