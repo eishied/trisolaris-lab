@@ -31,7 +31,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase3-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase4-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -59,7 +59,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase3-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase4-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -256,6 +256,8 @@ function focusContent(target){
       ["Distancia actual",(+$("#axis").value).toFixed(3)+" AU"],
       ["Albedo",(+$("#albedo").value).toFixed(2)],
       ["Invernadero","+"+(+$("#greenhouse").value).toFixed(0)+" K"],
+      ["Presión",(+$("#pressure").value).toFixed(2)+" bar"],
+      ["Agua",(+$("#water").value).toFixed(2)+" océanos"],
       ["Filtro orbital",orbital.label],
       ["Evidencia","Hipótesis"]
     ],
@@ -383,7 +385,9 @@ function initCandidate(){
     $("#axis").value=h.semi_major_axis_au;
     $("#albedo").value=h.albedo;
     $("#greenhouse").value=h.greenhouse_k;
-    ["axis","albedo","greenhouse"].forEach(id=>$("#"+id).addEventListener("input",renderCandidate));
+    if(!$("#pressure").value) $("#pressure").value="1.00";
+    if(!$("#water").value) $("#water").value="1.00";
+    ["axis","albedo","greenhouse","pressure","water"].forEach(id=>$("#"+id).addEventListener("input",renderCandidate));
     initOrbitWindow();
     candidateInitialized=true;
   }
@@ -717,6 +721,262 @@ function renderClimateWorld(){
     stat("Ventana térmica",fraction+"%","0–40 °C · proxy");
 }
 
+function boilingPointCApprox(pressureBar){
+  const p=Math.max(.05,Math.min(5,pressureBar));
+  return Math.max(45,Math.min(150,100+25*Math.log10(p)));
+}
+
+function temperatureProductivity(tempC){
+  if(tempC<=-10||tempC>=50)return 0;
+  if(tempC<=22)return Math.max(0,Math.min(1,(tempC+10)/32));
+  return Math.max(0,Math.min(1,(50-tempC)/28));
+}
+
+function solveSurfaceSystems(climate,{pressureBar=1,waterOceans=1,stellarFluxEarth=1,spectralFactor=.55}={}){
+  const boilingC=boilingPointCApprox(pressureBar);
+  const waterFactor=1-Math.exp(-2.2*Math.max(0,waterOceans));
+  const pressureCycleFactor=Math.max(0,Math.min(1,pressureBar/.7));
+  const usableLightFactor=Math.max(0,Math.min(1,spectralFactor*Math.sqrt(Math.max(0,stellarFluxEarth))));
+
+  let totalWeight=0;
+  let liquidWeight=0;
+  let iceWeight=0;
+  let vaporWeight=0;
+  let productivityWeight=0;
+  let refugiaWeight=0;
+
+  const rows=climate.rows.map(row=>{
+    const lat=row.latitudeDeg;
+    const tempC=row.temperatureC;
+    const weight=Math.max(0,Math.cos(lat*Math.PI/180));
+    totalWeight+=weight;
+
+    let waterState="dry";
+    let liquid=0,ice=0,vapor=0;
+
+    if(waterOceans>.001){
+      if(tempC<0){
+        waterState="ice-dominated";
+        ice=waterFactor;
+        liquid=Math.max(0,waterFactor*(1-Math.min(1,Math.abs(tempC)/35))*.15);
+      }else if(tempC<boilingC){
+        waterState="liquid-permitted";
+        liquid=waterFactor;
+        vapor=waterFactor*Math.max(0,Math.min(1,(tempC-20)/Math.max(1,boilingC-20)))*.35;
+      }else{
+        waterState="vapor-stressed";
+        vapor=waterFactor;
+        liquid=waterFactor*.05;
+      }
+    }
+
+    let hydroCycle=waterFactor*pressureCycleFactor;
+    if(tempC>=0&&tempC<boilingC){
+      hydroCycle*=.45+.55*Math.max(0,Math.min(1,(tempC+5)/35));
+    }else{
+      hydroCycle*=.2;
+    }
+
+    const productivity=
+      temperatureProductivity(tempC)*
+      Math.max(0,Math.min(1,liquid))*
+      hydroCycle*
+      usableLightFactor;
+
+    const refugium=(tempC>=0&&tempC<=40&&liquid>.25&&pressureBar>=.2);
+
+    liquidWeight+=weight*Math.max(0,Math.min(1,liquid));
+    iceWeight+=weight*ice;
+    vaporWeight+=weight*vapor;
+    productivityWeight+=weight*productivity;
+    if(refugium)refugiaWeight+=weight;
+
+    return {
+      latitudeDeg:lat,
+      temperatureC:tempC,
+      waterState,
+      liquidWaterProxy:Math.max(0,Math.min(1,liquid)),
+      iceProxy:ice,
+      vaporStressProxy:vapor,
+      hydrologicalCycleProxy:hydroCycle,
+      productivityPotential:productivity,
+      refugium
+    };
+  });
+
+  totalWeight=totalWeight||1;
+  const globalMean=climate.summary.globalMeanC;
+  const thermalEscapeStress=Math.max(0,Math.min(1,(globalMean+20)/180));
+  const retentionProxy=Math.max(0,Math.min(1,.72+.16*Math.log10(Math.max(.05,pressureBar))-.35*thermalEscapeStress));
+  const bio=productivityWeight/totalWeight;
+  const refugia=refugiaWeight/totalWeight;
+
+  let biosphereState="little surface biosphere potential under current assumptions";
+  if(bio>=.45&&refugia>=.5) biosphereState="broad primary-productivity potential";
+  else if(bio>=.15&&refugia>=.15) biosphereState="regional biosphere potential";
+  else if(refugia>0) biosphereState="limited thermal-hydrological refugia";
+
+  return {
+    rows,
+    summary:{
+      boilingC,
+      liquidArea:liquidWeight/totalWeight,
+      iceArea:iceWeight/totalWeight,
+      vaporStressArea:vaporWeight/totalWeight,
+      hydroCycle:waterFactor*pressureCycleFactor,
+      retentionProxy,
+      biospherePotential:bio,
+      refugiaFraction:refugia,
+      biosphereState
+    }
+  };
+}
+
+function surfaceBandColor(row){
+  if(row.waterState==="ice-dominated")return "rgba(126,177,205,.92)";
+  if(row.waterState==="vapor-stressed")return "rgba(187,119,89,.92)";
+  if(row.productivityPotential>.35)return "rgba(93,170,111,.92)";
+  if(row.liquidWaterProxy>.35)return "rgba(76,142,169,.94)";
+  return "rgba(104,112,119,.80)";
+}
+
+function renderSurfaceWorld(){
+  const canvas=$("#surfaceCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value;
+  const albedo=+$("#albedo").value;
+  const gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value;
+  const water=+$("#water").value;
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{
+    pressureBar:pressure,
+    waterOceans:water,
+    stellarFluxEarth:point.flux,
+    spectralFactor:.55
+  });
+
+  $("#pressureOut").textContent=pressure.toFixed(2)+" bar";
+  $("#waterOut").textContent=water.toFixed(2)+" océanos";
+
+  const s=surface.summary;
+  const liquidPct=Math.round(s.liquidArea*100);
+  const icePct=Math.round(s.iceArea*100);
+  const refugiaPct=Math.round(s.refugiaFraction*100);
+  const bioPct=Math.round(s.biospherePotential*100);
+  const retainPct=Math.round(s.retentionProxy*100);
+
+  $("#atmoNarrative").textContent=retainPct>=70
+    ?`La atmósfera mantiene una retención preliminar favorable (${retainPct}%), aunque todavía falta química y escape atmosférico real.`
+    :`La atmósfera aparece frágil en este filtro (${retainPct}% de retención proxy); conviene estudiar escape y composición.`;
+
+  $("#waterNarrative").textContent=water<=.01
+    ?"El escenario está prácticamente seco."
+    :liquidPct>=45
+      ?`El agua líquida es térmicamente permisible en una fracción amplia del planeta (${liquidPct}%).`
+      :icePct>=50
+        ?`Predomina el almacenamiento en hielo; las regiones líquidas quedan restringidas (${liquidPct}%).`
+        :`El agua líquida aparece de forma regional (${liquidPct}%), con estrés por hielo o evaporación en otras latitudes.`;
+
+  $("#bioNarrative").textContent=refugiaPct>=50
+    ?`Las condiciones permiten refugios térmico-hidrológicos extensos (${refugiaPct}% del área latitudinal), con potencial de productividad de ${bioPct}%.`
+    :refugiaPct>0
+      ?`La biosfera potencial se concentraría en refugios (${refugiaPct}% del área latitudinal); fuera de ellos las condiciones son mucho más restrictivas.`
+      :"No aparecen refugios superficiales robustos bajo estos supuestos.";
+
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#060b0f";
+  ctx.fillRect(0,0,w,h);
+
+  // Planet disc.
+  const cx=300,cy=h/2,r=174;
+  const glow=ctx.createRadialGradient(cx,cy,40,cx,cy,r*1.7);
+  glow.addColorStop(0,"rgba(79,157,178,.13)");
+  glow.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=glow;
+  ctx.beginPath();ctx.arc(cx,cy,r*1.7,0,Math.PI*2);ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
+
+  for(let y=Math.floor(cy-r);y<=Math.ceil(cy+r);y++){
+    const norm=(cy-y)/r;
+    if(Math.abs(norm)>1)continue;
+    const lat=Math.asin(norm)*180/Math.PI;
+    const row=surface.rows.reduce((best,item)=>
+      Math.abs(item.latitudeDeg-lat)<Math.abs(best.latitudeDeg-lat)?item:best
+    );
+    ctx.fillStyle=surfaceBandColor(row);
+    const half=Math.sqrt(Math.max(0,r*r-(y-cy)*(y-cy)));
+    ctx.fillRect(cx-half,y,half*2,2);
+  }
+
+  // Land silhouettes.
+  ctx.fillStyle="rgba(32,44,35,.42)";
+  ctx.beginPath();
+  ctx.moveTo(cx-110,cy-44);
+  ctx.bezierCurveTo(cx-72,cy-102,cx-15,cy-91,cx+28,cy-52);
+  ctx.bezierCurveTo(cx+58,cy-18,cx+30,cy+10,cx-20,cy+5);
+  ctx.bezierCurveTo(cx-70,cy,cx-105,cy-10,cx-110,cy-44);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx+45,cy+38);
+  ctx.bezierCurveTo(cx+105,cy+18,cx+132,cy+72,cx+80,cy+112);
+  ctx.bezierCurveTo(cx+40,cy+132,cx+12,cy+79,cx+45,cy+38);
+  ctx.fill();
+
+  // Atmosphere rim intensity varies with pressure.
+  const rimAlpha=Math.max(.05,Math.min(.32,.08+pressure*.07));
+  const rim=ctx.createRadialGradient(cx,cy,r*.76,cx,cy,r);
+  rim.addColorStop(0,"rgba(255,255,255,0)");
+  rim.addColorStop(1,`rgba(188,226,242,${rimAlpha})`);
+  ctx.fillStyle=rim;ctx.fillRect(cx-r,cy-r,r*2,r*2);
+  ctx.restore();
+
+  ctx.strokeStyle="rgba(219,239,247,.25)";
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+
+  // Latitudinal surface profile.
+  const left=570,right=w-55,top=86,bottom=h-72;
+  ctx.strokeStyle="rgba(255,255,255,.08)";
+  ctx.beginPath();ctx.moveTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+
+  const barW=(right-left)/surface.rows.length;
+  surface.rows.forEach((row,i)=>{
+    const x=left+i*barW;
+    const height=Math.max(4,row.productivityPotential*(bottom-top));
+    ctx.fillStyle=surfaceBandColor(row);
+    ctx.fillRect(x,bottom-height,Math.ceil(barW)+1,height);
+  });
+
+  ctx.fillStyle="rgba(242,246,248,.94)";
+  ctx.font="700 25px system-ui";
+  ctx.fillText("Superficie viva — potencial",left,48);
+  ctx.fillStyle="rgba(148,163,173,.9)";
+  ctx.font="14px system-ui";
+  ctx.fillText("Altura = productividad potencial por latitud",left,72);
+
+  ctx.font="12px system-ui";
+  ctx.fillStyle="rgba(119,134,144,.92)";
+  ctx.fillText("90°S",left,bottom+26);
+  ctx.fillText("Ecuador",(left+right)/2-24,bottom+26);
+  ctx.fillText("90°N",right-34,bottom+26);
+
+  $("#surfaceMetrics").innerHTML=
+    stat("Presión",pressure.toFixed(2)+" bar")+
+    stat("Ebullición H₂O",s.boilingC.toFixed(1)+" °C","aprox.")+
+    stat("Agua líquida proxy",liquidPct+"%","área ponderada")+
+    stat("Hielo proxy",icePct+"%","área ponderada")+
+    stat("Retención atmosférica",retainPct+"%","screening")+
+    stat("Refugios",refugiaPct+"%","térmico-hidrológicos")+
+    stat("Productividad potencial",bioPct+"%","MODELED · no vida observada");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -751,6 +1011,8 @@ function renderCandidate(){
   $("#axisOut").textContent=a.toFixed(3)+" AU";
   $("#albedoOut").textContent=albedo.toFixed(2);
   $("#greenhouseOut").textContent="+"+gh.toFixed(0)+" K";
+  $("#pressureOut").textContent=(+$("#pressure").value).toFixed(2)+" bar";
+  $("#waterOut").textContent=(+$("#water").value).toFixed(2)+" océanos";
 
   const A=data.stars.find(s=>s.id==="A");
   const B=data.stars.find(s=>s.id==="B");
@@ -809,6 +1071,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  renderSurfaceWorld();
   renderClimateWorld();
   renderOrbitWindow();
 
