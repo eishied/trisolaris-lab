@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
-from engine.orbital.screen import screen_candidate
-
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from engine.orbital.screen import screen_candidate
 DATASET = ROOT / "frontend/data/ltt1445.json"
 OUTPUTS = [
     ROOT / "frontend/data/orbital-screen.json",
