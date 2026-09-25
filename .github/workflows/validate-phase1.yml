@@ -32,6 +32,8 @@ jobs:
           python -m py_compile engine/human/refugia.py
           python -m py_compile pipelines/human/build_settlement_baseline.py
           python -m py_compile pipelines/human/build_refugia_baseline.py
+          python -m py_compile engine/evolution/lineages.py
+          python -m py_compile pipelines/evolution/build_lineage_baseline.py
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
@@ -45,6 +47,7 @@ jobs:
           python pipelines/ecology/build_foodweb_baseline.py
           python pipelines/human/build_settlement_baseline.py
           python pipelines/human/build_refugia_baseline.py
+          python pipelines/evolution/build_lineage_baseline.py
 
       - name: Validate JSON
         run: |
@@ -58,6 +61,7 @@ jobs:
             frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
             frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
             frontend/data/refugia-baseline.json docs/data/refugia-baseline.json
+            frontend/data/lineage-baseline.json docs/data/lineage-baseline.json
           )
           for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
@@ -76,6 +80,7 @@ jobs:
           cmp frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
           cmp frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
           cmp frontend/data/refugia-baseline.json docs/data/refugia-baseline.json
+          cmp frontend/data/lineage-baseline.json docs/data/lineage-baseline.json
 
       - name: Validate JavaScript syntax
         run: |
