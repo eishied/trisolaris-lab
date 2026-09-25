@@ -25,11 +25,26 @@ $$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset
 setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 
 async function load(){
-  const response=await fetch(DATA_URL,{cache:"no-store"});
-  if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
-  data=await response.json();
-  renderAll();
-  requestAnimationFrame(loop);
+  try{
+    const response=await fetch(DATA_URL,{cache:"no-store"});
+    if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
+    data=await response.json();
+  }catch(err){
+    console.error("TRISOLARIS data load failed",err);
+    $("#heroDataState").textContent="Error de datos";
+    $("#syncBadge").textContent="No fue posible cargar el dataset";
+    $("#planetCards").innerHTML='<article class="world"><div class="worldBody"><h3>No se pudo cargar el archivo científico</h3><p>Revisa la actualización automática del repositorio.</p></div></article>';
+    return;
+  }
+
+  try{
+    renderAll();
+    requestAnimationFrame(loop);
+  }catch(err){
+    console.error("TRISOLARIS interface render failed",err);
+    $("#heroDataState").textContent="Error de interfaz";
+    $("#syncBadge").textContent="Los datos cargaron, pero una vista no pudo renderizarse";
+  }
 }
 
 function renderAll(){
@@ -635,9 +650,4 @@ if(logo){
   logo.addEventListener("error",()=>logo.style.display="none");
 }
 
-load().catch(err=>{
-  console.error(err);
-  $("#heroDataState").textContent="Error de datos";
-  $("#syncBadge").textContent="No fue posible cargar el dataset";
-  $("#planetCards").innerHTML='<article class="world"><div class="worldBody"><h3>No se pudo cargar el archivo científico</h3><p>Revisa la actualización automática del repositorio.</p></div></article>';
-});
+load();
