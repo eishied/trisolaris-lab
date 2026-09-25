@@ -12,6 +12,8 @@ let humanSeeded=localStorage.getItem("trisolaris-human-seeded")==="true";
 let hitTargets=[];
 let selectedFocus=null;
 let selectedLineageId=null;
+let selectedPartnerId=null;
+let admixtureActive=localStorage.getItem("trisolaris-admixture-active")==="true";
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -46,7 +48,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase6c-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase6d-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -74,7 +76,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase6c-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase6d-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -418,6 +420,26 @@ function initCandidate(){
     });
     $("#seedLifeBtn").setAttribute("aria-pressed",String(lifeSeeded));
     $("#seedLifeBtn").textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
+    const admixtureBtn=$("#admixtureBtn");
+    if(admixtureBtn){
+      admixtureBtn.setAttribute("aria-pressed",String(admixtureActive));
+      admixtureBtn.textContent=admixtureActive?"Mezcla poblacional activa":"Explorar mezcla poblacional";
+      admixtureBtn.addEventListener("click",()=>{
+        admixtureActive=!admixtureActive;
+        localStorage.setItem("trisolaris-admixture-active",String(admixtureActive));
+        admixtureBtn.setAttribute("aria-pressed",String(admixtureActive));
+        admixtureBtn.textContent=admixtureActive?"Mezcla poblacional activa":"Explorar mezcla poblacional";
+        renderLineageInspector();
+      });
+    }
+    const partner=$("#lineagePartner");
+    if(partner){
+      partner.addEventListener("change",()=>{
+        selectedPartnerId=partner.value||null;
+        renderLineageInspector();
+      });
+    }
+
     const humanBtn=$("#seedHumansBtn");
     if(humanBtn){
       humanBtn.setAttribute("aria-pressed",String(humanSeeded));
@@ -1851,6 +1873,7 @@ function renderLineages(){
     selectedLineageId=btn.dataset.lineageId;
     renderLineages();
     renderGenetics();
+    renderLineageInspector();
   }));
   renderLineageDetail(model);
 
@@ -2052,6 +2075,215 @@ function renderGenetics(){
     stat("Especies asignadas","0","regla conservadora");
 }
 
+function lineageSystemProfile(lineage){
+  const t=lineage?.traits||{};
+  return {
+    thermoregulation:Math.max(0,Math.min(1,t.thermal_resilience??.35)),
+    renal:Math.max(0,Math.min(1,t.water_conservation??.30)),
+    oxygen:Math.max(0,Math.min(1,t.oxygen_efficiency??.35)),
+    metabolism:Math.max(0,Math.min(1,t.dietary_flexibility??.40))
+  };
+}
+
+function drawRepresentativePortrait(ctx,cx,cy,scale,label,variant,accent){
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.scale(scale,scale);
+
+  const skin=ctx.createRadialGradient(-18,-38,8,4,-6,105);
+  skin.addColorStop(0,"#c9957f");
+  skin.addColorStop(.55,"#9e6d5c");
+  skin.addColorStop(1,"#6c493e");
+
+  // shoulders / upper torso
+  ctx.fillStyle="#263640";
+  ctx.beginPath();
+  ctx.moveTo(-86,106);
+  ctx.bezierCurveTo(-78,54,-49,35,-25,31);
+  ctx.lineTo(25,31);
+  ctx.bezierCurveTo(49,35,78,54,86,106);
+  ctx.closePath();
+  ctx.fill();
+
+  // neck
+  ctx.fillStyle=skin;
+  ctx.beginPath();
+  ctx.roundRect(-20,16,40,42,15);
+  ctx.fill();
+
+  // head
+  ctx.fillStyle=skin;
+  ctx.beginPath();
+  ctx.ellipse(0,-38,48,62,0,0,Math.PI*2);
+  ctx.fill();
+
+  // ears
+  ctx.fillStyle="#916050";
+  ctx.beginPath();ctx.ellipse(-49,-34,8,16,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(49,-34,8,16,0,0,Math.PI*2);ctx.fill();
+
+  // hair
+  ctx.fillStyle=variant==="male"?"#18242c":"#1c2932";
+  ctx.beginPath();
+  if(variant==="male"){
+    ctx.moveTo(-44,-70);ctx.bezierCurveTo(-24,-108,28,-109,46,-69);
+    ctx.bezierCurveTo(29,-83,-12,-84,-44,-70);
+  }else{
+    ctx.moveTo(-48,-65);ctx.bezierCurveTo(-32,-111,30,-115,49,-68);
+    ctx.lineTo(55,5);ctx.bezierCurveTo(45,17,38,9,39,-7);
+    ctx.bezierCurveTo(30,-88,-30,-91,-40,-10);
+    ctx.bezierCurveTo(-42,8,-50,14,-57,4);ctx.closePath();
+  }
+  ctx.fill();
+
+  // brows
+  ctx.strokeStyle="#44332e";ctx.lineWidth=3;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(-28,-45);ctx.quadraticCurveTo(-18,-50,-8,-45);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(8,-45);ctx.quadraticCurveTo(18,-50,28,-45);ctx.stroke();
+
+  // eyes
+  ctx.fillStyle="#11191d";
+  ctx.beginPath();ctx.ellipse(-18,-34,4.5,3.2,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(18,-34,4.5,3.2,0,0,Math.PI*2);ctx.fill();
+
+  // nose and mouth
+  ctx.strokeStyle="rgba(63,42,36,.62)";ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,-31);ctx.quadraticCurveTo(-3,-12,4,-8);ctx.stroke();
+  ctx.strokeStyle="rgba(91,49,48,.78)";
+  ctx.beginPath();ctx.moveTo(-12,3);ctx.quadraticCurveTo(0,10,12,3);ctx.stroke();
+
+  // accent ring communicates functional profile, not visible morphology.
+  ctx.strokeStyle=accent;ctx.globalAlpha=.72;ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(0,-38,71,-Math.PI*.85,Math.PI*.15);ctx.stroke();
+  ctx.globalAlpha=1;
+
+  ctx.restore();
+  ctx.fillStyle="rgba(224,232,236,.94)";
+  ctx.font="700 14px system-ui";
+  ctx.textAlign="center";
+  ctx.fillText(label,cx,cy+126*scale+18);
+  ctx.textAlign="left";
+}
+
+function renderLineageInspector(){
+  const canvas=$("#phenotypeCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const years=+$("#lineageYears").value;
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const lineages=simulateLineages(network,{years,technologyBuffer:tech});
+  const genetics=simulatePopulationGenetics(network,{years,technologyBuffer:tech});
+
+  if(!lineages.lineages.length){
+    $("#lineagePartner").innerHTML='<option value="">Sin linajes disponibles</option>';
+    $("#functionalAtlas").innerHTML='<article class="functionalSystem"><span>Sin datos</span><strong>No hay población viable</strong><p>Primero deben existir refugios habitables.</p></article>';
+    $("#admixtureResult").innerHTML="<strong>Mezcla no disponible.</strong> Se requieren al menos dos poblaciones.";
+    const ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#060b0f";ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="rgba(220,228,232,.9)";ctx.font="700 28px system-ui";ctx.fillText("Sin linajes para inspeccionar",60,80);
+    return;
+  }
+
+  if(!selectedLineageId||!lineages.lineages.some(l=>l.id===selectedLineageId))selectedLineageId=lineages.lineages[0].id;
+  const selected=lineages.lineages.find(l=>l.id===selectedLineageId);
+
+  const partnerSelect=$("#lineagePartner");
+  const alternatives=lineages.lineages.filter(l=>l.id!==selected.id);
+  if(!selectedPartnerId||!alternatives.some(l=>l.id===selectedPartnerId))selectedPartnerId=alternatives[0]?.id||null;
+  partnerSelect.innerHTML=alternatives.length
+    ? alternatives.map(l=>'<option value="'+l.id+'"'+(l.id===selectedPartnerId?" selected":"")+">"+l.name+"</option>").join("")
+    : '<option value="">No hay otro linaje</option>';
+
+  const partner=alternatives.find(l=>l.id===selectedPartnerId)||null;
+  const pair=partner?lineages.pairwise.find(p=>(p.a===selected.id&&p.b===partner.id)||(p.b===selected.id&&p.a===partner.id)):null;
+  const profile=lineageSystemProfile(selected);
+
+  $("#visibleMorphologyText").textContent="El modelo actual no sustenta cambios craneofaciales macroscópicos. Los dos retratos conservan la misma base externa para no inventar anatomía.";
+  $("#functionalMorphologyText").textContent="Los cambios modelados se concentran en termorregulación, balance hídrico, transporte de oxígeno y flexibilidad metabólica.";
+  $("#compatibilityText").textContent=partner&&pair
+    ?"Compatibilidad poblacional proxy con "+partner.refugeName+": "+Math.round(pair.compatibility*100)+"%. Puede existir flujo génico si vuelven a entrar en contacto."
+    :"Hace falta un segundo linaje para estimar mezcla poblacional.";
+
+  const systems=[
+    ["Termorregulación",profile.thermoregulation,"Respuesta fisiológica a carga térmica; no implica una forma corporal específica."],
+    ["Sistema renal",profile.renal,"Proxy de conservación de agua y balance hídrico poblacional."],
+    ["Oxígeno",profile.oxygen,"Proxy de eficiencia respiratoria y de transporte de oxígeno; no se infiere tamaño pulmonar."],
+    ["Metabolismo",profile.metabolism,"Proxy de flexibilidad dietaria y uso energético."]
+  ];
+  $("#functionalAtlas").innerHTML=systems.map(([name,value,desc])=>
+    '<article class="functionalSystem"><span>Sistema funcional</span><strong>'+name+' · '+Math.round(value*100)+'%</strong><p>'+desc+'</p><div class="systemBar"><i style="width:'+Math.round(value*100)+'%"></i></div></article>'
+  ).join("");
+
+  let admixtureHtml="<strong>Mezcla poblacional inactiva.</strong> Actívala para explorar un descendiente poblacional hipotético, no un individuo.";
+  let admixtureH=null;
+  if(admixtureActive&&partner&&pair){
+    const gpA=genetics.populations.find(p=>p.refugeId===selected.refugeId);
+    const gpB=genetics.populations.find(p=>p.refugeId===partner.refugeId);
+    if(gpA&&gpB){
+      const mixed={};const hetero=[];
+      Object.keys(genetics.loci).forEach(locus=>{
+        mixed[locus]=.5*gpA.alleleFrequencies[locus]+.5*gpB.alleleFrequencies[locus];
+        hetero.push(2*mixed[locus]*(1-mixed[locus]));
+      });
+      admixtureH=hetero.reduce((a,b)=>a+b,0)/hetero.length;
+      const lociText=Object.entries(mixed).map(([k,v])=>k+" "+Math.round(v*100)+"%").join(" · ");
+      admixtureHtml="<strong>Población admix hipotética "+selected.refugeName+" × "+partner.refugeName+".</strong> "+
+        "Frecuencias esperadas por mezcla 50/50: "+lociText+
+        ". Heterocigosidad esperada "+Math.round(admixtureH*100)+"%. Esto representa mezcla de poblaciones, no predice el aspecto de una persona.";
+    }
+  }
+  $("#admixtureResult").innerHTML=admixtureHtml;
+
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#060b0f";ctx.fillRect(0,0,w,h);
+
+  ctx.fillStyle="rgba(241,245,247,.95)";ctx.font="700 26px system-ui";ctx.fillText(selected.name,58,52);
+  ctx.fillStyle="rgba(145,160,169,.92)";ctx.font="14px system-ui";
+  ctx.fillText(selected.classification+" · "+Math.round(selected.generations).toLocaleString("es")+" generaciones",58,78);
+
+  drawRepresentativePortrait(ctx,190,245,1.05,"Adulto masculino","male","rgba(115,190,216,.85)");
+  drawRepresentativePortrait(ctx,420,245,1.05,"Adulto femenino","female","rgba(126,211,166,.85)");
+
+  const x0=640;
+  ctx.fillStyle="rgba(221,230,234,.94)";ctx.font="700 19px system-ui";ctx.fillText("Cambios funcionales modelados",x0,135);
+  const labels=[
+    ["Termorregulación",profile.thermoregulation],
+    ["Conservación hídrica",profile.renal],
+    ["Eficiencia de O₂",profile.oxygen],
+    ["Flexibilidad metabólica",profile.metabolism]
+  ];
+  labels.forEach(([label,value],i)=>{
+    const y=182+i*72;
+    ctx.fillStyle="rgba(145,159,168,.92)";ctx.font="12px system-ui";ctx.fillText(label,x0,y);
+    ctx.fillStyle="rgba(255,255,255,.07)";ctx.fillRect(x0,y+13,390,7);
+    const grad=ctx.createLinearGradient(x0,0,x0+390,0);
+    grad.addColorStop(0,"#72b8d1");grad.addColorStop(1,"#7bd2a0");
+    ctx.fillStyle=grad;ctx.fillRect(x0,y+13,390*value,7);
+    ctx.fillStyle="rgba(230,237,240,.95)";ctx.font="700 13px system-ui";ctx.fillText(Math.round(value*100)+"%",1048,y+20);
+  });
+
+  ctx.fillStyle="rgba(126,140,149,.9)";ctx.font="12px system-ui";
+  ctx.fillText("El rostro no cambia porque el modelo aún no contiene loci morfológicos validados.",640,487);
+
+  $("#lineageInspectorMetrics").innerHTML=
+    stat("Linaje",selected.id,selected.refugeName)+
+    stat("Divergencia",(selected.divergence*100).toFixed(1)+"%","fenotipo funcional")+
+    stat("Flujo génico",Math.round(selected.geneFlow*100)+"%","proxy")+
+    stat("Aislamiento",Math.round(selected.isolation*100)+"%")+
+    stat("Compatibilidad",pair?Math.round(pair.compatibility*100)+"%":"—","con linaje comparado")+
+    stat("Mezcla",admixtureActive&&admixtureH!=null?Math.round(admixtureH*100)+"% heterocigosidad":"inactiva","escenario");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -2146,6 +2378,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  safeRender("lineage-inspector",renderLineageInspector);
   safeRender("genetics",renderGenetics);
   safeRender("lineages",renderLineages);
   safeRender("refugia",renderRefugiaNetwork);
