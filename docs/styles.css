@@ -291,3 +291,66 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .worldHero{height:210px}
   .outcome h3{font-size:31px}
 }
+
+
+.objectFocus{
+  margin-top:18px;padding:26px 0 30px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  animation:focusIn .42s cubic-bezier(.22,.8,.24,1)
+}
+.objectFocus[hidden]{display:none}
+.focusBack{
+  border:0;background:transparent;color:#9aa8b1;padding:0;margin:0 0 22px;
+  font-size:12px;cursor:pointer
+}
+.focusBack:hover{color:#eef4f7}
+.focusStory{
+  display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);
+  gap:50px;align-items:start
+}
+.focusIdentity h3{
+  font-size:clamp(42px,5vw,70px);line-height:.98;letter-spacing:-.055em;
+  margin:7px 0 14px
+}
+.focusIdentity>p:last-child{
+  color:#a7b3bb;font-size:17px;max-width:760px;margin:0
+}
+.focusFacts{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--line);border-left:1px solid var(--line)
+}
+.focusFact{
+  min-height:92px;padding:14px 15px;
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line)
+}
+.focusFact span{display:block;color:#74828c;font-size:10px;text-transform:uppercase;letter-spacing:.10em;margin-bottom:4px}
+.focusFact strong{font-size:17px;line-height:1.15}
+.focusScience{
+  margin-top:22px;padding-top:18px;border-top:1px solid var(--line);
+  color:#97a5ae;font-size:13px
+}
+.systemVisual.isFocused canvas{filter:saturate(.9) brightness(.92)}
+.systemVisual canvas{cursor:pointer;transition:filter .3s ease}
+.canvasHint{
+  position:absolute;right:20px;top:18px;
+  font-size:10px;color:#73818b;letter-spacing:.06em;
+  background:rgba(4,9,13,.50);border:1px solid rgba(255,255,255,.055);
+  border-radius:999px;padding:7px 9px;backdrop-filter:blur(12px)
+}
+.world{cursor:pointer}
+.world:focus-visible{outline:2px solid rgba(127,221,255,.7);outline-offset:4px}
+.worldExplore{
+  display:inline-flex;align-items:center;gap:6px;margin-top:18px;
+  color:#d8e2e7;font-size:12px
+}
+.worldExplore span{color:#79dfff}
+@keyframes focusIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
+}
+@media(max-width:900px){
+  .focusStory{grid-template-columns:1fr;gap:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
