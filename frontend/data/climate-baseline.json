@@ -1,0 +1,327 @@
+{
+  "model": "latitudinal_ebm_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "stellar_flux_earth": 0.9802510941235127,
+    "albedo": 0.3,
+    "greenhouse_k": 33.0,
+    "bands": 36
+  },
+  "parameters": {
+    "solar_constant_w_m2": 1361.0,
+    "olr_a_w_m2": 210.0,
+    "olr_b_w_m2_k": 2.0,
+    "diffusion_w_m2_k": 0.55,
+    "s2_annual_mean_shape": -0.482,
+    "reference_greenhouse_k": 33.0
+  },
+  "summary": {
+    "global_mean_temperature_c": 11.659314519407433,
+    "minimum_band_temperature_c": -44.195444524351345,
+    "maximum_band_temperature_c": 39.53345669390344,
+    "equator_to_pole_contrast_k": 83.72890121825478,
+    "thermal_liquid_window_area_fraction": 0.7071067811865475
+  },
+  "bands": [
+    {
+      "latitude_deg": -87.5,
+      "temperature_c": -44.195444524351345,
+      "temperature_k": 228.95455547564865,
+      "absorbed_flux_w_m2": 121.25930266078325,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": -82.5,
+      "temperature_c": -42.92341437702718,
+      "temperature_k": 230.2265856229728,
+      "absorbed_flux_w_m2": 123.81399170332732,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": -77.5,
+      "temperature_c": -40.418004074726994,
+      "temperature_k": 232.731995925273,
+      "absorbed_flux_w_m2": 128.84574685459276,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": -72.5,
+      "temperature_c": -36.75533924168741,
+      "temperature_k": 236.39466075831257,
+      "absorbed_flux_w_m2": 136.2016807804993,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": -67.5,
+      "temperature_c": -32.046708095462435,
+      "temperature_k": 241.10329190453754,
+      "absorbed_flux_w_m2": 145.65828715099056,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.05906583809075128
+    },
+    {
+      "latitude_deg": -62.5,
+      "temperature_c": -26.435180010747843,
+      "temperature_k": 246.71481998925213,
+      "absorbed_flux_w_m2": 156.92823176677277,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.17129639978504319
+    },
+    {
+      "latitude_deg": -57.5,
+      "temperature_c": -20.091258428827462,
+      "temperature_k": 253.0587415711725,
+      "absorbed_flux_w_m2": 169.66908306356257,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.2981748314234508
+    },
+    {
+      "latitude_deg": -52.5,
+      "temperature_c": -13.207700196788714,
+      "temperature_k": 259.94229980321126,
+      "absorbed_flux_w_m2": 183.49371672188883,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.4358459960642257
+    },
+    {
+      "latitude_deg": -47.5,
+      "temperature_c": -5.993658748263567,
+      "temperature_k": 267.1563412517364,
+      "absorbed_flux_w_m2": 197.9820782436455,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.5801268250347287
+    },
+    {
+      "latitude_deg": -42.5,
+      "temperature_c": 1.3316709178156647,
+      "temperature_k": 274.4816709178156,
+      "absorbed_flux_w_m2": 212.6939460954587,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.7266334183563132
+    },
+    {
+      "latitude_deg": -37.5,
+      "temperature_c": 8.545712366340815,
+      "temperature_k": 281.6957123663408,
+      "absorbed_flux_w_m2": 227.18230761721537,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.8709142473268163
+    },
+    {
+      "latitude_deg": -32.5,
+      "temperature_c": 15.429270598379555,
+      "temperature_k": 288.57927059837954,
+      "absorbed_flux_w_m2": 241.00694127554164,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.9914145880324089
+    },
+    {
+      "latitude_deg": -27.5,
+      "temperature_c": 21.77319218029994,
+      "temperature_k": 294.9231921802999,
+      "absorbed_flux_w_m2": 253.74779257233143,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.8645361563940012
+    },
+    {
+      "latitude_deg": -22.5,
+      "temperature_c": 27.384720265014522,
+      "temperature_k": 300.53472026501447,
+      "absorbed_flux_w_m2": 265.01773718811364,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.7523055946997096
+    },
+    {
+      "latitude_deg": -17.5,
+      "temperature_c": 32.09335141123951,
+      "temperature_k": 305.2433514112395,
+      "absorbed_flux_w_m2": 274.4743435586049,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.6581329717752098
+    },
+    {
+      "latitude_deg": -12.5,
+      "temperature_c": 35.75601624427912,
+      "temperature_k": 308.9060162442791,
+      "absorbed_flux_w_m2": 281.8302774845115,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.5848796751144176
+    },
+    {
+      "latitude_deg": -7.5,
+      "temperature_c": 38.2614265465793,
+      "temperature_k": 311.41142654657926,
+      "absorbed_flux_w_m2": 286.8620326357769,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.534771469068414
+    },
+    {
+      "latitude_deg": -2.5,
+      "temperature_c": 39.53345669390344,
+      "temperature_k": 312.6834566939034,
+      "absorbed_flux_w_m2": 289.4167216783209,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.5093308661219312
+    },
+    {
+      "latitude_deg": 2.5,
+      "temperature_c": 39.53345669390344,
+      "temperature_k": 312.6834566939034,
+      "absorbed_flux_w_m2": 289.4167216783209,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.5093308661219312
+    },
+    {
+      "latitude_deg": 7.5,
+      "temperature_c": 38.2614265465793,
+      "temperature_k": 311.41142654657926,
+      "absorbed_flux_w_m2": 286.8620326357769,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.534771469068414
+    },
+    {
+      "latitude_deg": 12.5,
+      "temperature_c": 35.75601624427912,
+      "temperature_k": 308.9060162442791,
+      "absorbed_flux_w_m2": 281.8302774845115,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.5848796751144176
+    },
+    {
+      "latitude_deg": 17.5,
+      "temperature_c": 32.09335141123951,
+      "temperature_k": 305.2433514112395,
+      "absorbed_flux_w_m2": 274.4743435586049,
+      "thermal_state": "hot",
+      "liquid_water_thermal_proxy": 0.6581329717752098
+    },
+    {
+      "latitude_deg": 22.5,
+      "temperature_c": 27.384720265014522,
+      "temperature_k": 300.53472026501447,
+      "absorbed_flux_w_m2": 265.01773718811364,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.7523055946997096
+    },
+    {
+      "latitude_deg": 27.5,
+      "temperature_c": 21.77319218029994,
+      "temperature_k": 294.9231921802999,
+      "absorbed_flux_w_m2": 253.74779257233143,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.8645361563940012
+    },
+    {
+      "latitude_deg": 32.5,
+      "temperature_c": 15.429270598379555,
+      "temperature_k": 288.57927059837954,
+      "absorbed_flux_w_m2": 241.00694127554164,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.9914145880324089
+    },
+    {
+      "latitude_deg": 37.5,
+      "temperature_c": 8.545712366340815,
+      "temperature_k": 281.6957123663408,
+      "absorbed_flux_w_m2": 227.18230761721537,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.8709142473268163
+    },
+    {
+      "latitude_deg": 42.5,
+      "temperature_c": 1.3316709178156647,
+      "temperature_k": 274.4816709178156,
+      "absorbed_flux_w_m2": 212.6939460954587,
+      "thermal_state": "temperate",
+      "liquid_water_thermal_proxy": 0.7266334183563132
+    },
+    {
+      "latitude_deg": 47.5,
+      "temperature_c": -5.993658748263567,
+      "temperature_k": 267.1563412517364,
+      "absorbed_flux_w_m2": 197.9820782436455,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.5801268250347287
+    },
+    {
+      "latitude_deg": 52.5,
+      "temperature_c": -13.207700196788714,
+      "temperature_k": 259.94229980321126,
+      "absorbed_flux_w_m2": 183.49371672188883,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.4358459960642257
+    },
+    {
+      "latitude_deg": 57.5,
+      "temperature_c": -20.091258428827462,
+      "temperature_k": 253.0587415711725,
+      "absorbed_flux_w_m2": 169.66908306356257,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.2981748314234508
+    },
+    {
+      "latitude_deg": 62.5,
+      "temperature_c": -26.435180010747843,
+      "temperature_k": 246.71481998925213,
+      "absorbed_flux_w_m2": 156.92823176677277,
+      "thermal_state": "cold",
+      "liquid_water_thermal_proxy": 0.17129639978504319
+    },
+    {
+      "latitude_deg": 67.5,
+      "temperature_c": -32.046708095462435,
+      "temperature_k": 241.10329190453754,
+      "absorbed_flux_w_m2": 145.65828715099056,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.05906583809075128
+    },
+    {
+      "latitude_deg": 72.5,
+      "temperature_c": -36.75533924168741,
+      "temperature_k": 236.39466075831257,
+      "absorbed_flux_w_m2": 136.2016807804993,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": 77.5,
+      "temperature_c": -40.418004074726994,
+      "temperature_k": 232.731995925273,
+      "absorbed_flux_w_m2": 128.84574685459276,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": 82.5,
+      "temperature_c": -42.92341437702718,
+      "temperature_k": 230.2265856229728,
+      "absorbed_flux_w_m2": 123.81399170332732,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    },
+    {
+      "latitude_deg": 87.5,
+      "temperature_c": -44.195444524351345,
+      "temperature_k": 228.95455547564865,
+      "absorbed_flux_w_m2": 121.25930266078325,
+      "thermal_state": "deep-freeze",
+      "liquid_water_thermal_proxy": 0.0
+    }
+  ],
+  "limitations": [
+    "annual-mean latitude-only model",
+    "Earth-calibrated outgoing-longwave coefficients",
+    "no longitude, continents, ocean dynamics, clouds, seasons, topography, pressure, or atmospheric chemistry",
+    "liquid-water score is temperature-only and is not evidence of actual surface water",
+    "greenhouse control is an offset relative to an Earth-like calibration"
+  ],
+  "next_model": "seasonal latitude-longitude energy balance followed by a validated GCM experiment",
+  "candidate": {
+    "name": "TRISOLARIS H-01",
+    "semimajor_axis_au": 0.09
+  }
+}
