@@ -44,6 +44,8 @@ jobs:
           python -m py_compile pipelines/human/build_interplanetary_network_baseline.py
           python -m py_compile engine/evolution/offworld.py
           python -m py_compile pipelines/evolution/build_offworld_divergence_baseline.py
+          python -m py_compile engine/evolution/replay.py
+          python -m py_compile pipelines/evolution/build_evolutionary_replay_baseline.py
           python -m py_compile engine/evolution/lineages.py
           python -m py_compile pipelines/evolution/build_lineage_baseline.py
           python -m py_compile engine/evolution/popgen.py
@@ -70,6 +72,7 @@ jobs:
           python pipelines/human/build_interplanetary_baseline.py
           python pipelines/human/build_interplanetary_network_baseline.py
           python pipelines/evolution/build_offworld_divergence_baseline.py
+          python pipelines/evolution/build_evolutionary_replay_baseline.py
 
       - name: Validate JSON
         run: |
@@ -91,6 +94,7 @@ jobs:
             frontend/data/interplanetary-baseline.json docs/data/interplanetary-baseline.json
             frontend/data/interplanetary-network-baseline.json docs/data/interplanetary-network-baseline.json
             frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
+            frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
           )
           for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
@@ -117,6 +121,7 @@ jobs:
           cmp frontend/data/interplanetary-baseline.json docs/data/interplanetary-baseline.json
           cmp frontend/data/interplanetary-network-baseline.json docs/data/interplanetary-network-baseline.json
           cmp frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
+          cmp frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
 
       - name: Validate JavaScript syntax
         run: |

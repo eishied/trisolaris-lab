@@ -298,10 +298,33 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("No es una afirmación de especiación", app)
         self.assertNotIn("speciesClaim", app)
 
+    def test_phase10_evolutionary_replay_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "evolutionaryReplayHeadline",
+            "replayRuns",
+            "replayUncertainty",
+            "replaySeed",
+            "replayRunBtn",
+            "replayOutcomeDistribution",
+            "replaySensitivity",
+            "replayDominant",
+            "replayContingency",
+            "replayMetrics",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function replayMulberry32(", app)
+        self.assertIn("function runEvolutionaryReplayLive(", app)
+        self.assertIn("function renderEvolutionaryReplay()", app)
+        self.assertIn('safeRender("evolutionary-replay",renderEvolutionaryReplay)', app)
+        self.assertIn("not real-world probabilities", (ROOT / "docs/EVOLUTIONARY_REPLAY_MODEL.md").read_text(encoding="utf-8"))
+        self.assertNotIn("realWorldProbability", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase9c-20260925", html)
-        self.assertIn("app.js?v=phase9c-20260925", html)
+        self.assertIn("styles.css?v=phase10a-20260925", html)
+        self.assertIn("app.js?v=phase10a-20260925", html)
 
 
 if __name__ == "__main__":

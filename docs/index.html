@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase9c-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase10a-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -814,6 +814,83 @@
         </p>
       </section>
 
+
+      <section class="evolutionaryReplaySystem" aria-labelledby="evolutionaryReplayHeadline">
+        <div class="evolutionaryReplayIntro">
+          <p class="eyebrow">EVOLUTIONARY REPLAY · PHASE 10.0</p>
+          <h3 id="evolutionaryReplayHeadline">Una historia no demuestra que era inevitable.</h3>
+          <p>
+            Repetimos el escenario seleccionado muchas veces con pequeñas variaciones declaradas en capacidades,
+            tamaño fundador, contacto, reabastecimiento y fallas de infraestructura. La pregunta ya no es solo
+            “qué ocurrió”, sino “qué tan fácil era que ocurriera otra cosa”.
+          </p>
+        </div>
+
+        <div class="evolutionaryReplayControls">
+          <label>
+            <span>Historias del ensemble</span>
+            <output id="replayRunsOut">64</output>
+            <input id="replayRuns" type="range" min="16" max="256" step="16" value="64" />
+          </label>
+          <label>
+            <span>Sobre de variación</span>
+            <output id="replayUncertaintyOut">25%</output>
+            <input id="replayUncertainty" type="range" min="0" max="50" step="1" value="25" />
+          </label>
+          <label>
+            <span>Semilla reproducible</span>
+            <input id="replaySeed" type="number" min="1" max="2147483646" step="1" value="1445" />
+          </label>
+          <button id="replayRunBtn" class="replayRunButton" type="button">Ejecutar ensemble</button>
+        </div>
+
+        <div class="evolutionaryReplaySummary">
+          <article>
+            <span>Escenario</span>
+            <strong id="replayScenario">—</strong>
+          </article>
+          <article>
+            <span>Desenlace dominante</span>
+            <strong id="replayDominant">—</strong>
+          </article>
+          <article>
+            <span>Frecuencia del ensemble</span>
+            <strong id="replayDominantFrequency">—</strong>
+          </article>
+          <article>
+            <span>Contingencia</span>
+            <strong id="replayContingency">—</strong>
+          </article>
+        </div>
+
+        <div class="evolutionaryReplayWorkspace">
+          <div>
+            <p class="replaySectionLabel">Distribución de historias</p>
+            <div id="replayOutcomeDistribution" class="replayOutcomeDistribution"></div>
+          </div>
+          <div>
+            <p class="replaySectionLabel">Sensibilidad</p>
+            <div id="replaySensitivity" class="replaySensitivity"></div>
+          </div>
+        </div>
+
+        <div class="evolutionaryReplayNarrative">
+          <article>
+            <span>Lectura</span>
+            <strong id="replayInterpretation">—</strong>
+          </article>
+          <article>
+            <span>Límite epistemológico</span>
+            <strong>
+              Las frecuencias describen este modelo y este sobre de perturbaciones. No son probabilidades reales
+              de que una civilización sobreviva, colonice o evolucione.
+            </strong>
+          </article>
+        </div>
+
+        <div id="replayMetrics" class="metricGrid scientific-only"></div>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -886,6 +963,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase9c-20260925"></script>
+  <script type="module" src="./app.js?v=phase10a-20260925"></script>
 </body>
 </html>

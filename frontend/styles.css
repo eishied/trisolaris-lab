@@ -1935,3 +1935,197 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .offworldDivergenceGrid article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
   .interplanetaryColonyTimeline{grid-template-columns:1fr 1fr}
 }
+
+
+/* Phase 10 — Evolutionary Replay */
+.evolutionaryReplaySystem{
+  margin-top:50px;
+  padding:50px 0 40px;
+  border-top:1px solid var(--line)
+}
+.evolutionaryReplayIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:38px;
+  align-items:end
+}
+.evolutionaryReplayIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(36px,4.9vw,61px);
+  line-height:1.01;
+  letter-spacing:-.052em
+}
+.evolutionaryReplayIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#96a4ad;
+  font-size:15px
+}
+.evolutionaryReplayControls{
+  display:grid;
+  grid-template-columns:1.1fr 1.1fr .8fr auto;
+  margin-top:28px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.evolutionaryReplayControls label{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px 16px;
+  padding:16px 20px 16px 0
+}
+.evolutionaryReplayControls label+label{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.evolutionaryReplayControls span,
+.replaySectionLabel,
+.evolutionaryReplaySummary span,
+.evolutionaryReplayNarrative span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.evolutionaryReplayControls output{
+  color:#dce4e8;
+  font-size:12px
+}
+.evolutionaryReplayControls input[type="range"]{
+  grid-column:1/-1;
+  width:100%
+}
+.evolutionaryReplayControls input[type="number"]{
+  grid-column:1/-1;
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#080d12;
+  color:#dce4e8;
+  padding:8px 10px
+}
+.replayRunButton{
+  min-width:180px;
+  border:0;
+  border-left:1px solid var(--line);
+  background:#0b1116;
+  color:#e2e9ec;
+  padding:16px 20px;
+  cursor:pointer;
+  font:inherit
+}
+.replayRunButton:hover{
+  background:linear-gradient(135deg,rgba(102,183,213,.14),rgba(255,255,255,.025))
+}
+.evolutionaryReplaySummary{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  border-bottom:1px solid var(--line)
+}
+.evolutionaryReplaySummary article{
+  padding:18px 18px 18px 0
+}
+.evolutionaryReplaySummary article+article{
+  border-left:1px solid var(--line);
+  padding-left:18px
+}
+.evolutionaryReplaySummary strong{
+  display:block;
+  margin-top:6px;
+  color:#e2e9ec;
+  font-size:17px;
+  line-height:1.35
+}
+.evolutionaryReplayWorkspace{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  margin-top:26px
+}
+.replayOutcomeDistribution,
+.replaySensitivity{
+  margin-top:10px;
+  border:1px solid var(--line)
+}
+.replayOutcomeRow,
+.replaySensitivityRow{
+  padding:14px 16px;
+  background:#080d12
+}
+.replayOutcomeRow+.replayOutcomeRow,
+.replaySensitivityRow+.replaySensitivityRow{
+  border-top:1px solid var(--line)
+}
+.replayOutcomeRow>span,
+.replaySensitivityRow>span{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  color:#87949d;
+  font-size:11px
+}
+.replayOutcomeRow strong,
+.replaySensitivityRow strong{
+  color:#dce4e8
+}
+.replayBar{
+  height:5px;
+  margin-top:9px;
+  background:rgba(255,255,255,.04);
+  overflow:hidden
+}
+.replayBar i{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,rgba(87,170,205,.40),rgba(142,218,244,.85))
+}
+.replaySensitivityRow em{
+  display:block;
+  margin-top:6px;
+  color:#71808a;
+  font-size:10px;
+  font-style:normal
+}
+.evolutionaryReplayNarrative{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  margin-top:24px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.evolutionaryReplayNarrative article{
+  padding:18px 20px 18px 0
+}
+.evolutionaryReplayNarrative article+article{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.evolutionaryReplayNarrative strong{
+  display:block;
+  margin-top:7px;
+  color:#dce4e8;
+  font-size:14px;
+  line-height:1.5
+}
+.evolutionaryReplaySystem .metricGrid{margin-top:18px}
+@media(max-width:900px){
+  .evolutionaryReplayControls{grid-template-columns:1fr 1fr}
+  .replayRunButton{grid-column:1/-1;border-left:0;border-top:1px solid var(--line)}
+  .evolutionaryReplaySummary{grid-template-columns:1fr 1fr}
+}
+@media(max-width:780px){
+  .evolutionaryReplayIntro{grid-template-columns:1fr;gap:10px}
+  .evolutionaryReplayIntro>p:last-child{grid-column:1;grid-row:auto}
+  .evolutionaryReplayControls{grid-template-columns:1fr}
+  .evolutionaryReplayControls label,
+  .evolutionaryReplayControls label+label{border-left:0;padding:14px 0}
+  .evolutionaryReplayControls label+label{border-top:1px solid var(--line)}
+  .evolutionaryReplayWorkspace,
+  .evolutionaryReplaySummary,
+  .evolutionaryReplayNarrative{grid-template-columns:1fr}
+  .evolutionaryReplaySummary article+article,
+  .evolutionaryReplayNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
+}
