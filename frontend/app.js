@@ -11,6 +11,8 @@ const $$=s=>[...document.querySelectorAll(s)];
 const fmt=(v,d=2)=>v==null||Number.isNaN(Number(v))?"—":Number(v).toFixed(d);
 const stat=(label,value,note="")=>`<div class="stat"><small>${label}</small><strong>${value}</strong>${note?`<em>${note}</em>`:""}</div>`;
 const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><strong>${value}</strong></div>`;
+const EARTH_MASS_IN_SOLAR=3.0034896e-6;
+const HILL_THRESHOLD=2*Math.sqrt(3);
 
 function setMode(mode){
   document.body.dataset.mode=mode;
@@ -83,6 +85,55 @@ function planetPlainLanguage(p){
   return thermal+" "+scale;
 }
 
+function orbitalScreen(candidateA,candidateMassEarth=1){
+  const host=data?.stars?.find(s=>s.id==="A");
+  if(!host||!candidateA) return {
+    periodDays:null,minDelta:null,state:"unknown",
+    label:"sin datos suficientes",
+    simple:"Todavía no hay datos suficientes para un filtro orbital preliminar."
+  };
+
+  const periodDays=365.25*Math.sqrt(
+    candidateA**3/(host.mass_solar+candidateMassEarth*EARTH_MASS_IN_SOLAR)
+  );
+
+  const pairwise=(data.observed_planets||[])
+    .filter(p=>p.semi_major_axis_au!=null&&p.mass_earth!=null)
+    .map(p=>{
+      const meanA=(candidateA+p.semi_major_axis_au)/2;
+      const massRatio=((candidateMassEarth+p.mass_earth)*EARTH_MASS_IN_SOLAR)/(3*host.mass_solar);
+      const mutualHill=Math.cbrt(massRatio)*meanA;
+      const delta=mutualHill>0?Math.abs(candidateA-p.semi_major_axis_au)/mutualHill:Infinity;
+      return {name:p.name,delta};
+    });
+
+  const minDelta=pairwise.length?Math.min(...pairwise.map(p=>p.delta)):null;
+
+  if(minDelta==null) return {
+    periodDays,minDelta,state:"unknown",
+    label:"sin comparación",
+    simple:"Podemos estimar el período, pero faltan masas u órbitas comparables para el filtro Hill."
+  };
+
+  if(minDelta<HILL_THRESHOLD) return {
+    periodDays,minDelta,state:"fail",
+    label:"demasiado apretada",
+    simple:"Esta posición queda demasiado cerca de una órbita conocida para pasar el filtro analítico preliminar."
+  };
+
+  if(minDelta<8) return {
+    periodDays,minDelta,state:"caution",
+    label:"pasa con cautela",
+    simple:"Pasa el umbral analítico simple, pero la separación sigue siendo suficientemente estrecha como para exigir una integración N-body."
+  };
+
+  return {
+    periodDays,minDelta,state:"pass",
+    label:"bien separada",
+    simple:"Está bien separada de los planetas confirmados en el filtro analítico. Aun así, esto no demuestra estabilidad a largo plazo."
+  };
+}
+
 function focusKey(target){
   return target.kind==="star" ? "star:"+target.id
     : target.kind==="planet" ? "planet:"+target.name
@@ -126,6 +177,7 @@ function focusContent(target){
   }
 
   const h=data.hypothetical_experiment;
+  const orbital=orbitalScreen(+$("#axis").value,1);
   return {
     kicker:"MUNDO EXPERIMENTAL",
     name:"TRISOLARIS H-01",
@@ -134,9 +186,10 @@ function focusContent(target){
       ["Distancia actual",(+$("#axis").value).toFixed(3)+" AU"],
       ["Albedo",(+$("#albedo").value).toFixed(2)],
       ["Invernadero","+"+(+$("#greenhouse").value).toFixed(0)+" K"],
+      ["Filtro orbital",orbital.label],
       ["Evidencia","Hipótesis"]
     ],
-    science:`Nivel epistemológico: SPECULATIVE. Configuración base del catálogo: a=${fmt(h.semi_major_axis_au,3)} AU, albedo=${fmt(h.albedo,2)}, greenhouse=${fmt(h.greenhouse_k,0)} K. Aún no existe una prueba N-body de estabilidad.`
+    science:`Nivel epistemológico: SPECULATIVE. Configuración base del catálogo: a=${fmt(h.semi_major_axis_au,3)} AU, albedo=${fmt(h.albedo,2)}, greenhouse=${fmt(h.greenhouse_k,0)} K. Filtro Hill actual: Δmín=${orbital.minDelta==null?"—":fmt(orbital.minDelta,2)}; umbral analítico 2√3=${fmt(HILL_THRESHOLD,2)}. Esto sigue sin ser una prueba N-body de estabilidad.`
   };
 }
 
@@ -316,11 +369,14 @@ function renderCandidate(){
   const fluxScore=Math.max(0,Math.min(1,1-Math.abs(flux-1)/1.1));
   const proxy=0.56*liquid+0.44*fluxScore;
   const reading=candidateLabel(proxy,celsius);
+  const orbital=orbitalScreen(a,1);
 
   $("#habitScore").textContent=Math.round(proxy*100)+"%";
   $("#candidateHeadline").textContent=reading.title;
   $("#candidatePlain").textContent=reading.text;
   $("#confidenceSentence").textContent=reading.confidence;
+  $("#orbitSentence").textContent="Órbita · "+orbital.simple;
+  $("#orbitSentence").dataset.state=orbital.state;
 
   const orb=$("#habitOrb");
   const schemes={
@@ -345,11 +401,15 @@ function renderCandidate(){
     stat("Temperatura de equilibrio",fmt(teq,1)+" K")+
     stat("Proxy superficial",fmt(surface,1)+" K",fmt(celsius,1)+" °C")+
     stat("Proxy de agua líquida",Math.round(liquid*100)+"%","heurística")+
-    stat("Proxy de habitabilidad",Math.round(proxy*100)+"%","DERIVED · no GCM");
+    stat("Proxy de habitabilidad",Math.round(proxy*100)+"%","DERIVED · no GCM")+
+    stat("Período H-01",orbital.periodDays==null?"—":fmt(orbital.periodDays,2)+" d","Kepleriano")+
+    stat("Δ Hill mínimo",orbital.minDelta==null?"—":fmt(orbital.minDelta,2),"umbral 2√3 = "+fmt(HILL_THRESHOLD,2))+
+    stat("Filtro orbital",orbital.label,"DERIVED · no N-body");
 
   $("#candidateWhy").innerHTML=
-    "<b>Cadena de cálculo.</b> Luminosidad y distancia → flujo recibido → corrección por albedo → temperatura de equilibrio → calentamiento atmosférico simplificado → proxy de habitabilidad. "
-    +"No incluye estabilidad N-body, escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
+    "<b>Cadena climática rápida.</b> Luminosidad y distancia → flujo recibido → corrección por albedo → temperatura de equilibrio → calentamiento atmosférico simplificado → proxy de habitabilidad. "
+    +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
+    +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
   if(selectedFocus?.kind==="hypothetical"){
     openFocus(selectedFocus,{scroll:false});
