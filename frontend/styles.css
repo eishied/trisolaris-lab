@@ -2592,3 +2592,77 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .thresholdAtlasIntro>p:last-child{grid-column:1;grid-row:auto}
   .thresholdAtlasSummary article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
+
+.thresholdRefinement{
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid var(--line)
+}
+.thresholdRefinementHead{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  align-items:end
+}
+.thresholdRefinementHead span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.thresholdRefinementHead strong{
+  display:block;
+  margin-top:7px;
+  color:#e2e9ec;
+  font-size:18px;
+  line-height:1.35
+}
+.thresholdRefinementHead p{
+  margin:0;
+  color:#87949d;
+  font-size:12px;
+  line-height:1.5
+}
+.thresholdRefinementGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  margin-top:18px;
+  border:1px solid var(--line);
+  background:var(--line)
+}
+.thresholdRefinementCard{
+  background:#080d12;
+  padding:17px 16px;
+  min-height:145px
+}
+.thresholdRefinementCard span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.08em;
+  text-transform:uppercase
+}
+.thresholdRefinementCard strong{
+  display:block;
+  margin-top:7px;
+  color:#e2e9ec;
+  font-size:18px
+}
+.thresholdRefinementCard p{
+  margin:8px 0 0;
+  color:#87949d;
+  font-size:11px;
+  line-height:1.45
+}
+.thresholdRefinementInterpretation{
+  margin:14px 0 0;
+  color:#a8b4bb;
+  font-size:12px;
+  line-height:1.5
+}
+@media(max-width:780px){
+  .thresholdRefinementHead,
+  .thresholdRefinementGrid{grid-template-columns:1fr}
+}
