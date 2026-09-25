@@ -34,7 +34,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase5b-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase6-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -62,7 +62,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase5b-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase6-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -1672,6 +1672,193 @@ function renderRefugiaNetwork(){
     stat("Estado",humanSeeded?"población activa":"capacidad solamente","MODELED");
 }
 
+function deterministicSigned(key){
+  let h=2166136261;
+  for(let i=0;i<key.length;i++){
+    h^=key.charCodeAt(i);
+    h=Math.imul(h,16777619);
+  }
+  return ((h>>>0)/4294967295)*2-1;
+}
+
+function simulateLineages(network,{years=50000,generationYears=28,selectionRate=.00035,technologyBuffer=.4}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const ancestral={thermal_resilience:.35,water_conservation:.30,oxygen_efficiency:.35,dietary_flexibility:.40};
+  const traits=Object.keys(ancestral);
+  const generations=years/generationYears;
+  const maxFlowById=Object.fromEntries(network.refugia.map(r=>[r.id,0]));
+  network.links.forEach(l=>{
+    maxFlowById[l.source]=Math.max(maxFlowById[l.source]||0,l.flow);
+    maxFlowById[l.target]=Math.max(maxFlowById[l.target]||0,l.flow);
+  });
+
+  const lineages=network.refugia.map((r,idx)=>{
+    const geneFlow=clamp(maxFlowById[r.id]||0);
+    const isolation=clamp(r.isolationPotential ?? 1-geneFlow);
+    const share=Math.max(1e-6,r.populationShare||0);
+    const ne=Math.max(500,50000*share);
+    const stress=r.stressComponents||{};
+    const selectionExposure=clamp((1-.72*technologyBuffer)*isolation);
+    const response=1-Math.exp(-selectionRate*generations*selectionExposure);
+    const targets={
+      thermal_resilience:clamp(.30+.62*(stress.thermal??.35)),
+      water_conservation:clamp(.28+.66*(stress.water??.35)),
+      oxygen_efficiency:clamp(.30+.62*(stress.oxygen??.20)),
+      dietary_flexibility:clamp(.32+.58*(stress.food??.35))
+    };
+    const driftScale=Math.min(.18,.55*Math.sqrt(Math.max(0,generations)/(2*ne)))*(1-.75*geneFlow);
+    const values={},shifts={};
+    traits.forEach(t=>{
+      const directional=response*(targets[t]-ancestral[t]);
+      const drift=driftScale*deterministicSigned(r.id+":"+t);
+      values[t]=clamp(ancestral[t]+directional+drift);
+      shifts[t]=values[t]-ancestral[t];
+    });
+    const divergence=traits.reduce((s,t)=>s+Math.abs(shifts[t]),0)/traits.length;
+    let classification="regional population";
+    if(divergence>=.26&&generations>=2000&&isolation>=.75)classification="incipient reproductive-isolation candidate";
+    else if(divergence>=.14)classification="strongly differentiated lineage";
+    else if(divergence>=.05)classification="differentiated lineage";
+    const compatibility=Math.max(.45,Math.min(1,Math.exp(-2.2*divergence)*(.88+.12*geneFlow)));
+    return {
+      id:"L"+(idx+1),
+      name:"Linaje "+r.name,
+      refugeId:r.id,
+      refugeName:r.name,
+      generations,
+      ne,
+      geneFlow,
+      isolation,
+      driftScale,
+      selectionExposure,
+      traits:values,
+      shifts,
+      divergence,
+      classification,
+      compatibilityToAncestor:compatibility
+    };
+  });
+
+  const pairwise=[];
+  for(let i=0;i<lineages.length;i++){
+    for(let j=i+1;j<lineages.length;j++){
+      const a=lineages[i],b=lineages[j];
+      const distance=Math.sqrt(traits.reduce((s,t)=>s+Math.pow(a.traits[t]-b.traits[t],2),0)/traits.length);
+      const link=network.links.find(l=>((l.source===a.refugeId&&l.target===b.refugeId)||(l.target===a.refugeId&&l.source===b.refugeId)));
+      const flow=link?.flow||0;
+      const compatibility=Math.max(.40,Math.min(1,Math.exp(-2.6*distance)*(.86+.14*flow)));
+      pairwise.push({a:a.id,b:b.id,distance,geneFlow:flow,compatibility});
+    }
+  }
+
+  return {
+    ancestral,
+    lineages,
+    pairwise,
+    summary:{
+      maxDivergence:Math.max(0,...lineages.map(l=>l.divergence)),
+      candidateCount:lineages.filter(l=>l.classification==="incipient reproductive-isolation candidate").length,
+      speciesCount:0,
+      generations
+    }
+  };
+}
+
+function renderLineageDetail(model){
+  const container=$("#lineageDetail");
+  if(!container)return;
+  if(!model.lineages.length){
+    container.innerHTML="<strong>Sin linajes.</strong> Primero deben existir refugios poblacionales viables.";
+    return;
+  }
+  if(!selectedLineageId||!model.lineages.some(l=>l.id===selectedLineageId))selectedLineageId=model.lineages[0].id;
+  const l=model.lineages.find(x=>x.id===selectedLineageId);
+  const pairs=model.pairwise.filter(p=>p.a===l.id||p.b===l.id).sort((a,b)=>b.compatibility-a.compatibility);
+  const closest=pairs[0];
+  const labels={
+    thermal_resilience:"Resiliencia térmica",
+    water_conservation:"Conservación de agua",
+    oxygen_efficiency:"Eficiencia de oxígeno",
+    dietary_flexibility:"Flexibilidad dietaria"
+  };
+  const traitHtml=Object.entries(l.traits).map(([k,v])=>"<div><span>"+labels[k]+"</span><strong>"+Math.round(v*100)+"%</strong></div>").join("");
+  container.innerHTML=
+    "<strong>"+l.name+"</strong> · "+l.classification+
+    '<div class="lineageTraitGrid">'+traitHtml+"</div>"+
+    "<p>Flujo génico proxy "+Math.round(l.geneFlow*100)+"% · aislamiento "+Math.round(l.isolation*100)+"% · divergencia "+(l.divergence*100).toFixed(1)+"% · compatibilidad con población fundadora "+Math.round(l.compatibilityToAncestor*100)+"%."+
+    (closest?" Compatibilidad par más alta: "+Math.round(closest.compatibility*100)+"%.":"")+"</p>";
+}
+
+function renderLineages(){
+  const canvas=$("#lineageCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const years=+$("#lineageYears").value;
+  $("#lineageYearsOut").textContent=years.toLocaleString("es")+" años";
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const model=simulateLineages(network,{years,technologyBuffer:tech});
+
+  const n=model.lineages.length,gens=Math.round(model.summary.generations),maxDiv=Math.round(model.summary.maxDivergence*100);
+  $("#lineageHeadline").textContent=n===0?"Sin poblaciones, no hay linajes":n===1?"Un linaje sigue concentrado en un solo refugio":n+" linajes poblacionales siguen historias diferentes";
+  $("#lineageText").textContent=years.toLocaleString("es")+" años ≈ "+gens.toLocaleString("es")+" generaciones. Máxima divergencia poblacional: "+maxDiv+"%. Ninguna especie se asigna automáticamente.";
+  $("#lineageState").textContent=model.summary.candidateCount?model.summary.candidateCount+" linaje(s) alcanza(n) la categoría de candidato a aislamiento reproductivo incipiente.":(n>1?"Hay diferenciación poblacional, pero no evidencia suficiente para asignar especies.":"La población todavía no presenta ramas múltiples.");
+  $("#lineageDetailText").textContent="La compatibilidad permanece continua y puede aumentar de nuevo si las poblaciones vuelven a mezclarse. El tiempo por sí solo no crea una especie.";
+
+  $("#lineageCards").innerHTML=model.lineages.map(l=>
+    '<button class="lineageCard" data-lineage-id="'+l.id+'" aria-pressed="'+(selectedLineageId===l.id)+'">'+
+      "<span>"+l.classification+"</span>"+
+      "<strong>"+l.name+"</strong>"+
+      "<p>Divergencia "+(l.divergence*100).toFixed(1)+"% · compatibilidad ancestral "+Math.round(l.compatibilityToAncestor*100)+"%</p>"+
+    "</button>"
+  ).join("") || '<div class="lineageCard"><span>Sin ramas</span><strong>No hay poblaciones viables</strong><p>Ajusta el entorno o la tecnología para crear refugios antes de simular linajes.</p></div>';
+
+  $(".lineageCard[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
+    selectedLineageId=btn.dataset.lineageId;
+    renderLineages();
+  }));
+  renderLineageDetail(model);
+
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#060b0f";ctx.fillRect(0,0,w,h);
+  const rootX=125,rootY=h/2,endX=w-110;
+  ctx.fillStyle="rgba(225,235,240,.92)";ctx.beginPath();ctx.arc(rootX,rootY,22,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="rgba(80,94,104,.95)";ctx.font="700 11px system-ui";ctx.textAlign="center";ctx.fillText("P0",rootX,rootY+4);
+  ctx.fillStyle="rgba(147,160,169,.9)";ctx.font="12px system-ui";ctx.fillText("Población fundadora",rootX,rootY+45);
+
+  model.lineages.forEach((l,i)=>{
+    const y=85+(h-170)*(model.lineages.length===1?.5:i/(model.lineages.length-1));
+    const x=endX;
+    const strength=Math.min(1,.25+l.divergence*2.5);
+    ctx.strokeStyle="rgba(105,181,199,"+(.25+.55*strength)+")";ctx.lineWidth=2+5*l.divergence;
+    ctx.beginPath();ctx.moveTo(rootX+22,rootY);ctx.bezierCurveTo(w*.38,rootY,w*.56,y,x-28,y);ctx.stroke();
+    ctx.fillStyle=l.id===selectedLineageId?"rgba(112,207,169,.95)":"rgba(74,139,158,.86)";
+    ctx.beginPath();ctx.arc(x,y,24+24*l.divergence,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="rgba(239,244,247,.96)";ctx.font="700 12px system-ui";ctx.fillText(l.id,x,y+4);
+    ctx.fillStyle="rgba(157,170,179,.94)";ctx.font="12px system-ui";ctx.fillText(l.refugeName,x,y+45);
+  });
+  ctx.textAlign="left";
+  ctx.fillStyle="rgba(239,244,247,.94)";ctx.font="700 24px system-ui";ctx.fillText("Historia de divergencia",58,48);
+  ctx.fillStyle="rgba(147,160,169,.9)";ctx.font="13px system-ui";ctx.fillText("Ramas poblacionales modeladas; no equivalen automáticamente a especies.",58,74);
+
+  $("#lineageMetrics").innerHTML=
+    stat("Años",years.toLocaleString("es"))+
+    stat("Generaciones",gens.toLocaleString("es"),"28 años/generación")+
+    stat("Linajes",String(n))+
+    stat("Divergencia máxima",maxDiv+"%")+
+    stat("Candidatos aislamiento",String(model.summary.candidateCount))+
+    stat("Especies asignadas","0","regla conservadora");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -1766,6 +1953,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  renderLineages();
   renderRefugiaNetwork();
   renderSettlementWorld();
   renderFoodWeb();
