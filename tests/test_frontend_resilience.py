@@ -223,10 +223,29 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("historyPlaybackTimer", app)
         self.assertIn('population:"población / capacidad"', app)
 
+    def test_phase8_astroanthropology_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "astroAnthroHeadline",
+            "astroAnthroPopulationList",
+            "astroAnthroAlias",
+            "astroAnthroSystems",
+            "astroAnthroWhy",
+            "astroAnthroMetrics",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function simulateAstroanthropology(", app)
+        self.assertIn("function renderAstroanthropology()", app)
+        self.assertIn('safeRender("astroanthropology",renderAstroanthropology)', app)
+        self.assertIn("populationAlias", app)
+        self.assertIn("knowledgeLossPressure", app)
+        self.assertNotIn("technologyRank", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase7c-20260925", html)
-        self.assertIn("app.js?v=phase7c-20260925", html)
+        self.assertIn("styles.css?v=phase8a-20260925", html)
+        self.assertIn("app.js?v=phase8a-20260925", html)
 
 
 if __name__ == "__main__":
