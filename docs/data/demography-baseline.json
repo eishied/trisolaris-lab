@@ -1,0 +1,46 @@
+{
+  "model": "time_dependent_demography_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "total_years": 50000.0,
+    "view_years": 50000.0,
+    "disturbance": "none",
+    "severity": 0.0,
+    "disturbance_fraction": 0.55,
+    "disturbance_year": 27500.000000000004
+  },
+  "populations": [
+    {
+      "lineage_id": "L1",
+      "lineage_name": "Linaje Equatoria-1",
+      "refuge_name": "Equatoria-1",
+      "population_index": 418.82732911881277,
+      "baseline_population_index": 418.82732911881277,
+      "carrying_capacity_index": 418.8273296790409,
+      "capacity_fraction": 0.9999999986623889,
+      "baseline_capacity_fraction": 0.9999999986623889,
+      "reserve_proxy": 0.23717443794106818,
+      "disturbance_vulnerability": 0.0,
+      "bottleneck": false,
+      "recovery_fraction": 1.0,
+      "status": "stable"
+    }
+  ],
+  "events": [],
+  "summary": {
+    "population_index_total": 418.82732911881277,
+    "carrying_capacity_index_total": 418.8273296790409,
+    "capacity_fraction_global": 0.9999999986623889,
+    "reserve_proxy_weighted": 0.2371744379410682,
+    "bottleneck_count": 0,
+    "collapse_count": 0
+  },
+  "limitations": [
+    "normalized population indices, not census forecasts",
+    "single deterministic disturbance scenario at a user-selected severity",
+    "logistic growth is a coarse demographic scaffold",
+    "no age structure, disease, fertility schedule or explicit mortality table yet",
+    "no political or cultural ranking is inferred"
+  ],
+  "next_model": "age structure, migration flows through time, repeated shocks, recolonization and off-world demography"
+}
