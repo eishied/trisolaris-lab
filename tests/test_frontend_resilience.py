@@ -32,10 +32,19 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function renderOrbitWindow()", app)
         self.assertIn("function initOrbitWindow()", app)
 
+    def test_regional_climate_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertIn('id="climateCanvas"', html)
+        self.assertIn('id="climateHeadline"', html)
+        self.assertIn('id="climateMetrics"', html)
+        self.assertIn("function solveClimateBands(", app)
+        self.assertIn("function renderClimateWorld()", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase2-20260925", html)
-        self.assertIn("app.js?v=phase2-20260925", html)
+        self.assertIn("styles.css?v=phase3-20260925", html)
+        self.assertIn("app.js?v=phase3-20260925", html)
 
 
 if __name__ == "__main__":
