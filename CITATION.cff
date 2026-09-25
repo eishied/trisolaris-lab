@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+title: TRISOLARIS LAB
+message: "If you use TRISOLARIS LAB in research, please cite the software release and the underlying scientific datasets/models."
+type: software
+authors: []
+repository-code: https://github.com/eishied/trisolaris-lab
+license: MIT
+version: 0.0.1
