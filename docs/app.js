@@ -21,6 +21,18 @@ const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><str
 const EARTH_MASS_IN_SOLAR=3.0034896e-6;
 const HILL_THRESHOLD=2*Math.sqrt(3);
 
+const runtimeIssues=[];
+function safeRender(label,fn){
+  try{
+    fn();
+  }catch(err){
+    console.error("TRISOLARIS view failed:",label,err);
+    runtimeIssues.push({label,message:String(err?.message||err)});
+    const badge=$("#syncBadge");
+    if(badge) badge.textContent="Datos cargados · una vista fue aislada para evitar que el resto falle";
+  }
+}
+
 function setMode(mode){
   document.body.dataset.mode=mode;
   $$(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
@@ -34,7 +46,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase6b-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase6c-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -62,7 +74,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase6b-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase6c-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -390,7 +402,10 @@ function initCandidate(){
     $("#greenhouse").value=h.greenhouse_k;
     if(!$("#pressure").value) $("#pressure").value="1.00";
     if(!$("#water").value) $("#water").value="1.00";
-    ["axis","albedo","greenhouse","pressure","water","oxygen","nutrients"].forEach(id=>$("#"+id).addEventListener("input",renderCandidate));
+    ["axis","albedo","greenhouse","pressure","water","oxygen","nutrients","techSupport","mobility","lineageYears"].forEach(id=>{
+      const el=$("#"+id);
+      if(el) el.addEventListener("input",renderCandidate);
+    });
     const seedBtn=$("#seedLifeBtn");
     seedBtn.setAttribute("aria-pressed",String(lifeSeeded));
     seedBtn.textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
@@ -403,8 +418,18 @@ function initCandidate(){
     });
     $("#seedLifeBtn").setAttribute("aria-pressed",String(lifeSeeded));
     $("#seedLifeBtn").textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
-    $("#seedHumansBtn").setAttribute("aria-pressed",String(humanSeeded));
-    $("#seedHumansBtn").textContent=humanSeeded?"Población experimental activa":"Población no introducida";
+    const humanBtn=$("#seedHumansBtn");
+    if(humanBtn){
+      humanBtn.setAttribute("aria-pressed",String(humanSeeded));
+      humanBtn.textContent=humanSeeded?"Población experimental activa":"Población no introducida";
+      humanBtn.addEventListener("click",()=>{
+        humanSeeded=!humanSeeded;
+        localStorage.setItem("trisolaris-human-seeded",String(humanSeeded));
+        humanBtn.setAttribute("aria-pressed",String(humanSeeded));
+        humanBtn.textContent=humanSeeded?"Población experimental activa":"Población no introducida";
+        renderCandidate();
+      });
+    }
     initOrbitWindow();
     candidateInitialized=true;
   }
@@ -1824,8 +1849,8 @@ function renderLineages(){
 
   $(".lineageCard[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
     selectedLineageId=btn.dataset.lineageId;
+    renderLineages();
     renderGenetics();
-  renderLineages();
   }));
   renderLineageDetail(model);
 
@@ -2121,13 +2146,14 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
-  renderLineages();
-  renderRefugiaNetwork();
-  renderSettlementWorld();
-  renderFoodWeb();
-  renderSurfaceWorld();
-  renderClimateWorld();
-  renderOrbitWindow();
+  safeRender("genetics",renderGenetics);
+  safeRender("lineages",renderLineages);
+  safeRender("refugia",renderRefugiaNetwork);
+  safeRender("settlement",renderSettlementWorld);
+  safeRender("ecology",renderFoodWeb);
+  safeRender("surface",renderSurfaceWorld);
+  safeRender("climate",renderClimateWorld);
+  safeRender("orbit-window",renderOrbitWindow);
 
   if(selectedFocus?.kind==="hypothetical"){
     openFocus(selectedFocus,{scroll:false});
