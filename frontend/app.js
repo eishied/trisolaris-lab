@@ -14,6 +14,7 @@ let selectedFocus=null;
 let selectedLineageId=null;
 let selectedPartnerId=null;
 let admixtureActive=localStorage.getItem("trisolaris-admixture-active")==="true";
+let historyPlaybackTimer=null;
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -48,7 +49,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase7b-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase7c-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -76,7 +77,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase7b-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase7c-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -443,6 +444,50 @@ function initCandidate(){
     const historyMode=$("#planetHistoryMode");
     if(historyMode){
       historyMode.addEventListener("change",()=>safeRender("planetary-history",renderPlanetaryHistory));
+    }
+    const historyPlayback=$("#historyPlayback");
+    if(historyPlayback){
+      historyPlayback.addEventListener("input",()=>safeRender("planetary-history",renderPlanetaryHistory));
+    }
+    const historyDisturbance=$("#historyDisturbance");
+    if(historyDisturbance){
+      historyDisturbance.addEventListener("change",()=>{
+        const severity=$("#historySeverity");
+        if(historyDisturbance.value==="none"&&severity) severity.value="0";
+        safeRender("planetary-history",renderPlanetaryHistory);
+      });
+    }
+    const historySeverity=$("#historySeverity");
+    if(historySeverity){
+      historySeverity.addEventListener("input",()=>safeRender("planetary-history",renderPlanetaryHistory));
+    }
+    const historyPlayBtn=$("#historyPlayBtn");
+    if(historyPlayBtn){
+      historyPlayBtn.setAttribute("aria-pressed","false");
+      historyPlayBtn.addEventListener("click",()=>{
+        if(historyPlaybackTimer){
+          window.clearInterval(historyPlaybackTimer);
+          historyPlaybackTimer=null;
+          historyPlayBtn.setAttribute("aria-pressed","false");
+          historyPlayBtn.textContent="Reproducir historia";
+          return;
+        }
+        if(+$("#historyPlayback").value>=100) $("#historyPlayback").value="0";
+        historyPlayBtn.setAttribute("aria-pressed","true");
+        historyPlayBtn.textContent="Pausar historia";
+        historyPlaybackTimer=window.setInterval(()=>{
+          const control=$("#historyPlayback");
+          const next=Math.min(100,+control.value+1);
+          control.value=String(next);
+          safeRender("planetary-history",renderPlanetaryHistory);
+          if(next>=100){
+            window.clearInterval(historyPlaybackTimer);
+            historyPlaybackTimer=null;
+            historyPlayBtn.setAttribute("aria-pressed","false");
+            historyPlayBtn.textContent="Reproducir historia";
+          }
+        },110);
+      });
     }
     initPlanetHistoryCanvas();
 
