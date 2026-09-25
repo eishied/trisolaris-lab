@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase3-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase4-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -187,6 +187,24 @@
             <output id="greenhouseOut"></output>
             <input id="greenhouse" type="range" min="0" max="90" step="1" />
           </label>
+
+          <label class="controlRow">
+            <div>
+              <strong>Presión superficial</strong>
+              <p>Cambia la capacidad de la atmósfera para amortiguar el ciclo del agua y desplaza el punto de ebullición.</p>
+            </div>
+            <output id="pressureOut"></output>
+            <input id="pressure" type="range" min="0.10" max="3.00" step="0.05" value="1.00" />
+          </label>
+
+          <label class="controlRow">
+            <div>
+              <strong>Inventario de agua</strong>
+              <p>Escala la cantidad total de agua superficial disponible respecto de un océano terrestre.</p>
+            </div>
+            <output id="waterOut"></output>
+            <input id="water" type="range" min="0.00" max="2.00" step="0.05" value="1.00" />
+          </label>
         </div>
 
         <div class="outcome">
@@ -240,6 +258,36 @@
         </div>
         <div id="climateMetrics" class="metricGrid scientific-only"></div>
         <p class="climateCaveat">Modelo EBM anual y latitudinal · todavía no resuelve continentes, estaciones, nubes ni corrientes oceánicas.</p>
+      </section>
+
+      <section class="surfaceSystems" aria-labelledby="surfaceHeadline">
+        <div class="surfaceIntro">
+          <p class="eyebrow">ATMÓSFERA · AGUA · BIOSFERA POTENCIAL</p>
+          <h3 id="surfaceHeadline">¿Dónde podría sostenerse un ecosistema?</h3>
+          <p id="surfaceText">El clima regional alimenta ahora un modelo de presión, agua superficial y productividad potencial. No inventa vida: identifica dónde existirían mejores condiciones para sostenerla.</p>
+        </div>
+
+        <div class="surfaceStage">
+          <canvas id="surfaceCanvas" width="1200" height="470" aria-label="Mapa de agua y biosfera potencial de H-01"></canvas>
+        </div>
+
+        <div class="surfaceNarrative">
+          <article>
+            <span>Atmósfera</span>
+            <strong id="atmoNarrative">Calculando retención y presión…</strong>
+          </article>
+          <article>
+            <span>Agua</span>
+            <strong id="waterNarrative">Calculando regiones líquidas y congeladas…</strong>
+          </article>
+          <article>
+            <span>Biosfera potencial</span>
+            <strong id="bioNarrative">Buscando refugios térmico-hidrológicos…</strong>
+          </article>
+        </div>
+
+        <div id="surfaceMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">La productividad es un potencial ambiental. No representa organismos observados ni una biosfera ya existente.</p>
       </section>
 
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
@@ -314,6 +362,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase3-20260925"></script>
+  <script type="module" src="./app.js?v=phase4-20260925"></script>
 </body>
 </html>
