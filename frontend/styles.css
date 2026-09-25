@@ -391,3 +391,62 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 @media(max-width:900px){
   .nbodyBand{grid-template-columns:1fr}
 }
+
+
+.orbitWindow{
+  margin-top:36px;
+  padding:34px 0 30px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.orbitWindowIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+  gap:36px;
+  align-items:end
+}
+.orbitWindowIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(30px,4vw,48px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.orbitWindowIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#95a3ac;
+  align-self:end
+}
+.orbitMapWrap{
+  margin-top:24px;
+  padding:18px 0 0
+}
+#orbitScanCanvas{
+  min-height:0;
+  height:auto;
+  border:0;
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008));
+  cursor:crosshair
+}
+.orbitScale{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:12px;
+  align-items:center;
+  margin-top:9px;
+  color:#71808a;
+  font-size:10px
+}
+.orbitScale span:nth-child(2){
+  text-align:center;
+  color:#a8b4bc;
+  font-size:11px
+}
+.orbitScale span:last-child{text-align:right}
+@media(max-width:780px){
+  .orbitWindowIntro{grid-template-columns:1fr;gap:9px}
+  .orbitWindowIntro>p:last-child{grid-column:1;grid-row:auto}
+}
