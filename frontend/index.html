@@ -1,117 +1,265 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TRISOLARIS LAB — LTT 1445 Explorer</title>
-  <meta name="description" content="Open computational astrobiology and astroanthropology research explorer." />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>TRISOLARIS LAB — Explorador científico</title>
+  <meta name="description" content="Simulación y exploración de astrobiología y astroantropología en sistemas estelares múltiples." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div>
-      <div class="eyebrow">TRISOLARIS LAB · PHASE 1</div>
-      <h1>Observed System Explorer</h1>
-      <p>LTT 1445 ABC · official exoplanet data + cited literature + clearly labeled hypothetical experiments</p>
+<body data-mode="simple">
+  <nav class="glassNav">
+    <a class="brand" href="#inicio" aria-label="TRISOLARIS LAB">
+      <span class="brandMark">T</span>
+      <span>TRISOLARIS LAB</span>
+    </a>
+    <div class="navLinks" aria-label="Navegación principal">
+      <a href="#sistema">Sistema</a>
+      <a href="#mundos">Mundos</a>
+      <a href="#experimento">Habitabilidad</a>
+      <a href="#evidencia">Evidencia</a>
     </div>
-    <div id="syncBadge" class="badge literature">LOADING DATA</div>
+    <div class="navActions">
+      <div class="modeSwitch" role="group" aria-label="Nivel de detalle">
+        <button class="modeBtn active" data-mode="simple">Claro</button>
+        <button class="modeBtn" data-mode="scientific">Científico</button>
+      </div>
+      <div id="syncBadge" class="sourcePill literature">CARGANDO</div>
+    </div>
+  </nav>
+
+  <header id="inicio" class="intro">
+    <div class="aurora"></div>
+    <div class="introInner">
+      <p class="kicker">ASTROBIOLOGÍA · ASTROANTROPOLOGÍA · SISTEMAS MÚLTIPLES</p>
+      <h1>Tres estrellas.<br>Una pregunta humana.</h1>
+      <p class="lead">
+        ¿Puede una población sobrevivir, adaptarse y construir una civilización en un sistema estelar triple?
+        TRISOLARIS convierte datos científicos reales en una experiencia que se puede explorar.
+      </p>
+      <div class="heroActions">
+        <a class="primaryAction" href="#sistema">Explorar LTT 1445 ABC</a>
+        <a class="secondaryAction" href="#experimento">Probar un mundo habitable</a>
+      </div>
+      <div class="confidenceLine">
+        <span><i class="signal observed"></i> Datos observados</span>
+        <span><i class="signal literature"></i> Literatura científica</span>
+        <span><i class="signal derived"></i> Resultados calculados</span>
+        <span><i class="signal speculative"></i> Hipótesis</span>
+      </div>
+    </div>
   </header>
 
-  <main class="layout">
-    <section class="panel hero">
-      <div class="panelHead">
+  <main>
+    <section class="storyBand">
+      <article>
+        <span class="storyLabel">El sistema</span>
+        <strong id="storySystem">Tres estrellas cercanas</strong>
+        <p id="storySystemText">Cargando arquitectura estelar…</p>
+      </article>
+      <article>
+        <span class="storyLabel">Lo observado</span>
+        <strong id="storyPlanets">Planetas confirmados</strong>
+        <p id="storyPlanetsText">Consultando NASA Exoplanet Archive…</p>
+      </article>
+      <article>
+        <span class="storyLabel">La pregunta</span>
+        <strong id="storyCandidate">¿Dónde podría vivir una población?</strong>
+        <p id="storyCandidateText">Ajusta el planeta H-01 y compara sus condiciones.</p>
+      </article>
+    </section>
+
+    <section id="sistema" class="section">
+      <div class="sectionHeader">
         <div>
-          <h2>System view</h2>
-          <p class="muted">Visual scale is compressed. Scientific values are shown separately from the drawing.</p>
+          <p class="sectionEyebrow">01 · SISTEMA</p>
+          <h2>Ver primero. Medir después.</h2>
+          <p class="sectionLead">La vista principal prioriza comprensión. Los parámetros técnicos aparecen cuando activas el modo científico.</p>
         </div>
-        <button id="pauseBtn">Pause</button>
+        <button id="pauseBtn" class="iconButton">Pausar</button>
       </div>
-      <canvas id="systemCanvas" width="1200" height="560"></canvas>
-      <div class="legend">
-        <span><i class="dot observed"></i>OBSERVED / archive</span>
-        <span><i class="dot literature"></i>LITERATURE</span>
-        <span><i class="dot speculative"></i>SPECULATIVE</span>
+
+      <div class="systemStage">
+        <canvas id="systemCanvas" width="1400" height="720" aria-label="Visualización dinámica del sistema LTT 1445 ABC"></canvas>
+        <div class="stageOverlay">
+          <div>
+            <span class="miniLabel">SISTEMA ACTUAL</span>
+            <b>LTT 1445 ABC</b>
+          </div>
+          <div class="scientific-only">
+            <span class="miniLabel">ESCALA</span>
+            <b>Visual comprimida</b>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="panel">
-      <h2>System record</h2>
-      <div id="systemStats" class="stats"></div>
-      <div class="callout" id="dataNote"></div>
-    </section>
-
-    <section class="panel full">
-      <div class="panelHead">
+      <div class="plainSummary simple-only" id="plainSystemSummary">
+        <div class="summaryIcon">✦</div>
         <div>
-          <h2>Known planets around LTT 1445 A</h2>
-          <p class="muted">Rows become OBSERVED when the NASA refresh workflow has populated the public dataset.</p>
+          <b>Qué estás viendo</b>
+          <p>Un sistema triple real. Las estrellas B y C forman una pareja y se mueven alrededor de A a una distancia mucho mayor.</p>
         </div>
-        <span id="planetCount" class="tag">0 planets</span>
       </div>
-      <div id="planetTable" class="tableWrap"></div>
+
+      <div class="scienceDrawer scientific-only">
+        <div class="drawerHeader">
+          <div>
+            <span class="sourcePill literature">LITERATURE</span>
+            <h3>Ficha técnica del sistema</h3>
+          </div>
+          <span class="microcopy">Parámetros y procedencia visibles</span>
+        </div>
+        <div id="systemStats" class="metrics"></div>
+        <div class="evidenceNote" id="dataNote"></div>
+      </div>
     </section>
 
-    <section class="panel full">
-      <div class="panelHead">
+    <section id="mundos" class="section softSection">
+      <div class="sectionHeader compact">
         <div>
-          <h2>Hypothetical habitable-world sandbox</h2>
-          <p class="muted">H-01 is not a discovered planet. These controls are a fast diagnostic prior to N-body and climate-model validation.</p>
+          <p class="sectionEyebrow">02 · MUNDOS OBSERVADOS</p>
+          <h2>Lo que ya sabemos que está ahí.</h2>
+          <p class="sectionLead">Cada planeta se presenta primero en lenguaje simple y luego, si quieres, con los parámetros del catálogo.</p>
         </div>
-        <span class="badge speculative">SPECULATIVE</span>
+        <span id="planetCount" class="countPill">0 planetas</span>
       </div>
 
-      <div class="controls">
-        <label>
-          Semi-major axis around A
-          <input id="axis" type="range" min="0.04" max="0.22" step="0.001" />
-          <output id="axisOut"></output>
-        </label>
-        <label>
-          Bond albedo
-          <input id="albedo" type="range" min="0.05" max="0.65" step="0.01" />
-          <output id="albedoOut"></output>
-        </label>
-        <label>
-          Greenhouse offset
-          <input id="greenhouse" type="range" min="0" max="90" step="1" />
-          <output id="greenhouseOut"></output>
-        </label>
-      </div>
+      <div id="planetCards" class="planetCards"></div>
 
-      <div id="candidateStats" class="stats wide"></div>
-      <div id="candidateWhy" class="callout"></div>
+      <div class="scientific-only technicalTable">
+        <div class="technicalHeader">
+          <div>
+            <span class="sourcePill observed">OBSERVED</span>
+            <h3>Tabla técnica</h3>
+          </div>
+          <span class="microcopy">NASA Exoplanet Archive · tabla ps</span>
+        </div>
+        <div id="planetTable" class="tableWrap"></div>
+      </div>
     </section>
 
-    <section class="panel full">
-      <h2>Scientific provenance</h2>
-      <div class="provenanceGrid">
+    <section id="experimento" class="section">
+      <div class="sectionHeader">
+        <div>
+          <p class="sectionEyebrow">03 · EXPERIMENTO</p>
+          <h2>Construye un mundo y mira qué cambia.</h2>
+          <p class="sectionLead">
+            H-01 no es un planeta descubierto. Es un laboratorio para explorar cómo distancia, reflectividad y efecto invernadero cambian una primera estimación de habitabilidad.
+          </p>
+        </div>
+        <span class="sourcePill speculative">SPECULATIVE</span>
+      </div>
+
+      <div class="experimentGrid">
+        <div class="controlDeck">
+          <div class="controlItem">
+            <div class="controlTitle">
+              <div>
+                <b>Distancia a LTT 1445 A</b>
+                <span>Más cerca recibe más energía.</span>
+              </div>
+              <output id="axisOut"></output>
+            </div>
+            <input id="axis" type="range" min="0.04" max="0.22" step="0.001" />
+          </div>
+
+          <div class="controlItem">
+            <div class="controlTitle">
+              <div>
+                <b>Albedo</b>
+                <span>Cuánta luz refleja el planeta.</span>
+              </div>
+              <output id="albedoOut"></output>
+            </div>
+            <input id="albedo" type="range" min="0.05" max="0.65" step="0.01" />
+          </div>
+
+          <div class="controlItem">
+            <div class="controlTitle">
+              <div>
+                <b>Efecto invernadero</b>
+                <span>Calentamiento adicional de la atmósfera.</span>
+              </div>
+              <output id="greenhouseOut"></output>
+            </div>
+            <input id="greenhouse" type="range" min="0" max="90" step="1" />
+          </div>
+        </div>
+
+        <div class="resultCard">
+          <div class="resultOrb" id="habitOrb">
+            <span id="habitScore">—</span>
+          </div>
+          <div class="resultCopy">
+            <span class="miniLabel">LECTURA RÁPIDA</span>
+            <h3 id="candidateHeadline">Calculando…</h3>
+            <p id="candidatePlain">Ajusta los controles para explorar el escenario.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scientific-only scienceDrawer">
+        <div class="drawerHeader">
+          <div>
+            <span class="sourcePill derived">DERIVED</span>
+            <h3>Detalle del cálculo</h3>
+          </div>
+          <span class="microcopy">Heurística rápida · no es un GCM</span>
+        </div>
+        <div id="candidateStats" class="metrics five"></div>
+        <div id="candidateWhy" class="evidenceNote"></div>
+      </div>
+
+      <div class="simple-only guardrail">
+        <b>Importante</b>
+        <p>Este resultado es una primera aproximación. Todavía no demuestra que la órbita sea estable ni que el clima real permita vida. Eso llegará con los motores orbital y climático.</p>
+      </div>
+    </section>
+
+    <section id="evidencia" class="section evidenceSection">
+      <div class="sectionHeader compact">
+        <div>
+          <p class="sectionEyebrow">04 · EVIDENCIA</p>
+          <h2>La ciencia no se esconde detrás de la interfaz.</h2>
+          <p class="sectionLead">Cada capa indica qué sabemos, qué calculamos y qué estamos imaginando.</p>
+        </div>
+      </div>
+
+      <div class="evidenceGrid">
         <article>
-          <span class="badge observed">OBSERVED</span>
+          <span class="sourcePill observed">OBSERVED</span>
           <h3>NASA Exoplanet Archive</h3>
-          <p>Planet records are pulled from the official <code>ps</code> table through TAP/ADQL.</p>
+          <p>Planetas y parámetros de catálogo obtenidos mediante TAP/ADQL desde una fuente oficial.</p>
+          <span class="confidence high">Confianza alta</span>
         </article>
         <article>
-          <span class="badge literature">LITERATURE</span>
-          <h3>Triple-star properties</h3>
-          <p>Initial stellar parameters are stored with literature references and must later be cross-checked against Gaia and newer orbital solutions.</p>
+          <span class="sourcePill literature">LITERATURE</span>
+          <h3>Arquitectura triple</h3>
+          <p>Masas, radios y configuración inicial basados en literatura científica citada dentro del repositorio.</p>
+          <span class="confidence high">Confianza alta</span>
         </article>
         <article>
-          <span class="badge derived">DERIVED</span>
-          <h3>Fast habitability proxy</h3>
-          <p>Flux and temperature values below are calculated from explicitly shown assumptions. They are not a GCM result.</p>
+          <span class="sourcePill derived">DERIVED</span>
+          <h3>Habitabilidad rápida</h3>
+          <p>Resultado calculado por TRISOLARIS a partir de flujo, albedo y un término simplificado de efecto invernadero.</p>
+          <span class="confidence medium">Confianza media-baja</span>
         </article>
         <article>
-          <span class="badge speculative">SPECULATIVE</span>
-          <h3>TRISOLARIS H-01</h3>
-          <p>The candidate planet exists only inside the experiment. Future REBOUND ensembles must test whether its orbit is dynamically viable.</p>
+          <span class="sourcePill speculative">SPECULATIVE</span>
+          <h3>Mundo H-01</h3>
+          <p>Escenario hipotético para experimentar. No existe evidencia de que este planeta se encuentre allí.</p>
+          <span class="confidence exploratory">Exploratorio</span>
         </article>
       </div>
     </section>
   </main>
 
   <footer>
-    <span>TRISOLARIS LAB</span>
-    <span>Every result must know where it came from.</span>
+    <div>
+      <b>TRISOLARIS LAB</b>
+      <span>Scientific depth. Public readability.</span>
+    </div>
+    <p>Todo resultado debe poder explicar de dónde vino.</p>
   </footer>
 
   <script type="module" src="./app.js"></script>
