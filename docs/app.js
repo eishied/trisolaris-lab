@@ -7,6 +7,7 @@ let running=true;
 let phase=0;
 let candidateInitialized=false;
 let orbitScanInitialized=false;
+let lifeSeeded=false;
 let lifeSeeded=localStorage.getItem("trisolaris-life-seeded")==="true";
 let hitTargets=[];
 let selectedFocus=null;
