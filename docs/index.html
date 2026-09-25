@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TRISOLARIS LAB — LTT 1445 Explorer</title>
+  <meta name="description" content="Open computational astrobiology and astroanthropology research explorer." />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">TRISOLARIS LAB · PHASE 1</div>
+      <h1>Observed System Explorer</h1>
+      <p>LTT 1445 ABC · official exoplanet data + cited literature + clearly labeled hypothetical experiments</p>
+    </div>
+    <div id="syncBadge" class="badge literature">LOADING DATA</div>
+  </header>
+
+  <main class="layout">
+    <section class="panel hero">
+      <div class="panelHead">
+        <div>
+          <h2>System view</h2>
+          <p class="muted">Visual scale is compressed. Scientific values are shown separately from the drawing.</p>
+        </div>
+        <button id="pauseBtn">Pause</button>
+      </div>
+      <canvas id="systemCanvas" width="1200" height="560"></canvas>
+      <div class="legend">
+        <span><i class="dot observed"></i>OBSERVED / archive</span>
+        <span><i class="dot literature"></i>LITERATURE</span>
+        <span><i class="dot speculative"></i>SPECULATIVE</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>System record</h2>
+      <div id="systemStats" class="stats"></div>
+      <div class="callout" id="dataNote"></div>
+    </section>
+
+    <section class="panel full">
+      <div class="panelHead">
+        <div>
+          <h2>Known planets around LTT 1445 A</h2>
+          <p class="muted">Rows become OBSERVED when the NASA refresh workflow has populated the public dataset.</p>
+        </div>
+        <span id="planetCount" class="tag">0 planets</span>
+      </div>
+      <div id="planetTable" class="tableWrap"></div>
+    </section>
+
+    <section class="panel full">
+      <div class="panelHead">
+        <div>
+          <h2>Hypothetical habitable-world sandbox</h2>
+          <p class="muted">H-01 is not a discovered planet. These controls are a fast diagnostic prior to N-body and climate-model validation.</p>
+        </div>
+        <span class="badge speculative">SPECULATIVE</span>
+      </div>
+
+      <div class="controls">
+        <label>
+          Semi-major axis around A
+          <input id="axis" type="range" min="0.04" max="0.22" step="0.001" />
+          <output id="axisOut"></output>
+        </label>
+        <label>
+          Bond albedo
+          <input id="albedo" type="range" min="0.05" max="0.65" step="0.01" />
+          <output id="albedoOut"></output>
+        </label>
+        <label>
+          Greenhouse offset
+          <input id="greenhouse" type="range" min="0" max="90" step="1" />
+          <output id="greenhouseOut"></output>
+        </label>
+      </div>
+
+      <div id="candidateStats" class="stats wide"></div>
+      <div id="candidateWhy" class="callout"></div>
+    </section>
+
+    <section class="panel full">
+      <h2>Scientific provenance</h2>
+      <div class="provenanceGrid">
+        <article>
+          <span class="badge observed">OBSERVED</span>
+          <h3>NASA Exoplanet Archive</h3>
+          <p>Planet records are pulled from the official <code>ps</code> table through TAP/ADQL.</p>
+        </article>
+        <article>
+          <span class="badge literature">LITERATURE</span>
+          <h3>Triple-star properties</h3>
+          <p>Initial stellar parameters are stored with literature references and must later be cross-checked against Gaia and newer orbital solutions.</p>
+        </article>
+        <article>
+          <span class="badge derived">DERIVED</span>
+          <h3>Fast habitability proxy</h3>
+          <p>Flux and temperature values below are calculated from explicitly shown assumptions. They are not a GCM result.</p>
+        </article>
+        <article>
+          <span class="badge speculative">SPECULATIVE</span>
+          <h3>TRISOLARIS H-01</h3>
+          <p>The candidate planet exists only inside the experiment. Future REBOUND ensembles must test whether its orbit is dynamically viable.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>TRISOLARIS LAB</span>
+    <span>Every result must know where it came from.</span>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
