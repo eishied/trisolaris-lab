@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase7b-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase7c-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -487,7 +487,7 @@
 
       <section class="planetHistorySystem" aria-labelledby="planetHistoryHeadline">
         <div class="planetHistoryIntro">
-          <p class="eyebrow">HUELLA PLANETARIA · PHASE 7.0</p>
+          <p class="eyebrow">HUELLA PLANETARIA · PHASE 7.1</p>
           <h3 id="planetHistoryHeadline">Los linajes empiezan a dejar historia sobre el planeta.</h3>
           <p id="planetHistoryText">Asentamientos, agricultura, infraestructura y movilidad se calculan a partir del soporte ambiental, la tecnología y la conexión entre refugios. La cultura se representa como diferenciación y continuidad, nunca como una escala de superioridad.</p>
         </div>
@@ -501,8 +501,34 @@
               <option value="agriculture">Agricultura</option>
               <option value="infrastructure">Infraestructura</option>
               <option value="culture">Diferenciación cultural</option>
+              <option value="population">Población</option>
             </select>
           </label>
+
+          <label class="historyPlaybackControl">
+            <span>Momento de la historia</span>
+            <output id="historyPlaybackOut">100%</output>
+            <input id="historyPlayback" type="range" min="0" max="100" step="1" value="100" />
+          </label>
+
+          <label>
+            <span>Perturbación</span>
+            <select id="historyDisturbance">
+              <option value="none">Sin perturbación</option>
+              <option value="drought">Sequía</option>
+              <option value="cold">Evento frío</option>
+              <option value="food">Crisis alimentaria</option>
+              <option value="infrastructure">Falla de infraestructura</option>
+            </select>
+          </label>
+
+          <label class="historySeverityControl">
+            <span>Severidad</span>
+            <output id="historySeverityOut">0%</output>
+            <input id="historySeverity" type="range" min="0" max="100" step="1" value="0" />
+          </label>
+
+          <button id="historyPlayBtn" class="historyPlayButton" type="button">Reproducir historia</button>
         </div>
 
         <div class="planetHistoryStage">
@@ -608,6 +634,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase7b-20260925"></script>
+  <script type="module" src="./app.js?v=phase7c-20260925"></script>
 </body>
 </html>

@@ -2,5 +2,6 @@
 
 from .settlement import evaluate_settlement_support
 from .planetary_history import simulate_planetary_history
+from .demography import simulate_demography
 
-__all__ = ["evaluate_settlement_support", "simulate_planetary_history"]
+__all__ = ["evaluate_settlement_support", "simulate_planetary_history", "simulate_demography"]

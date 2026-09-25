@@ -1123,15 +1123,26 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 }
 .planetHistoryControls{
   margin-top:24px;
-  padding:16px 0;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0;
   border-top:1px solid var(--line);
   border-bottom:1px solid var(--line)
 }
 .planetHistoryControls label{
   display:grid;
-  grid-template-columns:auto minmax(200px,340px);
-  gap:14px;
-  align-items:center
+  grid-template-columns:1fr auto;
+  gap:8px 16px;
+  align-items:center;
+  min-width:0;
+  padding:16px 20px 16px 0
+}
+.planetHistoryControls label:nth-child(even){
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.planetHistoryControls label:nth-child(n+3){
+  border-top:1px solid var(--line)
 }
 .planetHistoryControls label span{
   color:#71808a;
@@ -1139,8 +1150,21 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   letter-spacing:.11em;
   text-transform:uppercase
 }
-#planetHistoryMode{
+.planetHistoryControls output{
+  color:#a9dff1;
+  font-size:12px;
+  font-weight:700
+}
+.planetHistoryControls input[type=range]{
+  grid-column:1/-1;
+  width:100%;
+  margin:2px 0 0
+}
+#planetHistoryMode,
+#historyDisturbance{
+  grid-column:1/-1;
   appearance:none;
+  width:100%;
   border:1px solid var(--line);
   background:#0b1217;
   color:#dce4e8;
@@ -1151,6 +1175,21 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;
   background-size:5px 5px,5px 5px;
   background-repeat:no-repeat
+}
+.historyPlayButton{
+  grid-column:1/-1;
+  border:0;
+  border-top:1px solid var(--line);
+  background:rgba(255,255,255,.025);
+  color:#c7d3d9;
+  min-height:52px;
+  cursor:pointer;
+  font:inherit;
+  font-weight:650
+}
+.historyPlayButton[aria-pressed="true"]{
+  background:rgba(78,151,128,.10);
+  color:#d9efe6
 }
 .planetHistoryStage{
   margin-top:22px;
@@ -1275,7 +1314,15 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 @media(max-width:780px){
   .planetHistoryIntro{grid-template-columns:1fr;gap:9px}
   .planetHistoryIntro>p:last-child{grid-column:1;grid-row:auto}
-  .planetHistoryControls label{grid-template-columns:1fr}
+  .planetHistoryControls{grid-template-columns:1fr}
+  .planetHistoryControls label,
+  .planetHistoryControls label:nth-child(even){
+    grid-template-columns:1fr;
+    border-left:0;
+    padding:14px 0
+  }
+  .planetHistoryControls label+label{border-top:1px solid var(--line)}
+  .planetHistoryControls output{justify-self:start}
   .planetHistoryNarrative{grid-template-columns:1fr}
   .planetHistoryNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
