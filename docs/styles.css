@@ -585,3 +585,114 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .surfaceNarrative{grid-template-columns:1fr}
   .surfaceNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
+
+
+.ecologySystem{
+  margin-top:38px;
+  padding:40px 0 34px;
+  border-top:1px solid var(--line)
+}
+.ecologyIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
+  gap:36px;
+  align-items:end
+}
+.ecologyIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(30px,4vw,48px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.ecologyIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#97a5ae
+}
+.ecologyControls{
+  margin-top:24px;
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.ecologyControls label{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px 16px;
+  padding:18px 22px 18px 0
+}
+.ecologyControls label+label{
+  border-left:1px solid var(--line);
+  padding-left:22px
+}
+.ecologyControls label span{
+  font-size:13px;
+  color:#d1d9de
+}
+.ecologyControls output{
+  font-size:12px;
+  color:#9fdff6;
+  font-weight:700
+}
+.ecologyControls input{
+  grid-column:1/-1;
+  width:100%
+}
+.seedLifeButton{
+  align-self:stretch;
+  border:0;
+  border-left:1px solid var(--line);
+  background:rgba(255,255,255,.025);
+  padding:0 22px;
+  color:#a9b4bb;
+  cursor:pointer;
+  min-width:170px
+}
+.seedLifeButton[aria-pressed="true"]{
+  color:#bfead0;
+  background:rgba(83,154,112,.10)
+}
+.ecologyStage{
+  margin-top:22px;
+  border-radius:30px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 50%,rgba(72,135,95,.08),transparent 42%),
+    #060b0f
+}
+#foodWebCanvas{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:0;
+  background:transparent
+}
+.ecologyNarrative{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);
+  gap:26px
+}
+.ecologyNarrative strong{
+  font-size:18px;
+  line-height:1.35;
+  color:#dbe3e7
+}
+.ecologyNarrative p{
+  margin:0;
+  color:#8997a0
+}
+.ecologySystem .metricGrid{margin-top:18px}
+@media(max-width:780px){
+  .ecologyIntro{grid-template-columns:1fr;gap:9px}
+  .ecologyIntro>p:last-child{grid-column:1;grid-row:auto}
+  .ecologyControls{grid-template-columns:1fr}
+  .ecologyControls label+label,.seedLifeButton{border-left:0;border-top:1px solid var(--line);padding-left:0}
+  .seedLifeButton{min-height:54px}
+  .ecologyNarrative{grid-template-columns:1fr;gap:8px}
+}
