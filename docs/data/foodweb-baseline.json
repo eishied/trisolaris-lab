@@ -1,0 +1,131 @@
+{
+  "model": "ecological_guild_support_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "oxygen_fraction": 0.21,
+    "nutrient_availability_relative": 1.0,
+    "life_seeded": false
+  },
+  "summary": {
+    "environmental_trophic_depth_potential": 1,
+    "supported_guilds_above_0_25": [
+      "Microbios anaerobios",
+      "Microbios aerobios",
+      "Descomponedores"
+    ],
+    "life_state": "environmental support only; life not assumed",
+    "maximum_guild_support": 0.7382726733327881
+  },
+  "guilds": [
+    {
+      "id": "anaerobic_microbes",
+      "name": "Microbios anaerobios",
+      "trophic_level": 0,
+      "support_potential": 0.7382726733327881,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "aerobic_microbes",
+      "name": "Microbios aerobios",
+      "trophic_level": 0,
+      "support_potential": 0.6500151856303388,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "primary_producers",
+      "name": "Productores primarios",
+      "trophic_level": 1,
+      "support_potential": 0.12939995052697817,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "aquatic_primary",
+      "name": "Productores acu\u00e1ticos",
+      "trophic_level": 1,
+      "support_potential": 0.0857782232626969,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "decomposers",
+      "name": "Descomponedores",
+      "trophic_level": 1,
+      "support_potential": 0.28305350859821804,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "grazers",
+      "name": "Consumidores primarios",
+      "trophic_level": 2,
+      "support_potential": 0.11423930037645366,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "aquatic_consumers",
+      "name": "Consumidores acu\u00e1ticos",
+      "trophic_level": 2,
+      "support_potential": 0.0720379340046935,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "predators",
+      "name": "Depredadores",
+      "trophic_level": 3,
+      "support_potential": 0.017873496639781404,
+      "requires_seeded_life": true
+    },
+    {
+      "id": "large_aerobic",
+      "name": "Fauna aerobia grande",
+      "trophic_level": 4,
+      "support_potential": 0.013323206339387716,
+      "requires_seeded_life": true
+    }
+  ],
+  "food_web_links": [
+    {
+      "source": "primary_producers",
+      "target": "grazers",
+      "efficiency_proxy": 0.1
+    },
+    {
+      "source": "aquatic_primary",
+      "target": "aquatic_consumers",
+      "efficiency_proxy": 0.1
+    },
+    {
+      "source": "grazers",
+      "target": "predators",
+      "efficiency_proxy": 0.1
+    },
+    {
+      "source": "aquatic_consumers",
+      "target": "predators",
+      "efficiency_proxy": 0.1
+    },
+    {
+      "source": "predators",
+      "target": "decomposers",
+      "efficiency_proxy": 0.2
+    },
+    {
+      "source": "grazers",
+      "target": "decomposers",
+      "efficiency_proxy": 0.2
+    },
+    {
+      "source": "primary_producers",
+      "target": "decomposers",
+      "efficiency_proxy": 0.15
+    }
+  ],
+  "limitations": [
+    "does not model abiogenesis",
+    "does not create species automatically",
+    "guild support is not biomass",
+    "oxygen thresholds are broad ecological proxies",
+    "nutrient availability is a dimensionless exploratory control",
+    "does not model genetics, evolution, disease, predation dynamics, or ecological succession",
+    "no explicit carbon, nitrogen, phosphorus, or sulfur cycle yet"
+  ],
+  "next_model": "time-dependent ecosystem dynamics, nutrient cycles, explicit populations, and evolutionary branching"
+}

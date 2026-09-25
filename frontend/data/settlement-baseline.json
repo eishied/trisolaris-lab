@@ -1,0 +1,644 @@
+{
+  "model": "human_settlement_support_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "pressure_bar": 1.0,
+    "oxygen_fraction": 0.21,
+    "oxygen_partial_pressure_bar": 0.21,
+    "technology_support": 0.4,
+    "nutrient_availability_relative": 1.0
+  },
+  "summary": {
+    "natural_support_mean": 0.5487256531520373,
+    "assisted_support_mean": 0.7354192872196377,
+    "technology_dependency_mean": 0.18669363406760042,
+    "agriculture_potential_mean": 0.11596085034035004,
+    "assisted_viable_area_fraction": 1.0,
+    "natural_viable_area_fraction": 0.7071067811865474,
+    "settlement_state": "broad natural settlement potential"
+  },
+  "bands": [
+    {
+      "latitude_deg": -87.5,
+      "temperature_c": -44.195444524351345,
+      "natural_support": 0.011265290387519961,
+      "assisted_support": 0.5428585398639619,
+      "technology_dependency": 0.5315932494764419,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9974446283140328,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -82.5,
+      "temperature_c": -42.92341437702718,
+      "natural_support": 0.011823192268671333,
+      "assisted_support": 0.542980321627436,
+      "technology_dependency": 0.5311571293587647,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9967460124750231,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -77.5,
+      "temperature_c": -40.418004074726994,
+      "natural_support": 0.01296621020530155,
+      "assisted_support": 0.5433123463762617,
+      "technology_dependency": 0.5303461361709602,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9948381258376263,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -72.5,
+      "temperature_c": -36.75533924168741,
+      "natural_support": 0.014735857411884733,
+      "assisted_support": 0.5441137753582509,
+      "technology_dependency": 0.5293779179463661,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9902136853398482,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -67.5,
+      "temperature_c": -32.046708095462435,
+      "natural_support": 0.11086307845454232,
+      "assisted_support": 0.5480199683146944,
+      "technology_dependency": 0.437156889860152,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9790420262727183,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9887454664259333,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -62.5,
+      "temperature_c": -26.435180010747843,
+      "natural_support": 0.1615609782884191,
+      "assisted_support": 0.5562175732836829,
+      "technology_dependency": 0.39465659499526384,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9525009276015424,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9673608104986936,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -57.5,
+      "temperature_c": -20.091258428827462,
+      "natural_support": 0.21215695923929975,
+      "assisted_support": 0.5699009993227426,
+      "technology_dependency": 0.35774404008344285,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.8934468186207883,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9431851174948052,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -52.5,
+      "temperature_c": -13.207700196788714,
+      "natural_support": 0.26519823872771575,
+      "assisted_support": 0.5915506550578639,
+      "technology_dependency": 0.3263524163301481,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.7775301771368224,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9169529536127002,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": -47.5,
+      "temperature_c": -5.993658748263567,
+      "natural_support": 0.31811659166129963,
+      "assisted_support": 0.6208941867220703,
+      "technology_dependency": 0.3027775950607707,
+      "agriculture_potential": 0.0004209132189749734,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.5886945810238842,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.8894613698778212,
+        "food": 0.9195040535842571
+      }
+    },
+    {
+      "latitude_deg": -42.5,
+      "temperature_c": 1.3316709178156647,
+      "natural_support": 0.616294835918744,
+      "assisted_support": 0.7688455608270255,
+      "technology_dependency": 0.15255072490828148,
+      "agriculture_potential": 0.057792635325944315,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.3486804712501409,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.8275466842790934
+      }
+    },
+    {
+      "latitude_deg": -37.5,
+      "temperature_c": 8.545712366340815,
+      "natural_support": 0.6934041458432249,
+      "assisted_support": 0.8059376575908364,
+      "technology_dependency": 0.1125335117476115,
+      "agriculture_potential": 0.11984245243024988,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.12884693636789224,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.7675333233661102
+      }
+    },
+    {
+      "latitude_deg": -32.5,
+      "temperature_c": 15.429270598379555,
+      "natural_support": 0.7490785233358653,
+      "assisted_support": 0.8316389948412489,
+      "technology_dependency": 0.08256047150538359,
+      "agriculture_potential": 0.19608641668376495,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.010146704720222943,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6989844711587362
+      }
+    },
+    {
+      "latitude_deg": -27.5,
+      "temperature_c": 21.77319218029994,
+      "natural_support": 0.7804578537178163,
+      "assisted_support": 0.843657088802853,
+      "technology_dependency": 0.06319923508503666,
+      "agriculture_potential": 0.2760012944245188,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.02173105020169952,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6260513131955794
+      }
+    },
+    {
+      "latitude_deg": -22.5,
+      "temperature_c": 27.384720265014522,
+      "natural_support": 0.7589304888651058,
+      "assisted_support": 0.83056571410552,
+      "technology_dependency": 0.07163522524041421,
+      "agriculture_potential": 0.24170187638156487,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.1270832460870116,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6356152625966567
+      }
+    },
+    {
+      "latitude_deg": -17.5,
+      "temperature_c": 32.09335141123951,
+      "natural_support": 0.7224877686962874,
+      "assisted_support": 0.8101519800115403,
+      "technology_dependency": 0.08766421131525293,
+      "agriculture_potential": 0.19362489778402533,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.26399346928466505,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6620956107407667
+      }
+    },
+    {
+      "latitude_deg": -12.5,
+      "temperature_c": 35.75601624427912,
+      "natural_support": 0.6836639052068564,
+      "assisted_support": 0.7897145122240682,
+      "technology_dependency": 0.1060506070172118,
+      "agriculture_potential": 0.14982481410341134,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.3852485327921482,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6930718733159253
+      }
+    },
+    {
+      "latitude_deg": -7.5,
+      "temperature_c": 38.2614265465793,
+      "natural_support": 0.6544280324463454,
+      "assisted_support": 0.7749317867437466,
+      "technology_dependency": 0.12050375429740123,
+      "agriculture_potential": 0.12107545774089482,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.46928326756319183,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.7142608848472239
+      }
+    },
+    {
+      "latitude_deg": -2.5,
+      "temperature_c": 39.53345669390344,
+      "natural_support": 0.6388550276479912,
+      "assisted_support": 0.7673112089457924,
+      "technology_dependency": 0.12845618129780123,
+      "agriculture_potential": 0.1068924482942902,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.5110869479300238,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.725018827941441
+      }
+    },
+    {
+      "latitude_deg": 2.5,
+      "temperature_c": 39.53345669390344,
+      "natural_support": 0.6388550276479912,
+      "assisted_support": 0.7673112089457924,
+      "technology_dependency": 0.12845618129780123,
+      "agriculture_potential": 0.1068924482942902,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.5110869479300238,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.725018827941441
+      }
+    },
+    {
+      "latitude_deg": 7.5,
+      "temperature_c": 38.2614265465793,
+      "natural_support": 0.6544280324463454,
+      "assisted_support": 0.7749317867437466,
+      "technology_dependency": 0.12050375429740123,
+      "agriculture_potential": 0.12107545774089482,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.46928326756319183,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.7142608848472239
+      }
+    },
+    {
+      "latitude_deg": 12.5,
+      "temperature_c": 35.75601624427912,
+      "natural_support": 0.6836639052068564,
+      "assisted_support": 0.7897145122240682,
+      "technology_dependency": 0.1060506070172118,
+      "agriculture_potential": 0.14982481410341134,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.3852485327921482,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6930718733159253
+      }
+    },
+    {
+      "latitude_deg": 17.5,
+      "temperature_c": 32.09335141123951,
+      "natural_support": 0.7224877686962874,
+      "assisted_support": 0.8101519800115403,
+      "technology_dependency": 0.08766421131525293,
+      "agriculture_potential": 0.19362489778402533,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.26399346928466505,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6620956107407667
+      }
+    },
+    {
+      "latitude_deg": 22.5,
+      "temperature_c": 27.384720265014522,
+      "natural_support": 0.7589304888651058,
+      "assisted_support": 0.83056571410552,
+      "technology_dependency": 0.07163522524041421,
+      "agriculture_potential": 0.24170187638156487,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.1270832460870116,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6356152625966567
+      }
+    },
+    {
+      "latitude_deg": 27.5,
+      "temperature_c": 21.77319218029994,
+      "natural_support": 0.7804578537178163,
+      "assisted_support": 0.843657088802853,
+      "technology_dependency": 0.06319923508503666,
+      "agriculture_potential": 0.2760012944245188,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.02173105020169952,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6260513131955794
+      }
+    },
+    {
+      "latitude_deg": 32.5,
+      "temperature_c": 15.429270598379555,
+      "natural_support": 0.7490785233358653,
+      "assisted_support": 0.8316389948412489,
+      "technology_dependency": 0.08256047150538359,
+      "agriculture_potential": 0.19608641668376495,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.010146704720222943,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.6989844711587362
+      }
+    },
+    {
+      "latitude_deg": 37.5,
+      "temperature_c": 8.545712366340815,
+      "natural_support": 0.6934041458432249,
+      "assisted_support": 0.8059376575908364,
+      "technology_dependency": 0.1125335117476115,
+      "agriculture_potential": 0.11984245243024988,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.12884693636789224,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.7675333233661102
+      }
+    },
+    {
+      "latitude_deg": 42.5,
+      "temperature_c": 1.3316709178156647,
+      "natural_support": 0.616294835918744,
+      "assisted_support": 0.7688455608270255,
+      "technology_dependency": 0.15255072490828148,
+      "agriculture_potential": 0.057792635325944315,
+      "state": "assisted-compatible",
+      "natural_state": "natural-compatible",
+      "stress_components": {
+        "thermal": 0.3486804712501409,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.1108031583623339,
+        "food": 0.8275466842790934
+      }
+    },
+    {
+      "latitude_deg": 47.5,
+      "temperature_c": -5.993658748263567,
+      "natural_support": 0.31811659166129963,
+      "assisted_support": 0.6208941867220703,
+      "technology_dependency": 0.3027775950607707,
+      "agriculture_potential": 0.0004209132189749734,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.5886945810238842,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.8894613698778212,
+        "food": 0.9195040535842571
+      }
+    },
+    {
+      "latitude_deg": 52.5,
+      "temperature_c": -13.207700196788714,
+      "natural_support": 0.26519823872771575,
+      "assisted_support": 0.5915506550578639,
+      "technology_dependency": 0.3263524163301481,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.7775301771368224,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9169529536127002,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 57.5,
+      "temperature_c": -20.091258428827462,
+      "natural_support": 0.21215695923929975,
+      "assisted_support": 0.5699009993227426,
+      "technology_dependency": 0.35774404008344285,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.8934468186207883,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9431851174948052,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 62.5,
+      "temperature_c": -26.435180010747843,
+      "natural_support": 0.1615609782884191,
+      "assisted_support": 0.5562175732836829,
+      "technology_dependency": 0.39465659499526384,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9525009276015424,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9673608104986936,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 67.5,
+      "temperature_c": -32.046708095462435,
+      "natural_support": 0.11086307845454232,
+      "assisted_support": 0.5480199683146944,
+      "technology_dependency": 0.437156889860152,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9790420262727183,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.9887454664259333,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 72.5,
+      "temperature_c": -36.75533924168741,
+      "natural_support": 0.014735857411884733,
+      "assisted_support": 0.5441137753582509,
+      "technology_dependency": 0.5293779179463661,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9902136853398482,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 77.5,
+      "temperature_c": -40.418004074726994,
+      "natural_support": 0.01296621020530155,
+      "assisted_support": 0.5433123463762617,
+      "technology_dependency": 0.5303461361709602,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9948381258376263,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 82.5,
+      "temperature_c": -42.92341437702718,
+      "natural_support": 0.011823192268671333,
+      "assisted_support": 0.542980321627436,
+      "technology_dependency": 0.5311571293587647,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9967460124750231,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    },
+    {
+      "latitude_deg": 87.5,
+      "temperature_c": -44.195444524351345,
+      "natural_support": 0.011265290387519961,
+      "assisted_support": 0.5428585398639619,
+      "technology_dependency": 0.5315932494764419,
+      "agriculture_potential": 0.0,
+      "state": "refuge-only",
+      "natural_state": "natural-hostile",
+      "stress_components": {
+        "thermal": 0.9974446283140328,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 1.0,
+        "food": 0.9202411664518575
+      }
+    }
+  ],
+  "limitations": [
+    "generic population model; no individual medical prediction",
+    "does not model age, disease, pregnancy, acclimatization, genetics, or anatomy",
+    "oxygen and pressure are broad environmental support proxies",
+    "technology is a generic support index, not a specific life-support design",
+    "agriculture is potential only and does not include crops, soils, pests, seasons, or logistics",
+    "no demography, migration, culture, governance, or evolution yet",
+    "technology improves survival support but does not automatically create biological adaptation"
+  ],
+  "next_model": "demography, migration, settlement networks, agriculture systems, and population-level evolutionary pressures"
+}
