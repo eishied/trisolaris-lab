@@ -3227,7 +3227,7 @@ function interplanetaryWorldCatalog(){
     const teq=planet.equilibrium_temperature_k;
     const gravity=planet.mass_earth&&planet.radius_earth?planet.mass_earth/Math.pow(planet.radius_earth,2):null;
     const thermal=teq==null?0:Math.exp(-Math.pow((teq-288)/95,2));
-    const gravitySupport=gravity==null?.45:Math.exp(-Math.pow((gravity-1)/.70,2));
+    const gravitySupport=gravity==null ? .45 : Math.exp(-Math.pow((gravity-1)/.70,2));
     const burden=Math.max(0,Math.min(1,.56*(1-thermal)+.16*(1-gravitySupport)+.28));
     const controlled=burden>=.55||(teq!=null&&teq>=360);
     worlds.push({
