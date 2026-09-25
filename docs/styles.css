@@ -1555,3 +1555,228 @@ body[data-mode="scientific"] .simple-only{display:none!important}
     border-left:0
   }
 }
+
+
+/* Phase 9 — multiplanetary settlement */
+.interplanetarySystem{
+  margin-top:48px;
+  padding:48px 0 40px;
+  border-top:1px solid var(--line)
+}
+.interplanetaryIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:38px;
+  align-items:end
+}
+.interplanetaryIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(34px,4.7vw,58px);
+  line-height:1.02;
+  letter-spacing:-.05em
+}
+.interplanetaryIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#96a4ad;
+  font-size:15px
+}
+.interplanetaryWorldList{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  margin-top:28px;
+  border:1px solid var(--line);
+  background:var(--line)
+}
+.interplanetaryWorld{
+  background:#080d12;
+  padding:18px 20px;
+  min-height:150px
+}
+.interplanetaryWorld[aria-current="true"]{
+  background:
+    radial-gradient(circle at 86% 12%,rgba(95,176,210,.13),transparent 34%),
+    #091016
+}
+.interplanetaryWorld span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.interplanetaryWorld strong{
+  display:block;
+  margin-top:7px;
+  color:#e2e9ec;
+  font-size:18px
+}
+.interplanetaryWorld p{
+  margin:8px 0 0;
+  color:#87949d;
+  font-size:11px;
+  line-height:1.45
+}
+.interplanetaryWorld em{
+  display:block;
+  margin-top:14px;
+  color:#9fb0b9;
+  font-style:normal;
+  font-size:10px
+}
+.interplanetaryControls{
+  display:grid;
+  grid-template-columns:1fr 1.15fr 1.15fr auto;
+  align-items:stretch;
+  margin-top:22px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.interplanetaryControls label{
+  display:grid;
+  gap:8px;
+  padding:15px 18px 15px 0
+}
+.interplanetaryControls label+label{
+  border-left:1px solid var(--line);
+  padding-left:18px
+}
+.interplanetaryControls label>span{
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.interplanetaryControls output{
+  color:#dce4e8;
+  font-size:13px
+}
+.interplanetaryControls select{
+  width:100%;
+  color:#dce4e8;
+  background:#080d12;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:8px 10px
+}
+.interplanetaryControls input[type="range"]{width:100%}
+.interplanetaryLaunchButton{
+  align-self:stretch;
+  min-width:210px;
+  border:0;
+  border-left:1px solid var(--line);
+  background:#0b1116;
+  color:#dce4e8;
+  padding:16px 20px;
+  cursor:pointer;
+  font:inherit
+}
+.interplanetaryLaunchButton[aria-pressed="true"]{
+  background:linear-gradient(135deg,rgba(84,165,197,.18),rgba(255,255,255,.025))
+}
+.interplanetaryStatus{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  margin-top:22px
+}
+.interplanetaryStatus article{
+  padding:0 20px 0 0
+}
+.interplanetaryStatus article+article{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.interplanetaryStatus span,
+.interplanetarySequence span,
+.interplanetaryNarrative span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.interplanetaryStatus strong{
+  display:block;
+  margin-top:6px;
+  color:#e2e9ec;
+  font-size:16px;
+  line-height:1.35
+}
+.interplanetarySequence{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);
+  align-items:stretch;
+  margin-top:26px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:#070c10
+}
+.interplanetarySequence article{
+  padding:22px 20px;
+  min-height:150px
+}
+.interplanetarySequence strong{
+  display:block;
+  margin-top:8px;
+  color:#e5ecef;
+  font-size:21px;
+  letter-spacing:-.02em
+}
+.interplanetarySequence p{
+  margin:9px 0 0;
+  color:#83919a;
+  font-size:11px;
+  line-height:1.45
+}
+.interplanetarySequence>i{
+  display:grid;
+  place-items:center;
+  width:34px;
+  border-left:1px solid var(--line);
+  border-right:1px solid var(--line);
+  color:#52616a;
+  font-style:normal
+}
+.interplanetaryNarrative{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--line)
+}
+.interplanetaryNarrative article{
+  padding:19px 20px 19px 0
+}
+.interplanetaryNarrative article+article{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.interplanetaryNarrative strong{
+  display:block;
+  margin-top:7px;
+  color:#dce4e8;
+  font-size:14px;
+  line-height:1.45
+}
+.interplanetarySystem .metricGrid{margin-top:18px}
+
+@media(max-width:900px){
+  .interplanetaryWorldList{grid-template-columns:1fr}
+  .interplanetaryControls{grid-template-columns:1fr 1fr}
+  .interplanetaryLaunchButton{border-left:0;border-top:1px solid var(--line);grid-column:1/-1}
+  .interplanetarySequence{grid-template-columns:1fr}
+  .interplanetarySequence>i{width:auto;height:28px;border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+}
+@media(max-width:780px){
+  .interplanetaryIntro{grid-template-columns:1fr;gap:9px}
+  .interplanetaryIntro>p:last-child{grid-column:1;grid-row:auto}
+  .interplanetaryControls{grid-template-columns:1fr}
+  .interplanetaryControls label,
+  .interplanetaryControls label+label{border-left:0;padding:14px 0}
+  .interplanetaryControls label+label{border-top:1px solid var(--line)}
+  .interplanetaryStatus,.interplanetaryNarrative{grid-template-columns:1fr}
+  .interplanetaryStatus article+article,
+  .interplanetaryNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:14px;margin-top:14px}
+}

@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase8a-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase9a-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -636,6 +636,100 @@
         </p>
       </section>
 
+
+      <section class="interplanetarySystem" aria-labelledby="interplanetaryHeadline">
+        <div class="interplanetaryIntro">
+          <p class="eyebrow">MULTIPLANETARIO · PHASE 9.0</p>
+          <h3 id="interplanetaryHeadline">Salir de H-01 deja de ser una idea y se convierte en una cadena de consecuencias.</h3>
+          <p>
+            Los mundos observados no se marcan como “colonizables”. Primero se evalúan sus condiciones conocidas,
+            la carga de mantener un hábitat, la capacidad real de la población seleccionada y el cuello de botella
+            que produciría una salida fuera del planeta.
+          </p>
+        </div>
+
+        <div id="interplanetaryWorldList" class="interplanetaryWorldList" aria-label="Mundos del sistema y carga de asentamiento"></div>
+
+        <div class="interplanetaryControls">
+          <label>
+            <span>Destino</span>
+            <select id="interplanetaryDestination"></select>
+          </label>
+          <label>
+            <span>Grupo fundador</span>
+            <output id="interplanetaryFounderOut">500 personas</output>
+            <input id="interplanetaryFounder" type="range" min="50" max="5000" step="50" value="500" />
+          </label>
+          <label>
+            <span>Intercambio posterior</span>
+            <output id="interplanetaryExchangeOut">30%</output>
+            <input id="interplanetaryExchange" type="range" min="0" max="100" step="1" value="30" />
+          </label>
+          <button id="interplanetaryLaunchBtn" class="interplanetaryLaunchButton" type="button" aria-pressed="false">
+            Preparar intento de asentamiento
+          </button>
+        </div>
+
+        <div class="interplanetaryStatus">
+          <article>
+            <span>Población</span>
+            <strong id="interplanetaryPopulation">—</strong>
+          </article>
+          <article>
+            <span>Estado del escenario</span>
+            <strong id="interplanetaryStatus">—</strong>
+          </article>
+          <article>
+            <span>Rama extraplanetaria</span>
+            <strong id="interplanetaryBranch">—</strong>
+          </article>
+        </div>
+
+        <div class="interplanetarySequence" aria-label="Cadena causal del asentamiento extraplanetario">
+          <article>
+            <span>01 · Origen</span>
+            <strong>H-01</strong>
+            <p id="interplanetaryDeparture">Evaluando capacidad de salida…</p>
+          </article>
+          <i aria-hidden="true">→</i>
+          <article>
+            <span>02 · Transferencia</span>
+            <strong id="interplanetaryTransfer">—</strong>
+            <p id="interplanetaryTransit">Órbita idealizada alrededor de LTT 1445 A.</p>
+          </article>
+          <i aria-hidden="true">→</i>
+          <article>
+            <span>03 · Llegada</span>
+            <strong id="interplanetaryArrival">—</strong>
+            <p id="interplanetaryHabitat">Evaluando carga del hábitat…</p>
+          </article>
+          <i aria-hidden="true">→</i>
+          <article>
+            <span>04 · Historia</span>
+            <strong id="interplanetaryHistory">—</strong>
+            <p id="interplanetaryIsolation">Sin asentamiento no hay divergencia extraplanetaria.</p>
+          </article>
+        </div>
+
+        <div class="interplanetaryNarrative">
+          <article>
+            <span>Por qué</span>
+            <strong id="interplanetaryWhy">—</strong>
+          </article>
+          <article>
+            <span>Qué puede fallar</span>
+            <strong id="interplanetaryRisk">—</strong>
+          </article>
+        </div>
+
+        <div id="interplanetaryMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">
+          El tiempo de viaje usa una transferencia de Hohmann idealizada entre órbitas circulares y coplanares.
+          No incluye escape/captura, propulsión, radiación, masa de soporte vital ni ventanas N-body. Una rama
+          extraplanetaria no equivale a una especie nueva y no implica cambios anatómicos automáticos.
+        </p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -708,6 +802,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase8a-20260925"></script>
+  <script type="module" src="./app.js?v=phase9a-20260925"></script>
 </body>
 </html>

@@ -75,6 +75,9 @@ jobs:
       - name: Build astroanthropology baseline
         run: python pipelines/human/build_astroanthropology_baseline.py
 
+      - name: Build interplanetary settlement baseline
+        run: python pipelines/human/build_interplanetary_baseline.py
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
@@ -92,6 +95,7 @@ jobs:
             frontend/data/planetary-history-baseline.json docs/data/planetary-history-baseline.json
             frontend/data/demography-baseline.json docs/data/demography-baseline.json
             frontend/data/astroanthropology-baseline.json docs/data/astroanthropology-baseline.json
+            frontend/data/interplanetary-baseline.json docs/data/interplanetary-baseline.json
           )
           if git diff --quiet -- "${FILES[@]}" && git ls-files --others --exclude-standard -- "${FILES[@]}" | grep -q '^$'; then
             echo "No scientific-data changes detected."
@@ -100,5 +104,5 @@ jobs:
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
           git add "${FILES[@]}"
-          git commit -m "data: refresh orbital, climate, ecology, settlement, lineage, demography and astroanthropology baselines"
+          git commit -m "data: refresh orbital, climate, ecology, settlement, lineage, demography, astroanthropology and interplanetary baselines"
           git push
