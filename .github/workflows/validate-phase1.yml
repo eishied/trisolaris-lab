@@ -52,6 +52,8 @@ jobs:
           python -m py_compile pipelines/research/build_research_release_baseline.py
           python -m py_compile engine/research/note_builder.py
           python -m py_compile pipelines/research/build_research_note.py
+          python -m py_compile engine/research/review_gate.py
+          python -m py_compile pipelines/research/build_manuscript_review_gate.py
           python -m py_compile engine/evolution/lineages.py
           python -m py_compile pipelines/evolution/build_lineage_baseline.py
           python -m py_compile engine/evolution/popgen.py
@@ -82,6 +84,7 @@ jobs:
           python pipelines/evolution/build_counterfactual_replay_baseline.py
           python pipelines/research/build_research_release_baseline.py
           python pipelines/research/build_research_note.py
+          python pipelines/research/build_manuscript_review_gate.py
 
       - name: Validate JSON
         run: |
@@ -112,6 +115,9 @@ jobs:
             publications/research-notes/RN-TRISOLARIS-0001/evidence.json
             publications/research-notes/RN-TRISOLARIS-0001/experiments.json
             publications/research-notes/RN-TRISOLARIS-0001/summary.json
+            publications/research-notes/RN-TRISOLARIS-0001/review-input.json
+            publications/research-notes/RN-TRISOLARIS-0001/review-gate.json
+            frontend/data/manuscript-review-gate-baseline.json docs/data/manuscript-review-gate-baseline.json
           )
           for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
@@ -142,6 +148,7 @@ jobs:
           cmp frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
           cmp frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
           cmp frontend/data/research-note-baseline.json docs/data/research-note-baseline.json
+          cmp frontend/data/manuscript-review-gate-baseline.json docs/data/manuscript-review-gate-baseline.json
 
       - name: Validate research note package
         run: |
@@ -154,6 +161,7 @@ jobs:
           test -s publications/research-notes/RN-TRISOLARIS-0001/figures/counterfactual-deltas.svg
           grep -q "status: RESEARCH_NOTE" publications/research-notes/RN-TRISOLARIS-0001/paper.md
           grep -q "arxiv_ready: false" publications/research-notes/RN-TRISOLARIS-0001/paper.md
+          python -c 'import json; p=json.load(open("publications/research-notes/RN-TRISOLARIS-0001/review-gate.json")); assert p["summary"]["status_changed_automatically"] is False'
 
       - name: Validate JavaScript syntax
         run: |
