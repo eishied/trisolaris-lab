@@ -1,0 +1,582 @@
+{
+  "release_id": "REL-TRISOLARIS-0001",
+  "experiment_id": "EXP-TRISOLARIS-0001",
+  "publication_state": "RESEARCH_NOTE",
+  "epistemic_level": "MODELED",
+  "title": "TRISOLARIS baseline evolutionary replay and counterfactual release",
+  "research_question": "Are modeled multiplanetary outcomes robust to declared uncertainty, and which single interventions alter the simulated historical trajectory?",
+  "git_commit": "149fec82a6066a6251d3dbbf58fb8bae37065784",
+  "datasets": [
+    {
+      "name": "climate",
+      "path": "frontend/data/climate-baseline.json",
+      "model": "latitudinal_ebm_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "stellar_flux_earth": 0.9802510941235127,
+        "albedo": 0.3,
+        "greenhouse_k": 33.0,
+        "bands": 36
+      },
+      "summary": {
+        "global_mean_temperature_c": 11.659314519407433,
+        "minimum_band_temperature_c": -44.195444524351345,
+        "maximum_band_temperature_c": 39.53345669390344,
+        "equator_to_pole_contrast_k": 83.72890121825478,
+        "thermal_liquid_window_area_fraction": 0.7071067811865475
+      },
+      "limitations": [
+        "annual-mean latitude-only model",
+        "Earth-calibrated outgoing-longwave coefficients",
+        "no longitude, continents, ocean dynamics, clouds, seasons, topography, pressure, or atmospheric chemistry",
+        "liquid-water score is temperature-only and is not evidence of actual surface water",
+        "greenhouse control is an offset relative to an Earth-like calibration"
+      ]
+    },
+    {
+      "name": "surface",
+      "path": "frontend/data/surface-baseline.json",
+      "model": "surface_systems_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "pressure_bar": 1.0,
+        "water_inventory_earth_oceans": 1.0,
+        "stellar_flux_earth": 0.9802510941235127,
+        "spectral_productivity_factor": 0.55
+      },
+      "summary": {
+        "boiling_point_c_approx": 100.0,
+        "liquid_surface_proxy_area_fraction": 0.6440360538473401,
+        "ice_proxy_area_fraction": 0.2604397251060117,
+        "vapor_stress_area_fraction": 0.024751507558022644,
+        "hydrological_cycle_strength": 0.8891968416376661,
+        "atmospheric_retention_proxy": 0.6584402217678189,
+        "biosphere_productivity_potential": 0.16320919637463258,
+        "thermal_hydrological_refugia_fraction": 0.7071067811865474,
+        "biosphere_state": "regional biosphere potential"
+      },
+      "limitations": [
+        "assumes an Earth-mass/radius reference world for atmospheric-retention screening",
+        "does not solve atmospheric chemistry or radiative transfer",
+        "water fractions are thermodynamic proxies, not a 3-D ocean model",
+        "no topography, salinity, groundwater, clouds, precipitation transport, or ocean circulation",
+        "productivity is a potential index, not simulated or observed life",
+        "spectral productivity factor is exploratory and not a measured PAR spectrum for LTT 1445 A",
+        "no UV flare ecology, nutrient cycles, evolution, predation, or food web yet"
+      ]
+    },
+    {
+      "name": "foodweb",
+      "path": "frontend/data/foodweb-baseline.json",
+      "model": "ecological_guild_support_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "oxygen_fraction": 0.21,
+        "nutrient_availability_relative": 1.0,
+        "life_seeded": false
+      },
+      "summary": {
+        "environmental_trophic_depth_potential": 1,
+        "supported_guilds_above_0_25": [
+          "Microbios anaerobios",
+          "Microbios aerobios",
+          "Descomponedores"
+        ],
+        "life_state": "environmental support only; life not assumed",
+        "maximum_guild_support": 0.7382726733327881
+      },
+      "limitations": [
+        "does not model abiogenesis",
+        "does not create species automatically",
+        "guild support is not biomass",
+        "oxygen thresholds are broad ecological proxies",
+        "nutrient availability is a dimensionless exploratory control",
+        "does not model genetics, evolution, disease, predation dynamics, or ecological succession",
+        "no explicit carbon, nitrogen, phosphorus, or sulfur cycle yet"
+      ]
+    },
+    {
+      "name": "settlement",
+      "path": "frontend/data/settlement-baseline.json",
+      "model": "human_settlement_support_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "pressure_bar": 1.0,
+        "oxygen_fraction": 0.21,
+        "oxygen_partial_pressure_bar": 0.21,
+        "technology_support": 0.4,
+        "nutrient_availability_relative": 1.0
+      },
+      "summary": {
+        "natural_support_mean": 0.5487256531520373,
+        "assisted_support_mean": 0.7354192872196377,
+        "technology_dependency_mean": 0.18669363406760042,
+        "agriculture_potential_mean": 0.11596085034035004,
+        "assisted_viable_area_fraction": 1.0,
+        "natural_viable_area_fraction": 0.7071067811865474,
+        "settlement_state": "broad natural settlement potential"
+      },
+      "limitations": [
+        "generic population model; no individual medical prediction",
+        "does not model age, disease, pregnancy, acclimatization, genetics, or anatomy",
+        "oxygen and pressure are broad environmental support proxies",
+        "technology is a generic support index, not a specific life-support design",
+        "agriculture is potential only and does not include crops, soils, pests, seasons, or logistics",
+        "no demography, migration, culture, governance, or evolution yet",
+        "technology improves survival support but does not automatically create biological adaptation"
+      ]
+    },
+    {
+      "name": "lineage",
+      "path": "frontend/data/lineage-baseline.json",
+      "model": "population_lineage_divergence_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "generation_years": 28.0,
+        "generations": 1785.7142857142858,
+        "selection_rate_per_generation": 0.00035,
+        "technology_buffer": 0.4
+      },
+      "summary": {
+        "lineage_count": 1,
+        "maximum_divergence_index": 0.08744758897187932,
+        "incipient_isolation_candidate_count": 0,
+        "species_count": 0,
+        "taxonomic_rule": "time alone never creates a species"
+      },
+      "limitations": [
+        "abstract physiological trait indices, not a genomic simulation",
+        "effective population size is a scenario proxy",
+        "selection targets come from broad environmental stress proxies",
+        "no explicit loci, recombination, dominance, epistasis or developmental genetics yet",
+        "reproductive compatibility is a heuristic proxy, not a biological test",
+        "no species is assigned automatically",
+        "no culture, language, ethnicity or appearance category is inferred"
+      ]
+    },
+    {
+      "name": "population_genetics",
+      "path": "frontend/data/popgen-baseline.json",
+      "model": "population_genetics_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "generation_years": 28.0,
+        "generations": 1785.7142857142858,
+        "technology_buffer": 0.4,
+        "selection_scale": 0.002,
+        "mutation_rate": 1e-05
+      },
+      "summary": {
+        "mean_fst_proxy": 0.0,
+        "fst_by_locus": {
+          "THERM-A": 0.0,
+          "WATER-A": 0.0,
+          "OXY-A": 0.0,
+          "DIET-A": 0.0
+        },
+        "mean_heterozygosity": 0.3862929846709211
+      },
+      "limitations": [
+        "four abstract biallelic loci only",
+        "selection coefficients are environmental proxies",
+        "deterministic drift is used for reproducible scenarios",
+        "no recombination map, dominance, epistasis or developmental genetics",
+        "FST is a simple frequency-variance proxy",
+        "no species assignment follows automatically from allele frequencies"
+      ]
+    },
+    {
+      "name": "demography",
+      "path": "frontend/data/demography-baseline.json",
+      "model": "time_dependent_demography_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "total_years": 50000.0,
+        "view_years": 50000.0,
+        "disturbance": "none",
+        "severity": 0.0,
+        "disturbance_fraction": 0.55,
+        "disturbance_year": 27500.000000000004
+      },
+      "summary": {
+        "population_index_total": 418.82732911881277,
+        "carrying_capacity_index_total": 418.8273296790409,
+        "capacity_fraction_global": 0.9999999986623889,
+        "reserve_proxy_weighted": 0.2371744379410682,
+        "bottleneck_count": 0,
+        "collapse_count": 0
+      },
+      "limitations": [
+        "normalized population indices, not census forecasts",
+        "single deterministic disturbance scenario at a user-selected severity",
+        "logistic growth is a coarse demographic scaffold",
+        "no age structure, disease, fertility schedule or explicit mortality table yet",
+        "no political or cultural ranking is inferred"
+      ]
+    },
+    {
+      "name": "astroanthropology",
+      "path": "frontend/data/astroanthropology-baseline.json",
+      "model": "functional_astroanthropology_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "exchange_strength": 1.0
+      },
+      "summary": {
+        "population_count": 1,
+        "mean_knowledge_retention": 0.30195596632566685,
+        "mean_knowledge_transfer": 0.04389277807362778,
+        "mean_knowledge_loss_pressure": 0.29045291113123095,
+        "mean_system_redundancy": 0.18167218506961913,
+        "mean_technology_dependence": 0.15424910275953585,
+        "mean_cultural_exchange": 0.06982096916603336
+      },
+      "limitations": [
+        "functional strategy proxies, not predictions of real cultures",
+        "population aliases are UI labels, not inferred ethnonyms",
+        "no society is ranked as more advanced, superior or desirable",
+        "technology can be retained, exchanged, lost or rebuilt; no linear progress ladder is assumed",
+        "language, religion, political ideology and moral values are not inferred",
+        "institutions, conflict and economics are not yet explicitly modeled"
+      ]
+    },
+    {
+      "name": "interplanetary",
+      "path": "frontend/data/interplanetary-baseline.json",
+      "model": "interplanetary_settlement_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "founder_size": 500,
+        "exchange_strength": 0.3,
+        "launch_active": true
+      },
+      "summary": {
+        "destination_count": 2,
+        "population_count": 1,
+        "attempt_count": 2,
+        "launch_feasible_count": 0,
+        "persistent_settlement_count": 0,
+        "offworld_branch_count": 0
+      },
+      "limitations": [
+        "transfer time uses an idealized coplanar circular Hohmann half-period and excludes escape/capture maneuvers",
+        "equilibrium temperature is not surface temperature and no Earth-like atmosphere is assumed",
+        "settlement burden, survival, contact, gene flow and divergence are exploratory modeled proxies",
+        "population_index from earlier phases is not interpreted as a literal headcount; founder_size is explicit",
+        "an off-world lineage branch is not a new species and does not imply anatomical change",
+        "migration, settlement persistence and lineage divergence can all fail to occur"
+      ]
+    },
+    {
+      "name": "interplanetary_network",
+      "path": "frontend/data/interplanetary-network-baseline.json",
+      "model": "interplanetary_network_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "resupply_strength": 0.35,
+        "infrastructure_shock": 0.0,
+        "enable_return_migration": true
+      },
+      "summary": {
+        "colony_count": 0,
+        "active_colony_count": 0,
+        "collapsed_colony_count": 0,
+        "network_route_count": 0,
+        "offworld_population": 0,
+        "return_migrants": 0
+      },
+      "limitations": [
+        "population dynamics are reduced-order demographic proxies, not forecasts",
+        "resource production, life support and infrastructure are aggregated indices rather than engineering mass balances",
+        "resupply strength is an explicit scenario parameter, not an assumed capability",
+        "colony collapse remains possible after a successful Phase 9.0 arrival",
+        "population values are scenario headcounts only after the explicit founder cohort is created"
+      ]
+    },
+    {
+      "name": "offworld_divergence",
+      "path": "frontend/data/offworld-divergence-baseline.json",
+      "model": "offworld_divergence_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "generation_years": 28.0
+      },
+      "summary": {
+        "active_branch_population_count": 0,
+        "persistent_lineage_branch_count": 0,
+        "mean_divergence_proxy": 0.0,
+        "mean_gene_flow": 0.0
+      },
+      "limitations": [
+        "divergence is a reduced-order proxy and not a genomic simulation",
+        "no new species is asserted by this model",
+        "no anatomical feature is inferred without a separate explicit physiology/genetics model",
+        "selection pressure is buffered by controlled habitats and depends on infrastructure continuity",
+        "future SLiM integration should replace aggregate drift and selection proxies"
+      ]
+    },
+    {
+      "name": "evolutionary_replay",
+      "path": "frontend/data/evolutionary-replay-baseline.json",
+      "model": "evolutionary_replay_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "runs": 64,
+        "seed": 1445,
+        "uncertainty": 0.25,
+        "founder_size": 500,
+        "exchange_strength": 0.3,
+        "resupply_strength": 0.35,
+        "infrastructure_shock": 0.0
+      },
+      "summary": {
+        "runs": 64,
+        "dominant_outcome": "no-launch",
+        "dominant_frequency": 1.0,
+        "mean_outcome_score": 0.0,
+        "mean_divergence_proxy": 0.0,
+        "max_divergence_proxy": 0.0
+      },
+      "limitations": [
+        "ensemble frequencies are conditional on declared perturbation ranges and are not real-world probabilities",
+        "parameter perturbations are uniform scenario ranges, not empirically calibrated uncertainty distributions",
+        "the replay inherits all limitations of the underlying orbital, settlement, network and divergence models",
+        "a dominant ensemble outcome indicates robustness only within this model and perturbation envelope",
+        "the fixed random seed makes the baseline reproducible"
+      ]
+    },
+    {
+      "name": "counterfactual_replay",
+      "path": "frontend/data/counterfactual-replay-baseline.json",
+      "model": "counterfactual_replay_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "parameter": "capability",
+        "intervention_fraction": 0.2,
+        "runs": 64,
+        "seed": 1445,
+        "uncertainty": 0.25
+      },
+      "summary": {
+        "paired_run_count": 64,
+        "outcome_flip_count": 0,
+        "outcome_flip_fraction": 0.0,
+        "mean_outcome_score_delta": 0.0,
+        "mean_divergence_delta": 0.0,
+        "dominant_outcome_changed": false
+      },
+      "limitations": [
+        "the comparison isolates one declared model parameter while holding the replay seed fixed",
+        "paired differences are model-conditional effects, not causal estimates for the real world",
+        "the intervention range is a scenario choice rather than an empirically calibrated policy effect",
+        "all limitations of the underlying Evolutionary Replay and Phase 9 models still apply"
+      ]
+    }
+  ],
+  "evidence_ledger": [
+    {
+      "evidence_id": "EV-OBS-0001",
+      "epistemic_level": "OBSERVED",
+      "claim_scope": "confirmed planets around LTT 1445 A",
+      "source": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+      "detail": "2 planet rows retained from the official archive snapshot"
+    },
+    {
+      "evidence_id": "EV-LIT-0001",
+      "epistemic_level": "LITERATURE",
+      "claim_scope": "hierarchical triple-star architecture",
+      "source": "repository literature registry",
+      "detail": "hierarchical triple M-dwarf system"
+    },
+    {
+      "evidence_id": "EV-SPEC-0001",
+      "epistemic_level": "SPECULATIVE",
+      "claim_scope": "H-01 experimental world",
+      "source": "TRISOLARIS scenario definition",
+      "detail": "Interactive test world only. Its orbit is not asserted to be stable; future REBOUND ensembles must evaluate stability against observed planets and stellar companions."
+    },
+    {
+      "evidence_id": "EV-MOD-0001",
+      "epistemic_level": "MODELED",
+      "claim_scope": "climate",
+      "source": "frontend/data/climate-baseline.json",
+      "detail": "latitudinal_ebm_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0002",
+      "epistemic_level": "MODELED",
+      "claim_scope": "surface",
+      "source": "frontend/data/surface-baseline.json",
+      "detail": "surface_systems_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0003",
+      "epistemic_level": "MODELED",
+      "claim_scope": "foodweb",
+      "source": "frontend/data/foodweb-baseline.json",
+      "detail": "ecological_guild_support_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0004",
+      "epistemic_level": "MODELED",
+      "claim_scope": "settlement",
+      "source": "frontend/data/settlement-baseline.json",
+      "detail": "human_settlement_support_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0005",
+      "epistemic_level": "MODELED",
+      "claim_scope": "lineage",
+      "source": "frontend/data/lineage-baseline.json",
+      "detail": "population_lineage_divergence_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0006",
+      "epistemic_level": "MODELED",
+      "claim_scope": "population_genetics",
+      "source": "frontend/data/popgen-baseline.json",
+      "detail": "population_genetics_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0007",
+      "epistemic_level": "MODELED",
+      "claim_scope": "demography",
+      "source": "frontend/data/demography-baseline.json",
+      "detail": "time_dependent_demography_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0008",
+      "epistemic_level": "MODELED",
+      "claim_scope": "astroanthropology",
+      "source": "frontend/data/astroanthropology-baseline.json",
+      "detail": "functional_astroanthropology_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0009",
+      "epistemic_level": "MODELED",
+      "claim_scope": "interplanetary",
+      "source": "frontend/data/interplanetary-baseline.json",
+      "detail": "interplanetary_settlement_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0010",
+      "epistemic_level": "MODELED",
+      "claim_scope": "interplanetary_network",
+      "source": "frontend/data/interplanetary-network-baseline.json",
+      "detail": "interplanetary_network_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0011",
+      "epistemic_level": "MODELED",
+      "claim_scope": "offworld_divergence",
+      "source": "frontend/data/offworld-divergence-baseline.json",
+      "detail": "offworld_divergence_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0012",
+      "epistemic_level": "MODELED",
+      "claim_scope": "evolutionary_replay",
+      "source": "frontend/data/evolutionary-replay-baseline.json",
+      "detail": "evolutionary_replay_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0013",
+      "epistemic_level": "MODELED",
+      "claim_scope": "counterfactual_replay",
+      "source": "frontend/data/counterfactual-replay-baseline.json",
+      "detail": "counterfactual_replay_v0.1"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLM-0001",
+      "text": "Under the declared replay envelope, the dominant modeled outcome is no-launch with ensemble frequency 1.000.",
+      "evidence_ids": [
+        "EV-MOD-0012"
+      ],
+      "qualifier": "ensemble frequency is model-conditional and is not a real-world probability"
+    },
+    {
+      "claim_id": "CLM-0002",
+      "text": "In the paired baseline counterfactual, 0.000 of paired runs change outcome class.",
+      "evidence_ids": [
+        "EV-MOD-0013"
+      ],
+      "qualifier": "paired differences are causal only within the declared model intervention"
+    }
+  ],
+  "validation_checks": [
+    {
+      "check": "official_observed_source",
+      "passed": true,
+      "detail": "NASA source and observed planet rows are present"
+    },
+    {
+      "check": "speculative_world_labeled",
+      "passed": true,
+      "detail": "H-01 remains explicitly speculative"
+    },
+    {
+      "check": "model_versions_declared",
+      "passed": true,
+      "detail": "13/13 datasets declare a model id"
+    },
+    {
+      "check": "limitations_declared",
+      "passed": true,
+      "detail": "13/13 datasets declare limitations"
+    },
+    {
+      "check": "replay_seed_declared",
+      "passed": true,
+      "detail": "Evolutionary Replay seed: 1445"
+    },
+    {
+      "check": "counterfactual_seed_declared",
+      "passed": true,
+      "detail": "Counterfactual Replay seed: 1445"
+    },
+    {
+      "check": "git_commit_declared",
+      "passed": true,
+      "detail": "149fec82a6066a6251d3dbbf58fb8bae37065784"
+    }
+  ],
+  "reproducibility": {
+    "replay_seed": 1445,
+    "counterfactual_seed": 1445,
+    "dataset_count": 13,
+    "model_count": 13,
+    "all_limitations_declared": true,
+    "code_and_data_available": true
+  },
+  "summary": {
+    "checks_passed": 7,
+    "checks_total": 7,
+    "research_note_ready": true,
+    "claim_count": 2,
+    "evidence_item_count": 16
+  },
+  "limitations": [
+    "RESEARCH_NOTE readiness is an internal reproducibility gate, not peer review",
+    "the release does not claim ARXIV_READY status",
+    "model outputs inherit the limitations of every upstream model in the causal chain",
+    "deep-time outcomes remain scenario-dependent and are not forecasts",
+    "human review is required before any external scientific submission"
+  ],
+  "next_state_requirements": [
+    "claim-by-claim evidence review",
+    "structured uncertainty and sensitivity review",
+    "independent replication of key experiments",
+    "validated figures and tables tied to experiment ids",
+    "complete references and manuscript review"
+  ]
+}
