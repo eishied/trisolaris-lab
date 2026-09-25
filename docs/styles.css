@@ -1049,7 +1049,8 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .refugiaStage,
   .lineageStage,
   .geneticsStage,
-  .lineageInspectorStage{
+  .lineageInspectorStage,
+  .planetHistoryStage{
     overflow-x:auto;
     -webkit-overflow-scrolling:touch
   }
@@ -1062,7 +1063,8 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   #refugiaCanvas,
   #lineageCanvas,
   #geneticsCanvas,
-  #phenotypeCanvas{
+  #phenotypeCanvas,
+  #planetHistoryCanvas{
     width:820px;
     max-width:none;
     min-width:820px
@@ -1076,7 +1078,8 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .refugiaStage::after,
   .lineageStage::after,
   .geneticsStage::after,
-  .lineageInspectorStage::after{
+  .lineageInspectorStage::after,
+  .planetHistoryStage::after{
     content:"Desliza para explorar la visualización";
     display:block;
     position:sticky;
