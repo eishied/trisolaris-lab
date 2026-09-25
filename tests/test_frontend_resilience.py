@@ -206,10 +206,27 @@ class FrontendResilienceTests(unittest.TestCase):
         block = app[start:end]
         self.assertIn('safeRender("planetary-history",renderPlanetaryHistory)', block)
 
+    def test_phase7_1_playback_demography_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "historyPlayback",
+            "historyPlaybackOut",
+            "historyDisturbance",
+            "historySeverity",
+            "historySeverityOut",
+            "historyPlayBtn",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function simulateDemography(", app)
+        self.assertIn("function demographicVulnerability(", app)
+        self.assertIn("historyPlaybackTimer", app)
+        self.assertIn('"population":"población / capacidad"', app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase7b-20260925", html)
-        self.assertIn("app.js?v=phase7b-20260925", html)
+        self.assertIn("styles.css?v=phase7c-20260925", html)
+        self.assertIn("app.js?v=phase7c-20260925", html)
 
 
 if __name__ == "__main__":
