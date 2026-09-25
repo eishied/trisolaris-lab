@@ -22,6 +22,8 @@ jobs:
           python -m py_compile engine/orbital/nbody.py
           python -m py_compile pipelines/orbital/build_screen.py
           python -m py_compile pipelines/orbital/build_nbody_ensemble.py
+          python -m py_compile engine/climate/latitudinal_ebm.py
+          python -m py_compile pipelines/climate/build_climate_baseline.py
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
@@ -32,6 +34,9 @@ jobs:
       - name: Smoke-test N-body pipeline
         run: python pipelines/orbital/build_nbody_ensemble.py --runs 2 --years 2 --samples 16
 
+      - name: Build climate baseline
+        run: python pipelines/climate/build_climate_baseline.py
+
       - name: Validate JSON
         run: |
           python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
@@ -41,6 +46,8 @@ jobs:
           python -m json.tool docs/data/orbital-screen.json > /dev/null
           python -m json.tool frontend/data/nbody-ensemble.json > /dev/null
           python -m json.tool docs/data/nbody-ensemble.json > /dev/null
+          python -m json.tool frontend/data/climate-baseline.json > /dev/null
+          python -m json.tool docs/data/climate-baseline.json > /dev/null
 
       - name: Validate public app files
         run: |
@@ -56,6 +63,7 @@ jobs:
           cmp frontend/data/ltt1445.json docs/data/ltt1445.json
           cmp frontend/data/orbital-screen.json docs/data/orbital-screen.json
           cmp frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
+          cmp frontend/data/climate-baseline.json docs/data/climate-baseline.json
 
       - name: Validate JavaScript syntax
         run: |

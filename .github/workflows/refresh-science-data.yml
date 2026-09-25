@@ -34,10 +34,13 @@ jobs:
       - name: Build pilot N-body ensemble
         run: python pipelines/orbital/build_nbody_ensemble.py --runs 12 --years 100 --samples 160
 
+      - name: Build climate baseline
+        run: python pipelines/climate/build_climate_baseline.py
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
-          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json; then
+          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json frontend/data/climate-baseline.json docs/data/climate-baseline.json; then
             echo "No scientific-data changes detected."
             exit 0
           fi
