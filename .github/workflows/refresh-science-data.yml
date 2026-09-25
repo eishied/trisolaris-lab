@@ -63,6 +63,9 @@ jobs:
       - name: Build lineage divergence baseline
         run: python pipelines/evolution/build_lineage_baseline.py
 
+      - name: Build population genetics baseline
+        run: python pipelines/evolution/build_popgen_baseline.py
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
@@ -76,6 +79,7 @@ jobs:
             frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
             frontend/data/refugia-baseline.json docs/data/refugia-baseline.json
             frontend/data/lineage-baseline.json docs/data/lineage-baseline.json
+            frontend/data/popgen-baseline.json docs/data/popgen-baseline.json
           )
           if git diff --quiet -- "${FILES[@]}" && git ls-files --others --exclude-standard -- "${FILES[@]}" | grep -q '^$'; then
             echo "No scientific-data changes detected."
