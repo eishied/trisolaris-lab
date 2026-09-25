@@ -48,6 +48,8 @@ jobs:
           python -m py_compile pipelines/evolution/build_evolutionary_replay_baseline.py
           python -m py_compile engine/evolution/counterfactual.py
           python -m py_compile pipelines/evolution/build_counterfactual_replay_baseline.py
+          python -m py_compile engine/research/release.py
+          python -m py_compile pipelines/research/build_research_release_baseline.py
           python -m py_compile engine/evolution/lineages.py
           python -m py_compile pipelines/evolution/build_lineage_baseline.py
           python -m py_compile engine/evolution/popgen.py
@@ -76,6 +78,7 @@ jobs:
           python pipelines/evolution/build_offworld_divergence_baseline.py
           python pipelines/evolution/build_evolutionary_replay_baseline.py
           python pipelines/evolution/build_counterfactual_replay_baseline.py
+          python pipelines/research/build_research_release_baseline.py
 
       - name: Validate JSON
         run: |
@@ -99,6 +102,8 @@ jobs:
             frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
             frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
             frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
+            frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
+            research/evidence/research-release-baseline.json
           )
           for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
@@ -127,6 +132,7 @@ jobs:
           cmp frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
           cmp frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
           cmp frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
+          cmp frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
 
       - name: Validate JavaScript syntax
         run: |

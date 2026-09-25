@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase10b-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase11a-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -945,6 +945,74 @@
         <div id="replayMetrics" class="metricGrid scientific-only"></div>
       </section>
 
+
+      <section class="researchReleaseSystem" aria-labelledby="researchReleaseHeadline">
+        <div class="researchReleaseIntro">
+          <p class="eyebrow">RESEARCH RELEASES · PHASE 11.0</p>
+          <h3 id="researchReleaseHeadline">La simulación empieza a producir evidencia, no solo pantallas.</h3>
+          <p>
+            Este bloque corresponde al release científico comprometido en el repositorio. Registra qué datos,
+            modelos, semillas, claims y limitaciones sostienen el resultado, y mantiene separados los niveles
+            observado, literatura, modelado y especulativo.
+          </p>
+        </div>
+
+        <div class="researchReleaseSummary">
+          <article>
+            <span>Estado editorial</span>
+            <strong id="researchReleaseState">Cargando…</strong>
+          </article>
+          <article>
+            <span>Release</span>
+            <strong id="researchReleaseId">—</strong>
+          </article>
+          <article>
+            <span>Commit</span>
+            <strong id="researchReleaseCommit">—</strong>
+          </article>
+          <article>
+            <span>Checks</span>
+            <strong id="researchReleaseChecks">—</strong>
+          </article>
+        </div>
+
+        <div class="researchReleaseWorkspace">
+          <div>
+            <p class="researchReleaseLabel">Evidence ledger</p>
+            <div id="researchEvidenceLedger" class="researchEvidenceLedger"></div>
+          </div>
+          <div>
+            <p class="researchReleaseLabel">Claims trazables</p>
+            <div id="researchClaims" class="researchClaims"></div>
+          </div>
+        </div>
+
+        <div class="researchReleaseRepro">
+          <article>
+            <span>Modelos versionados</span>
+            <strong id="researchModelCount">—</strong>
+          </article>
+          <article>
+            <span>Seed replay</span>
+            <strong id="researchReplaySeed">—</strong>
+          </article>
+          <article>
+            <span>Seed contrafactual</span>
+            <strong id="researchCounterfactualSeed">—</strong>
+          </article>
+          <article>
+            <span>Limitaciones</span>
+            <strong id="researchLimitationsState">—</strong>
+          </article>
+        </div>
+
+        <div id="researchValidationChecks" class="researchValidationChecks"></div>
+        <p class="surfaceCaveat">
+          Un estado RESEARCH_NOTE significa que pasó el contrato interno de reproducibilidad. No equivale a revisión
+          por pares y el sistema no puede autodeclararse ARXIV_READY, SUBMITTED ni PUBLISHED.
+        </p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -1017,6 +1085,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase10b-20260925"></script>
+  <script type="module" src="./app.js?v=phase11a-20260925"></script>
 </body>
 </html>
