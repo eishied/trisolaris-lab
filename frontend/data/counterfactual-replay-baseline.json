@@ -1,0 +1,583 @@
+{
+  "model": "counterfactual_replay_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "years": 50000.0,
+    "parameter": "capability",
+    "intervention_fraction": 0.2,
+    "runs": 64,
+    "seed": 1445,
+    "uncertainty": 0.25
+  },
+  "reference": {
+    "counts": {
+      "no-launch": 64,
+      "settlement-failure": 0,
+      "colony-collapse": 0,
+      "connected-colony": 0,
+      "divergent-lineage": 0
+    },
+    "frequencies": {
+      "no-launch": 1.0,
+      "settlement-failure": 0.0,
+      "colony-collapse": 0.0,
+      "connected-colony": 0.0,
+      "divergent-lineage": 0.0
+    },
+    "dominant_outcome": "no-launch",
+    "dominant_frequency": 1.0
+  },
+  "intervention": {
+    "counts": {
+      "no-launch": 64,
+      "settlement-failure": 0,
+      "colony-collapse": 0,
+      "connected-colony": 0,
+      "divergent-lineage": 0
+    },
+    "frequencies": {
+      "no-launch": 1.0,
+      "settlement-failure": 0.0,
+      "colony-collapse": 0.0,
+      "connected-colony": 0.0,
+      "divergent-lineage": 0.0
+    },
+    "dominant_outcome": "no-launch",
+    "dominant_frequency": 1.0
+  },
+  "frequency_deltas": {
+    "no-launch": 0.0,
+    "settlement-failure": 0.0,
+    "colony-collapse": 0.0,
+    "connected-colony": 0.0,
+    "divergent-lineage": 0.0
+  },
+  "paired_runs": [
+    {
+      "run": 1,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 2,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 3,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 4,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 5,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 6,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 7,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 8,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 9,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 10,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 11,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 12,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 13,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 14,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 15,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 16,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 17,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 18,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 19,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 20,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 21,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 22,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 23,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 24,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 25,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 26,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 27,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 28,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 29,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 30,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 31,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 32,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 33,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 34,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 35,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 36,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 37,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 38,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 39,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 40,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 41,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 42,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 43,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 44,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 45,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 46,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 47,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 48,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 49,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 50,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 51,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 52,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 53,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 54,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 55,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 56,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 57,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 58,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 59,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 60,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 61,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 62,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 63,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    },
+    {
+      "run": 64,
+      "reference_outcome": "no-launch",
+      "intervention_outcome": "no-launch",
+      "outcome_changed": false,
+      "outcome_score_delta": 0.0,
+      "divergence_delta": 0.0
+    }
+  ],
+  "summary": {
+    "paired_run_count": 64,
+    "outcome_flip_count": 0,
+    "outcome_flip_fraction": 0.0,
+    "mean_outcome_score_delta": 0.0,
+    "mean_divergence_delta": 0.0,
+    "dominant_outcome_changed": false
+  },
+  "limitations": [
+    "the comparison isolates one declared model parameter while holding the replay seed fixed",
+    "paired differences are model-conditional effects, not causal estimates for the real world",
+    "the intervention range is a scenario choice rather than an empirically calibrated policy effect",
+    "all limitations of the underlying Evolutionary Replay and Phase 9 models still apply"
+  ]
+}
