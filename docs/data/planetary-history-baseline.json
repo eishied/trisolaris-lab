@@ -1,0 +1,59 @@
+{
+  "model": "planetary_population_history_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "years": 50000.0,
+    "technology_support": 0.4,
+    "mobility": 0.45
+  },
+  "populations": [
+    {
+      "lineage_id": "L1",
+      "lineage_name": "Linaje Equatoria-1",
+      "refuge_id": "R1",
+      "refuge_name": "Equatoria-1",
+      "center_latitude_deg": 0.0,
+      "latitude_min_deg": -87.5,
+      "latitude_max_deg": 87.5,
+      "relative_capacity_share": 1.0,
+      "settlement_intensity": 0.567743689728041,
+      "settlement_pattern": "regional permanent settlements",
+      "open_agriculture": 0.05246648864827503,
+      "controlled_agriculture": 0.20998010522179625,
+      "infrastructure": 0.17088852307835597,
+      "water_recycling": 0.10853469283122909,
+      "thermal_shelter": 0.13194822296494207,
+      "mobility_network": 0.1269472166655152,
+      "knowledge_continuity": 0.40104436315084013,
+      "cultural_differentiation_proxy": 0.9980695458637723,
+      "anthropogenic_footprint_proxy": 0.30729182429936325
+    }
+  ],
+  "migration_links": [],
+  "events": [
+    {
+      "type": "settlement",
+      "lineage_id": "L1",
+      "label": "Equatoria-1: persistent settlement"
+    }
+  ],
+  "summary": {
+    "population_regions": 1,
+    "mean_settlement_intensity": 0.567743689728041,
+    "mean_agriculture_intensity": 0.05246648864827503,
+    "mean_controlled_agriculture": 0.20998010522179625,
+    "mean_infrastructure": 0.17088852307835597,
+    "mean_knowledge_continuity": 0.40104436315084013,
+    "mean_cultural_differentiation_proxy": 0.9980695458637723,
+    "mean_anthropogenic_footprint_proxy": 0.30729182429936325
+  },
+  "limitations": [
+    "normalized population capacity rather than census counts",
+    "latitude-resolved refugia only; longitude is not physically modeled",
+    "technology is a functional buffering proxy, not a progress ranking",
+    "cultural differentiation is a separation proxy, not a value judgment",
+    "no warfare, political system or social hierarchy is inferred",
+    "no deterministic historical trajectory is claimed"
+  ],
+  "next_model": "persistent events, demographic shocks, migration histories, land-use feedback and off-world settlement"
+}
