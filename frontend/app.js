@@ -3,11 +3,14 @@ let data=null;
 let running=true;
 let phase=0;
 let candidateInitialized=false;
+let hitTargets=[];
+let selectedFocus=null;
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const fmt=(v,d=2)=>v==null||Number.isNaN(Number(v))?"—":Number(v).toFixed(d);
 const stat=(label,value,note="")=>`<div class="stat"><small>${label}</small><strong>${value}</strong>${note?`<em>${note}</em>`:""}</div>`;
+const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><strong>${value}</strong></div>`;
 
 function setMode(mode){
   document.body.dataset.mode=mode;
@@ -80,6 +83,126 @@ function planetPlainLanguage(p){
   return thermal+" "+scale;
 }
 
+function focusKey(target){
+  return target.kind==="star" ? "star:"+target.id
+    : target.kind==="planet" ? "planet:"+target.name
+      : "hypothetical:H-01";
+}
+
+function focusContent(target){
+  if(target.kind==="star"){
+    const s=data.stars.find(x=>x.id===target.id);
+    const isA=target.id==="A";
+    return {
+      kicker:isA?"ESTRELLA ANFITRIONA":"ESTRELLA COMPAÑERA",
+      name:s.name,
+      narrative:isA
+        ?"Es la estrella alrededor de la cual orbitan los dos planetas confirmados del sistema. Para cualquier mundo cercano a A, su luz domina el presupuesto energético."
+        :"Forma parte de la pareja B–C. Aunque está mucho más lejos de los planetas conocidos que A, su gravedad y radiación pertenecen al entorno completo que TRISOLARIS debe modelar.",
+      facts:[
+        ["Masa",fmt(s.mass_solar,3)+" M☉"],
+        ["Radio",fmt(s.radius_solar,3)+" R☉"],
+        ["Luminosidad",fmt(s.luminosity_solar,5)+" L☉"],
+        ["Evidencia","Literatura científica"]
+      ],
+      science:"Nivel epistemológico: LITERATURE. Estos valores no deben confundirse con una solución orbital completa del sistema triple. La siguiente fase añadirá refinamiento astrométrico y dinámica N-body."
+    };
+  }
+
+  if(target.kind==="planet"){
+    const p=data.observed_planets.find(x=>x.name===target.name);
+    return {
+      kicker:"PLANETA CONFIRMADO",
+      name:p.name,
+      narrative:planetPlainLanguage(p)+" Este objeto sí pertenece al inventario observado; cualquier escenario de habitabilidad humana es una pregunta distinta.",
+      facts:[
+        ["Órbita",fmt(p.period_days,2)+" días"],
+        ["Radio",fmt(p.radius_earth,2)+" R⊕"],
+        ["Masa",fmt(p.mass_earth,2)+" M⊕"],
+        ["Teq",p.equilibrium_temperature_k==null?"—":fmt(p.equilibrium_temperature_k,0)+" K"]
+      ],
+      science:`Nivel epistemológico: OBSERVED. Semieje mayor ${fmt(p.semi_major_axis_au,4)} AU · excentricidad ${p.eccentricity==null?"sin valor por defecto":fmt(p.eccentricity,3)} · fuente: NASA Exoplanet Archive / ps.`
+    };
+  }
+
+  const h=data.hypothetical_experiment;
+  return {
+    kicker:"MUNDO EXPERIMENTAL",
+    name:"TRISOLARIS H-01",
+    narrative:"Este mundo existe únicamente dentro del laboratorio de TRISOLARIS. Sirve para preguntar qué condiciones podría necesitar un planeta antes de someterlo a pruebas orbitales y climáticas más exigentes.",
+    facts:[
+      ["Distancia actual",(+$("#axis").value).toFixed(3)+" AU"],
+      ["Albedo",(+$("#albedo").value).toFixed(2)],
+      ["Invernadero","+"+(+$("#greenhouse").value).toFixed(0)+" K"],
+      ["Evidencia","Hipótesis"]
+    ],
+    science:`Nivel epistemológico: SPECULATIVE. Configuración base del catálogo: a=${fmt(h.semi_major_axis_au,3)} AU, albedo=${fmt(h.albedo,2)}, greenhouse=${fmt(h.greenhouse_k,0)} K. Aún no existe una prueba N-body de estabilidad.`
+  };
+}
+
+function openFocus(target,{scroll=true}={}){
+  selectedFocus=target;
+  const content=focusContent(target);
+  $("#focusKicker").textContent=content.kicker;
+  $("#focusName").textContent=content.name;
+  $("#focusNarrative").textContent=content.narrative;
+  $("#focusFacts").innerHTML=content.facts.map(([a,b])=>focusFact(a,b)).join("");
+  $("#focusScience").textContent=content.science;
+  $("#objectFocus").hidden=false;
+  $(".systemVisual").classList.add("isFocused");
+  const hint=$(".canvasHint");
+  if(hint) hint.remove();
+  if(scroll){
+    $("#sistema").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+function closeFocus(){
+  selectedFocus=null;
+  $("#objectFocus").hidden=true;
+  $(".systemVisual").classList.remove("isFocused");
+}
+
+function activateWorldFocus(){
+  $(".world[data-focus-name]").forEach(card=>{
+    const activate=()=>{
+      openFocus({kind:"planet",name:card.dataset.focusName});
+    };
+    card.addEventListener("click",activate);
+    card.addEventListener("keydown",event=>{
+      if(event.key==="Enter"||event.key===" "){
+        event.preventDefault();
+        activate();
+      }
+    });
+  });
+}
+
+function installCanvasFocus(){
+  const canvas=$("#systemCanvas");
+  const visual=canvas.closest(".systemVisual");
+  if(!visual.querySelector(".canvasHint")){
+    const hint=document.createElement("div");
+    hint.className="canvasHint";
+    hint.textContent="Toca una estrella o mundo";
+    visual.appendChild(hint);
+  }
+
+  canvas.addEventListener("click",event=>{
+    if(!hitTargets.length)return;
+    const rect=canvas.getBoundingClientRect();
+    const px=(event.clientX-rect.left)*(canvas.width/rect.width);
+    const py=(event.clientY-rect.top)*(canvas.height/rect.height);
+    const hits=hitTargets
+      .map(t=>({...t,d:Math.hypot(px-t.x,py-t.y)}))
+      .filter(t=>t.d<=t.hitRadius)
+      .sort((a,b)=>a.d-b.d);
+    if(hits[0]) openFocus(hits[0].target,{scroll:false});
+  });
+
+  $("#focusClose").addEventListener("click",closeFocus);
+}
+
 function renderPlanets(){
   const rows=data.observed_planets||[];
   $("#planetCount").textContent=rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
@@ -98,7 +221,7 @@ function renderPlanets(){
   }
 
   $("#planetCards").innerHTML=rows.map((p,i)=>`
-    <article class="world reveal">
+    <article class="world reveal" data-focus-name="${p.name}" tabindex="0" role="button" aria-label="Explorar ${p.name} en el sistema">
       <div class="worldHero" aria-hidden="true"><div class="worldSphere"></div></div>
       <div class="worldBody">
         <span class="worldKicker">Planeta confirmado · NASA</span>
@@ -109,6 +232,7 @@ function renderPlanets(){
           <span>${fmt(p.radius_earth,2)} R⊕</span>
           <span>desc. ${p.discovery_year==null?"—":Math.round(p.discovery_year)}</span>
         </div>
+        <div class="worldExplore">Entrar al mundo <span>↗</span></div>
       </div>
     </article>
   `).join("");
@@ -127,6 +251,7 @@ function renderPlanets(){
   </tr>`).join("")}</tbody></table>`;
 
   activateRevealObserver();
+  activateWorldFocus();
 }
 
 function initCandidate(){
@@ -225,6 +350,10 @@ function renderCandidate(){
   $("#candidateWhy").innerHTML=
     "<b>Cadena de cálculo.</b> Luminosidad y distancia → flujo recibido → corrección por albedo → temperatura de equilibrio → calentamiento atmosférico simplificado → proxy de habitabilidad. "
     +"No incluye estabilidad N-body, escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
+
+  if(selectedFocus?.kind==="hypothetical"){
+    openFocus(selectedFocus,{scroll:false});
+  }
 }
 
 function draw(){
@@ -286,6 +415,12 @@ function draw(){
   x.ellipse(bcCenter.x,bcCenter.y,bcR,bcR*.48,0,0,Math.PI*2);
   x.stroke();
 
+  hitTargets=[
+    {x:apos.x,y:apos.y,hitRadius:58,target:{kind:"star",id:"A"}},
+    {x:bpos.x,y:bpos.y,hitRadius:48,target:{kind:"star",id:"B"}},
+    {x:cpos.x,y:cpos.y,hitRadius:46,target:{kind:"star",id:"C"}}
+  ];
+
   drawStar(x,apos,30,"A","#ef8174",A);
   drawStar(x,bpos,22,"B","#e67770",B);
   drawStar(x,cpos,19,"C","#cf676d",C);
@@ -307,6 +442,11 @@ function draw(){
     x.beginPath();
     x.arc(pp.x,pp.y,5.3,0,Math.PI*2);
     x.fill();
+
+    hitTargets.push({
+      x:pp.x,y:pp.y,hitRadius:26,
+      target:{kind:"planet",name:p.name}
+    });
 
     if(document.body.dataset.mode==="scientific"){
       x.fillStyle="#bfd5df";
@@ -340,6 +480,27 @@ function draw(){
   x.beginPath();
   x.arc(hp.x,hp.y,7,0,Math.PI*2);
   x.fill();
+
+  hitTargets.push({
+    x:hp.x,y:hp.y,hitRadius:30,
+    target:{kind:"hypothetical",name:"H-01"}
+  });
+
+  if(selectedFocus){
+    const key=focusKey(selectedFocus);
+    const selected=hitTargets.find(t=>focusKey(t.target)===key);
+    if(selected){
+      x.save();
+      x.strokeStyle=selectedFocus.kind==="hypothetical"?"rgba(206,178,255,.82)":"rgba(142,224,255,.78)";
+      x.lineWidth=1.6;
+      x.setLineDash([5,6]);
+      x.beginPath();
+      x.arc(selected.x,selected.y,selectedFocus.kind==="star"?44:22,0,Math.PI*2);
+      x.stroke();
+      x.setLineDash([]);
+      x.restore();
+    }
+  }
 
   if(document.body.dataset.mode==="scientific"){
     x.fillStyle="#e4d6ff";
@@ -379,6 +540,8 @@ function loop(){
   draw();
   requestAnimationFrame(loop);
 }
+
+installCanvasFocus();
 
 $("#pauseBtn").addEventListener("click",()=>{
   running=!running;
