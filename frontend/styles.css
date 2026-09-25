@@ -354,3 +354,13 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+
+.dynamicsSentence{
+  margin-top:14px!important;padding-top:14px;border-top:1px solid var(--line);
+  color:#a9b6bd!important;font-size:12px!important;line-height:1.45
+}
+.dynamicsSentence[data-state="pass"]{color:#8eddb8!important}
+.dynamicsSentence[data-state="caution"]{color:#e6c379!important}
+.dynamicsSentence[data-state="fail"]{color:#e39a96!important}
+.dynamicsSentence[data-state="unknown"]{color:#8998a1!important}
