@@ -49,7 +49,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase7c-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase8a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -77,7 +77,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase7c-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase8a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -1925,6 +1925,8 @@ function renderLineages(){
     renderLineages();
     renderGenetics();
     renderLineageInspector();
+    safeRender("planetary-history",renderPlanetaryHistory);
+    safeRender("astroanthropology",renderAstroanthropology);
   }));
   renderLineageDetail(model);
 
@@ -2886,7 +2888,283 @@ function initPlanetHistoryCanvas(){
     safeRender("genetics",renderGenetics);
     safeRender("lineage-inspector",renderLineageInspector);
     safeRender("planetary-history",renderPlanetaryHistory);
+    safeRender("astroanthropology",renderAstroanthropology);
   });
+}
+
+
+function astroAnthroAlias(refugeName,lineageId){
+  const lower=String(refugeName||"").toLowerCase();
+  let root="Nova";
+  if(lower.includes("equat"))root="Aster";
+  else if(lower.includes("bore")||lower.includes("nival")||lower.includes("frío"))root="Nival";
+  else if(lower.includes("litor")||lower.includes("cost")||lower.includes("mare"))root="Mare";
+  else if(lower.includes("cav")||lower.includes("sub")||lower.includes("umbra"))root="Umbra";
+  else if(lower.includes("alt")||lower.includes("mont"))root="Bruma";
+  const match=String(refugeName||"").match(/(\d+)$/);
+  const suffix=match?.[1]||String(lineageId||"L1").replace("L","")||"1";
+  return root+"-"+suffix;
+}
+
+function astroAnthroAgricultureStrategy(openAg,controlledAg){
+  if(Math.max(openAg,controlledAg)<.18)return "producción alimentaria de baja intensidad";
+  if(Math.abs(openAg-controlledAg)<=.12)return "agricultura mixta abierta y controlada";
+  if(controlledAg>openAg)return "agricultura en ambiente controlado";
+  return "agricultura regional abierta";
+}
+
+function astroAnthroSettlementStyle(settlement,infrastructure){
+  if(infrastructure>=.65)return "red de asentamientos conectados";
+  if(settlement>=.60)return "asentamientos regionales persistentes";
+  if(settlement>=.30)return "asentamientos permanentes dispersos";
+  return "ocupación de baja densidad";
+}
+
+function astroAnthroContactState(exchange,differentiation){
+  if(exchange>=.55&&differentiation<.50)return "red de intercambio frecuente";
+  if(exchange>=.35)return "intercambio intermitente";
+  if(differentiation>=.72)return "alta diferenciación local";
+  return "contacto limitado pero persistente";
+}
+
+function astroAnthroKnowledgeState(retention,lossPressure,recovering){
+  if(recovering&&retention<.60)return "reconstrucción de conocimiento";
+  if(retention>=.72&&lossPressure<.30)return "continuidad alta con redundancia";
+  if(retention>=.48)return "continuidad parcial";
+  return "continuidad frágil";
+}
+
+function astroAnthroDominantPressure(population,demography){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const values={
+    "continuidad del agua":clamp(population.waterRecycling||0),
+    "exposición térmica":clamp(population.thermalShelter||0),
+    "seguridad alimentaria":clamp(1-Math.max(population.openAgriculture||0,population.controlledAgriculture||0)),
+    "continuidad demográfica":clamp((1-(demography?.reserveProxy||0))+(demography?.bottleneck?.25:0))
+  };
+  return Object.entries(values).sort((a,b)=>b[1]-a[1])[0]?.[0]||"presión ambiental mixta";
+}
+
+function simulateAstroanthropology(history,demography,{years=0,exchangeStrength=1}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  exchangeStrength=clamp(exchangeStrength);
+  const demoByLineage=Object.fromEntries((demography.populations||[]).map(row=>[row.lineageId,row]));
+  const linksByLineage={};
+  (history.migrationLinks||[]).forEach(link=>{
+    (linksByLineage[link.sourceLineageId]??=[]).push(link);
+    (linksByLineage[link.targetLineageId]??=[]).push(link);
+  });
+
+  const societies=(history.populations||[]).map(population=>{
+    const demo=demoByLineage[population.lineageId]||{};
+    const openAg=clamp(population.openAgriculture||0);
+    const controlledAg=clamp(population.controlledAgriculture||0);
+    const infrastructure=clamp(population.infrastructure||0);
+    const mobility=clamp(population.mobilityNetwork||0);
+    const continuity=clamp(population.knowledgeContinuity||0);
+    const differentiation=clamp(population.culturalDifferentiation||0);
+    const water=clamp(population.waterRecycling||0);
+    const thermal=clamp(population.thermalShelter||0);
+    const reserve=clamp(demo.reserveProxy||0);
+
+    const linkFlow=(linksByLineage[population.lineageId]||[])
+      .reduce((sum,link)=>sum+clamp(link.migrationFlow||0),0);
+    const exchange=clamp(exchangeStrength*(.55*mobility+.45*Math.min(1,linkFlow)));
+    const archiveCapacity=clamp(continuity*(.55+.45*infrastructure));
+    const foodRedundancy=clamp(Math.min(openAg,controlledAg)*1.7+.25*Math.max(openAg,controlledAg));
+    const redundancy=clamp(.34*foodRedundancy+.24*mobility+.24*archiveCapacity+.18*reserve);
+    const dependence=clamp(.28*water+.25*thermal+.27*controlledAg+.20*infrastructure);
+
+    const status=demo.status||"stable";
+    const demographicStress={
+      collapse:1,
+      bottleneck:.78,
+      decline:.52,
+      stable:.16,
+      expansion:.10
+    }[status]??.22;
+
+    const retention=clamp(continuity*(.74+.26*reserve)*(1-.38*demographicStress));
+    const transfer=clamp(exchange*(.38+.62*continuity));
+    const lossPressure=clamp(
+      .44*demographicStress+
+      .32*dependence*(1-redundancy)+
+      .24*(1-archiveCapacity)
+    );
+    const technicalBalance=clamp(retention+.42*transfer-.58*lossPressure);
+    const recovering=["bottleneck","decline"].includes(status)&&(demo.recoveryFraction||0)>.12;
+
+    return {
+      lineageId:population.lineageId,
+      lineageName:population.lineageName,
+      refugeName:population.refugeName,
+      populationAlias:astroAnthroAlias(population.refugeName,population.lineageId),
+      dominantPressure:astroAnthroDominantPressure(population,demo),
+      settlementStyle:astroAnthroSettlementStyle(population.settlement||0,infrastructure),
+      agricultureStrategy:astroAnthroAgricultureStrategy(openAg,controlledAg),
+      contactState:astroAnthroContactState(exchange,differentiation),
+      knowledgeState:astroAnthroKnowledgeState(retention,lossPressure,recovering),
+      technologyPortfolio:{
+        "Agua":water,
+        "Protección térmica":thermal,
+        "Agricultura abierta":openAg,
+        "Agricultura controlada":controlledAg,
+        "Movilidad":mobility,
+        "Infraestructura":infrastructure,
+        "Archivo y conocimiento":archiveCapacity
+      },
+      knowledgeRetention:retention,
+      knowledgeTransfer:transfer,
+      knowledgeLossPressure:lossPressure,
+      technicalBalance,
+      systemRedundancy:redundancy,
+      technologyDependence:dependence,
+      culturalExchange:exchange,
+      culturalDifferentiation:differentiation,
+      demographicStatus:status,
+      populationIndex:demo.populationIndex||0,
+      carryingCapacityIndex:demo.carryingCapacityIndex||0
+    };
+  });
+
+  const mean=key=>societies.length?societies.reduce((sum,s)=>sum+(s[key]||0),0)/societies.length:0;
+  return {
+    societies,
+    summary:{
+      populationCount:societies.length,
+      meanKnowledgeRetention:mean("knowledgeRetention"),
+      meanKnowledgeTransfer:mean("knowledgeTransfer"),
+      meanKnowledgeLossPressure:mean("knowledgeLossPressure"),
+      meanSystemRedundancy:mean("systemRedundancy"),
+      meanTechnologyDependence:mean("technologyDependence"),
+      meanCulturalExchange:mean("culturalExchange")
+    }
+  };
+}
+
+function astroAnthroSupportText(society){
+  const portfolio=Object.entries(society.technologyPortfolio)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,2)
+    .map(([name])=>name.toLowerCase());
+  return portfolio.length
+    ?"Su continuidad descansa principalmente en "+portfolio.join(" y ")+"."
+    :"Todavía no emerge una dependencia técnica dominante.";
+}
+
+function astroAnthroRiskText(society){
+  if(society.knowledgeLossPressure>=.60){
+    return "Un cuello de botella o una falla prolongada podría borrar capacidades más rápido de lo que se reconstruyen.";
+  }
+  if(society.technologyDependence>=.58&&society.systemRedundancy<.45){
+    return "Depende de pocos sistemas técnicos; perder uno de ellos tendría efectos amplificados.";
+  }
+  if(society.knowledgeRetention<.48){
+    return "La transmisión del conocimiento es el punto más frágil de esta historia.";
+  }
+  return "Mantiene redundancia suficiente para absorber perturbaciones moderadas, aunque no elimina el riesgo.";
+}
+
+function renderAstroanthropology(){
+  const root=$("#astroAnthroPopulationList");
+  if(!root||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const totalYears=+$("#lineageYears").value;
+  const playback=Math.max(0,Math.min(1,(+($("#historyPlayback")?.value||100))/100));
+  const viewYears=totalYears*playback;
+  const disturbance=$("#historyDisturbance")?.value||"none";
+  const severity=disturbance==="none"?0:Math.max(0,Math.min(1,(+($("#historySeverity")?.value||0))/100));
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const lineageModel=simulateLineages(network,{years:viewYears,technologyBuffer:tech});
+  const history=simulatePlanetaryHistory(network,lineageModel,{years:viewYears,technologySupport:tech,mobility});
+  const demography=simulateDemography(history,{totalYears,viewYears,disturbance,severity});
+  const anthropology=simulateAstroanthropology(history,demography,{years:viewYears,exchangeStrength:1});
+
+  if(!anthropology.societies.length){
+    root.innerHTML='<div class="astroAnthroPopulation"><span>Sin poblaciones</span><strong>No hay historias sociales que mostrar</strong><p>Primero debe existir al menos un refugio poblacional viable.</p></div>';
+    $("#astroAnthroSelected").textContent="—";
+    $("#astroAnthroPressure").textContent="—";
+    $("#astroAnthroContinuity").textContent="—";
+    $("#astroAnthroAlias").textContent="Sin población";
+    $("#astroAnthroLineage").textContent="Ajusta ambiente, biosfera o soporte tecnológico.";
+    $("#astroAnthroContact").textContent="—";
+    $("#astroAnthroLife").textContent="—";
+    $("#astroAnthroSupport").textContent="—";
+    $("#astroAnthroRisk").textContent="—";
+    $("#astroAnthroSystems").innerHTML="";
+    $("#astroAnthroWhy").textContent="No existe todavía una cadena social porque el modelo no produce una población viable.";
+    $("#astroAnthroMetrics").innerHTML="";
+    return;
+  }
+
+  if(!selectedLineageId||!anthropology.societies.some(s=>s.lineageId===selectedLineageId)){
+    selectedLineageId=anthropology.societies[0].lineageId;
+  }
+  const selected=anthropology.societies.find(s=>s.lineageId===selectedLineageId);
+
+  root.innerHTML=anthropology.societies.map(society=>
+    '<button class="astroAnthroPopulation" data-lineage-id="'+society.lineageId+'" aria-pressed="'+(society.lineageId===selectedLineageId)+'">'+
+      '<span>'+demographicStatusLabel(society.demographicStatus)+' · '+society.contactState+'</span>'+
+      '<strong>'+society.populationAlias+'</strong>'+
+      '<p>'+society.lineageName+' · '+society.agricultureStrategy+'</p>'+
+    '</button>'
+  ).join("");
+
+  $(".astroAnthroPopulation[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
+    selectedLineageId=btn.dataset.lineageId;
+    safeRender("lineages",renderLineages);
+    safeRender("genetics",renderGenetics);
+    safeRender("lineage-inspector",renderLineageInspector);
+    safeRender("planetary-history",renderPlanetaryHistory);
+    safeRender("astroanthropology",renderAstroanthropology);
+  }));
+
+  $("#astroAnthroSelected").textContent=selected.populationAlias+" · "+selected.lineageName;
+  $("#astroAnthroPressure").textContent=selected.dominantPressure;
+  $("#astroAnthroContinuity").textContent=selected.knowledgeState;
+  $("#astroAnthroAlias").textContent=selected.populationAlias;
+  $("#astroAnthroLineage").textContent=selected.lineageName+" · "+selected.refugeName;
+  $("#astroAnthroContact").textContent=selected.contactState;
+  $("#astroAnthroLife").textContent=selected.settlementStyle+" con "+selected.agricultureStrategy+".";
+  $("#astroAnthroSupport").textContent=astroAnthroSupportText(selected);
+  $("#astroAnthroRisk").textContent=astroAnthroRiskText(selected);
+
+  $("#astroAnthroSystems").innerHTML=Object.entries(selected.technologyPortfolio).map(([name,value])=>
+    '<div class="astroAnthroSystemRow">'+
+      '<span><span>'+name+'</span><strong>'+Math.round(value*100)+'%</strong></span>'+
+      '<div class="astroAnthroBar" aria-hidden="true"><i style="width:'+Math.round(value*100)+'%"></i></div>'+
+    '</div>'
+  ).join("");
+
+  const transferPhrase=selected.knowledgeTransfer>=.40
+    ?"El contacto aporta conocimiento adicional."
+    :selected.culturalExchange>=.25
+      ?"Existe intercambio, pero su efecto sobre la continuidad es limitado."
+      :"El aislamiento restringe la transferencia entre poblaciones.";
+  $("#astroAnthroWhy").textContent=
+    selected.dominantPressure+" → "+selected.settlementStyle+" → "+selected.agricultureStrategy+
+    " → dependencia técnica "+Math.round(selected.technologyDependence*100)+"% → retención de conocimiento "+
+    Math.round(selected.knowledgeRetention*100)+"%. "+transferPhrase;
+
+  const s=anthropology.summary;
+  $("#astroAnthroMetrics").innerHTML=
+    stat("Poblaciones",String(s.populationCount),"MODELED")+
+    stat("Retención media",Math.round(s.meanKnowledgeRetention*100)+"%","conocimiento")+
+    stat("Transferencia",Math.round(s.meanKnowledgeTransfer*100)+"%","contacto")+
+    stat("Presión de pérdida",Math.round(s.meanKnowledgeLossPressure*100)+"%")+
+    stat("Redundancia",Math.round(s.meanSystemRedundancy*100)+"%")+
+    stat("Dependencia técnica",Math.round(s.meanTechnologyDependence*100)+"%")+
+    stat("Intercambio cultural",Math.round(s.meanCulturalExchange*100)+"%","funcional, no ranking");
 }
 
 function candidateLabel(score,celsius){
@@ -2984,6 +3262,7 @@ function renderCandidate(){
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
   safeRender("planetary-history",renderPlanetaryHistory);
+  safeRender("astroanthropology",renderAstroanthropology);
   safeRender("lineage-inspector",renderLineageInspector);
   safeRender("genetics",renderGenetics);
   safeRender("lineages",renderLineages);
