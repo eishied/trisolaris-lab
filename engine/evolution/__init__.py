@@ -10,3 +10,5 @@ __all__ = ["simulate_lineage_divergence", "mix_populations", "simulate_offworld_
 from .counterfactual import compare_counterfactual
 
 from .thresholds import scan_transition_thresholds
+
+from .threshold_refinement import refine_capability_thresholds
