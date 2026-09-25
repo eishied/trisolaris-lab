@@ -1,0 +1,72 @@
+{
+  "system": {
+    "id": "LTT-1445-ABC",
+    "name": "LTT 1445 ABC",
+    "architecture": "hierarchical triple M-dwarf system",
+    "distance_pc": 6.86,
+    "epistemic_level": "LITERATURE",
+    "notes": "LTT 1445 A is orbited at large separation by the tighter B-C pair. Known planets orbit A."
+  },
+  "stars": [
+    {
+      "id": "A",
+      "name": "LTT 1445 A",
+      "mass_solar": 0.257,
+      "radius_solar": 0.268,
+      "luminosity_solar": 0.00794,
+      "epistemic_level": "LITERATURE"
+    },
+    {
+      "id": "B",
+      "name": "LTT 1445 B",
+      "mass_solar": 0.215,
+      "radius_solar": 0.236,
+      "luminosity_solar": 0.00596,
+      "epistemic_level": "LITERATURE"
+    },
+    {
+      "id": "C",
+      "name": "LTT 1445 C",
+      "mass_solar": 0.161,
+      "radius_solar": 0.197,
+      "luminosity_solar": 0.00368,
+      "epistemic_level": "LITERATURE"
+    }
+  ],
+  "hierarchy": {
+    "outer_projected_separation_arcsec_approx": 7.0,
+    "outer_period_years_approx": 250,
+    "bc_projected_separation_arcsec_approx": 1.0,
+    "bc_period_years_approx": 36,
+    "epistemic_level": "LITERATURE"
+  },
+  "literature": [
+    {
+      "title": "Three Red Suns in the Sky: A Transiting, Terrestrial Planet in a Triple M Dwarf System at 6.9 Parsecs",
+      "arxiv": "1906.10147",
+      "doi": "10.3847/1538-3881/ab364d"
+    },
+    {
+      "title": "A Second Planet Transiting LTT 1445A and a Determination of the Masses of Both Worlds",
+      "arxiv": "2107.14737"
+    }
+  ],
+  "official_sources": [
+    {
+      "authority": "NASA/IPAC",
+      "service": "NASA Exoplanet Archive",
+      "table": "ps",
+      "epistemic_level": "OBSERVED"
+    }
+  ],
+  "hypothetical_experiment": {
+    "id": "H-01",
+    "name": "TRISOLARIS H-01",
+    "host": "LTT 1445 A",
+    "semi_major_axis_au": 0.09,
+    "albedo": 0.30,
+    "greenhouse_k": 33,
+    "epistemic_level": "SPECULATIVE",
+    "notes": "Interactive test world only. Its orbit is not asserted to be stable; future REBOUND ensembles must evaluate stability against observed planets and stellar companions."
+  }
+}

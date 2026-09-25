@@ -1,0 +1,24 @@
+{
+  "generated_at": null,
+  "status": "bootstrap-literature-snapshot",
+  "system": {
+    "id": "LTT-1445-ABC",
+    "name": "LTT 1445 ABC",
+    "distance_pc": 6.86,
+    "architecture": "hierarchical triple M-dwarf system"
+  },
+  "stars": [
+    {"id":"A","name":"LTT 1445 A","mass_solar":0.257,"radius_solar":0.268,"luminosity_solar":0.00794,"epistemic_level":"LITERATURE"},
+    {"id":"B","name":"LTT 1445 B","mass_solar":0.215,"radius_solar":0.236,"luminosity_solar":0.00596,"epistemic_level":"LITERATURE"},
+    {"id":"C","name":"LTT 1445 C","mass_solar":0.161,"radius_solar":0.197,"luminosity_solar":0.00368,"epistemic_level":"LITERATURE"}
+  ],
+  "hierarchy": {"outer_period_years_approx":250,"bc_period_years_approx":36},
+  "observed_planets": [],
+  "hypothetical_experiment": {
+    "id":"H-01","name":"TRISOLARIS H-01","host":"LTT 1445 A","semi_major_axis_au":0.09,"albedo":0.30,"greenhouse_k":33,"epistemic_level":"SPECULATIVE"
+  },
+  "provenance": {
+    "note": "Bootstrap file. The refresh-science-data workflow replaces observed_planets with current NASA Exoplanet Archive records.",
+    "nasa_sync_pending": true
+  }
+}

@@ -1,0 +1,28 @@
+name: Validate Phase 1
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  phase1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Python
+        run: |
+          python -m py_compile pipelines/nasa_exoplanet/fetch_system.py
+          python -m py_compile pipelines/nasa_exoplanet/build_frontend_dataset.py
+
+      - name: Validate JSON
+        run: |
+          python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
+          python -m json.tool frontend/data/ltt1445.json > /dev/null
+
+      - name: Validate public app files
+        run: |
+          test -f frontend/index.html
+          test -f frontend/styles.css
+          test -f frontend/app.js
