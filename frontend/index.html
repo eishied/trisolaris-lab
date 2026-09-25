@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase7c-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase8a-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -562,6 +562,80 @@
         <p class="surfaceCaveat">El modelo físico actual resuelve latitud. La longitud del globo se usa solo para separar visualmente poblaciones y trayectorias; no es una predicción geográfica.</p>
       </section>
 
+      <section class="astroanthropologySystem" aria-labelledby="astroAnthroHeadline">
+        <div class="astroAnthroIntro">
+          <p class="eyebrow">ASTROANTROPOLOGÍA · PHASE 8.0</p>
+          <h3 id="astroAnthroHeadline">Cada población resuelve el mismo planeta de una manera distinta.</h3>
+          <p id="astroAnthroText">
+            Aquí no existe una barra de “progreso”. Cada población mantiene una combinación distinta de agua,
+            refugio, alimento, movilidad, infraestructura y conocimiento; esas capacidades pueden conservarse,
+            intercambiarse, perderse o reconstruirse.
+          </p>
+        </div>
+
+        <div class="astroAnthroSummary" aria-live="polite">
+          <article>
+            <span>Población seleccionada</span>
+            <strong id="astroAnthroSelected">—</strong>
+          </article>
+          <article>
+            <span>Presión principal</span>
+            <strong id="astroAnthroPressure">—</strong>
+          </article>
+          <article>
+            <span>Continuidad</span>
+            <strong id="astroAnthroContinuity">—</strong>
+          </article>
+        </div>
+
+        <div class="astroAnthroWorkspace">
+          <div>
+            <p class="astroAnthroSectionLabel">Poblaciones</p>
+            <div id="astroAnthroPopulationList" class="astroAnthroPopulationList"></div>
+          </div>
+
+          <article class="astroAnthroProfile">
+            <div class="astroAnthroProfileHead">
+              <div>
+                <span id="astroAnthroAliasNote">Alias narrativo de seguimiento</span>
+                <h4 id="astroAnthroAlias">—</h4>
+                <p id="astroAnthroLineage">—</p>
+              </div>
+              <span id="astroAnthroContact" class="astroAnthroContact">—</span>
+            </div>
+
+            <div class="astroAnthroNarrative">
+              <article>
+                <span>Cómo vive</span>
+                <strong id="astroAnthroLife">—</strong>
+              </article>
+              <article>
+                <span>Qué la sostiene</span>
+                <strong id="astroAnthroSupport">—</strong>
+              </article>
+              <article>
+                <span>Qué puede perder</span>
+                <strong id="astroAnthroRisk">—</strong>
+              </article>
+            </div>
+
+            <div id="astroAnthroSystems" class="astroAnthroSystems"></div>
+
+            <div class="astroAnthroCausal">
+              <span>Cadena causal</span>
+              <p id="astroAnthroWhy">—</p>
+            </div>
+          </article>
+        </div>
+
+        <div id="astroAnthroMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">
+          Los nombres de población son alias de interfaz para poder seguir cada historia. No representan etnias,
+          idiomas ni identidades inferidas. La cultura se modela solo mediante variables funcionales conectadas a
+          aislamiento, contacto, continuidad del conocimiento y estrategias de subsistencia.
+        </p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -634,6 +708,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase7c-20260925"></script>
+  <script type="module" src="./app.js?v=phase8a-20260925"></script>
 </body>
 </html>
