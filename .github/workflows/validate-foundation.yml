@@ -1,0 +1,26 @@
+name: Validate research foundation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required research files
+        run: |
+          test -f MASTER_PLAN.md
+          test -f docs/SCIENTIFIC_MODEL.md
+          test -f docs/DATA_SOURCES.md
+          test -f docs/DATA_PROVENANCE.md
+          test -f docs/EPISTEMIC_LEVELS.md
+          test -f docs/RESEARCH_PROTOCOL.md
+          test -f docs/PUBLICATION_PIPELINE.md
+          test -f data/catalog/sources.yml
+          test -f publications/templates/arxiv/paper.md
+
+      - name: Python syntax check
+        run: python -m py_compile pipelines/nasa_exoplanet/fetch_system.py
