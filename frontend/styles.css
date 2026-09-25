@@ -234,8 +234,12 @@ input[type=range]{grid-column:1/-1;width:100%;accent-color:#8bdfff;margin-top:7p
 .footerMeta span{font-size:11px;margin-top:3px}
 body[data-mode="simple"] .scientific-only{display:none!important}
 body[data-mode="scientific"] .simple-only{display:none!important}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
+.reveal{opacity:1;transform:none}
+.reveal.reveal-ready{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.reveal-ready.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .reveal,.reveal.reveal-ready,.reveal.reveal-ready.in{opacity:1;transform:none;transition:none}
+}
 @media(max-width:1080px){
   .systemExperience{grid-template-columns:1fr}
   .contextRail{border-left:0;border-top:1px solid var(--line);padding:7px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
@@ -1045,7 +1049,8 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .refugiaStage,
   .lineageStage,
   .geneticsStage,
-  .lineageInspectorStage{
+  .lineageInspectorStage,
+  .planetHistoryStage{
     overflow-x:auto;
     -webkit-overflow-scrolling:touch
   }
@@ -1058,7 +1063,8 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   #refugiaCanvas,
   #lineageCanvas,
   #geneticsCanvas,
-  #phenotypeCanvas{
+  #phenotypeCanvas,
+  #planetHistoryCanvas{
     width:820px;
     max-width:none;
     min-width:820px
@@ -1072,7 +1078,8 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .refugiaStage::after,
   .lineageStage::after,
   .geneticsStage::after,
-  .lineageInspectorStage::after{
+  .lineageInspectorStage::after,
+  .planetHistoryStage::after{
     content:"Desliza para explorar la visualización";
     display:block;
     position:sticky;
@@ -1087,4 +1094,188 @@ body[data-mode="scientific"] .simple-only{display:none!important}
     font-size:10px;
     backdrop-filter:blur(12px)
   }
+}
+
+
+.planetHistorySystem{
+  margin-top:40px;
+  padding:42px 0 34px;
+  border-top:1px solid var(--line)
+}
+.planetHistoryIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  gap:36px;
+  align-items:end
+}
+.planetHistoryIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(30px,4vw,48px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.planetHistoryIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#97a5ae
+}
+.planetHistoryControls{
+  margin-top:24px;
+  padding:16px 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.planetHistoryControls label{
+  display:grid;
+  grid-template-columns:auto minmax(200px,340px);
+  gap:14px;
+  align-items:center
+}
+.planetHistoryControls label span{
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.11em;
+  text-transform:uppercase
+}
+#planetHistoryMode{
+  appearance:none;
+  border:1px solid var(--line);
+  background:#0b1217;
+  color:#dce4e8;
+  border-radius:999px;
+  padding:10px 38px 10px 14px;
+  font:inherit;
+  background-image:linear-gradient(45deg,transparent 50%,#7f909a 50%),linear-gradient(135deg,#7f909a 50%,transparent 50%);
+  background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat
+}
+.planetHistoryStage{
+  margin-top:22px;
+  border:1px solid var(--line);
+  border-radius:30px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(62,128,156,.08),transparent 46%),
+    #050a0e
+}
+#planetHistoryCanvas{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:0;
+  background:transparent
+}
+.planetHistoryNarrative{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  margin-top:18px;
+  border-top:1px solid var(--line)
+}
+.planetHistoryNarrative article{
+  padding:18px 20px 16px 0
+}
+.planetHistoryNarrative article+article{
+  padding-left:20px;
+  border-left:1px solid var(--line)
+}
+.planetHistoryNarrative span{
+  display:block;
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  margin-bottom:6px
+}
+.planetHistoryNarrative strong{
+  display:block;
+  color:#dce4e8;
+  font-size:16px;
+  line-height:1.42
+}
+.planetHistoryPopulations{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:1px;
+  margin-top:18px;
+  border:1px solid var(--line);
+  background:var(--line)
+}
+.historyPopulation{
+  background:#080d12;
+  padding:17px 18px
+}
+.historyPopulation span{
+  display:block;
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.historyPopulation strong{
+  display:block;
+  margin-top:5px;
+  color:#e0e7ea;
+  font-size:18px
+}
+.historyPopulation p{
+  margin:6px 0 0;
+  color:#8d9aa3;
+  font-size:12px;
+  line-height:1.5
+}
+.historyTimeline{
+  margin-top:18px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.historyTimelineHead{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  padding:14px 0
+}
+.historyTimelineHead span{
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.11em;
+  text-transform:uppercase
+}
+.historyTimelineHead strong{
+  color:#aebac1;
+  font-size:12px
+}
+.historyEvents{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1px;
+  background:var(--line)
+}
+.historyEvent{
+  background:#080d12;
+  padding:14px 16px
+}
+.historyEvent span{
+  color:#6f7d86;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.historyEvent strong{
+  display:block;
+  color:#dce4e8;
+  font-size:14px;
+  margin-top:5px;
+  line-height:1.35
+}
+.planetHistorySystem .metricGrid{margin-top:18px}
+
+@media(max-width:780px){
+  .planetHistoryIntro{grid-template-columns:1fr;gap:9px}
+  .planetHistoryIntro>p:last-child{grid-column:1;grid-row:auto}
+  .planetHistoryControls label{grid-template-columns:1fr}
+  .planetHistoryNarrative{grid-template-columns:1fr}
+  .planetHistoryNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }

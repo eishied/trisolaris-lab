@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase6d-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase7-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -485,6 +485,57 @@
         <p class="surfaceCaveat">El modelo actual no inventa cambios craneofaciales, estéticos ni una “apariencia alienígena”. Solo muestra cambios funcionales cuando la genética y la selección los sostienen.</p>
       </section>
 
+      <section class="planetHistorySystem" aria-labelledby="planetHistoryHeadline">
+        <div class="planetHistoryIntro">
+          <p class="eyebrow">HUELLA PLANETARIA · PHASE 7.0</p>
+          <h3 id="planetHistoryHeadline">Los linajes empiezan a dejar historia sobre el planeta.</h3>
+          <p id="planetHistoryText">Asentamientos, agricultura, infraestructura y movilidad se calculan a partir del soporte ambiental, la tecnología y la conexión entre refugios. La cultura se representa como diferenciación y continuidad, nunca como una escala de superioridad.</p>
+        </div>
+
+        <div class="planetHistoryControls">
+          <label>
+            <span>Vista del planeta</span>
+            <select id="planetHistoryMode">
+              <option value="footprint">Huella total</option>
+              <option value="migration">Migración</option>
+              <option value="agriculture">Agricultura</option>
+              <option value="infrastructure">Infraestructura</option>
+              <option value="culture">Diferenciación cultural</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="planetHistoryStage">
+          <canvas id="planetHistoryCanvas" width="1200" height="650" aria-label="Globo de huella poblacional, migración y asentamientos"></canvas>
+        </div>
+
+        <div class="planetHistoryNarrative">
+          <article>
+            <span>Distribución</span>
+            <strong id="historyDistributionText">Calculando regiones poblacionales…</strong>
+          </article>
+          <article>
+            <span>Tecnología y agricultura</span>
+            <strong id="historyTechnologyText">Calculando dependencia e infraestructura…</strong>
+          </article>
+          <article>
+            <span>Historia cultural</span>
+            <strong id="historyCultureText">Calculando diferenciación por aislamiento y contacto…</strong>
+          </article>
+        </div>
+
+        <div id="planetHistoryPopulations" class="planetHistoryPopulations"></div>
+        <div class="historyTimeline">
+          <div class="historyTimelineHead">
+            <span>Eventos del escenario</span>
+            <strong id="historyEventCount">0 eventos</strong>
+          </div>
+          <div id="historyEvents" class="historyEvents"></div>
+        </div>
+        <div id="planetHistoryMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">El modelo físico actual resuelve latitud. La longitud del globo se usa solo para separar visualmente poblaciones y trayectorias; no es una predicción geográfica.</p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -557,6 +608,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase6d-20260925"></script>
+  <script type="module" src="./app.js?v=phase7-20260925"></script>
 </body>
 </html>
