@@ -2586,25 +2586,44 @@ $("#pauseBtn").addEventListener("click",()=>{
 });
 
 function activateRevealObserver(){
-  const items=$$(".reveal:not([data-observed])");
+  const items=$(".reveal:not([data-observed])");
   if(!items.length)return;
+
+  // Content is visible by default. Animation is progressive enhancement only.
+  if(!("IntersectionObserver" in window) || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches){
+    items.forEach(item=>{
+      item.dataset.observed="1";
+      item.classList.add("in");
+    });
+    return;
+  }
 
   const observer=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       if(entry.isIntersecting){
         entry.target.classList.add("in");
+        entry.target.classList.remove("reveal-ready");
         observer.unobserve(entry.target);
       }
     });
-  },{threshold:.12});
+  },{threshold:.04,rootMargin:"120px 0px"});
 
   items.forEach(item=>{
     item.dataset.observed="1";
+    item.classList.add("reveal-ready");
     observer.observe(item);
   });
+
+  // iOS/in-app browser fallback: never leave scientific modules hidden.
+  window.setTimeout(()=>{
+    $(".reveal.reveal-ready:not(.in)").forEach(item=>{
+      item.classList.add("in");
+      item.classList.remove("reveal-ready");
+    });
+  },1400);
 }
 
-$$(".chapter").forEach(el=>el.classList.add("reveal"));
+$(".chapter").forEach(el=>el.classList.add("reveal"));
 activateRevealObserver();
 
 const logo=$(".noodboxLogo");
