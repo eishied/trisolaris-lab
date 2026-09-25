@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase9a-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase9c-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -722,6 +722,90 @@
           </article>
         </div>
 
+
+        <div class="interplanetaryExtension">
+          <div class="interplanetaryExtensionHead">
+            <div>
+              <p class="eyebrow">RED INTERPLANETARIA · PHASE 9.1</p>
+              <h4>Una llegada exitosa todavía puede convertirse en una colonia fallida.</h4>
+            </div>
+            <p>
+              La población extraplanetaria tiene ahora su propia capacidad de carga, infraestructura,
+              autosuficiencia, dependencia logística y migración de retorno.
+            </p>
+          </div>
+
+          <div class="interplanetaryNetworkControls">
+            <label>
+              <span>Reabastecimiento desde H-01</span>
+              <output id="interplanetaryResupplyOut">35%</output>
+              <input id="interplanetaryResupply" type="range" min="0" max="100" step="1" value="35" />
+            </label>
+            <label>
+              <span>Choque de infraestructura</span>
+              <output id="interplanetaryShockOut">0%</output>
+              <input id="interplanetaryShock" type="range" min="0" max="100" step="1" value="0" />
+            </label>
+          </div>
+
+          <div class="interplanetaryNetworkSummary">
+            <article>
+              <span>Colonia</span>
+              <strong id="interplanetaryColonyState">No establecida</strong>
+            </article>
+            <article>
+              <span>Población local</span>
+              <strong id="interplanetaryColonyPopulation">—</strong>
+            </article>
+            <article>
+              <span>Autosuficiencia</span>
+              <strong id="interplanetarySelfSufficiency">—</strong>
+            </article>
+            <article>
+              <span>Infraestructura</span>
+              <strong id="interplanetaryInfrastructure">—</strong>
+            </article>
+          </div>
+
+          <div id="interplanetaryColonyTimeline" class="interplanetaryColonyTimeline"></div>
+
+          <div class="interplanetaryExtensionHead offworldHead">
+            <div>
+              <p class="eyebrow">DIVERGENCIA EXTRAPLANETARIA · PHASE 9.2</p>
+              <h4>La distancia por sí sola no crea otra humanidad.</h4>
+            </div>
+            <p>
+              Solo una población que persiste entra en esta capa. Se combinan tamaño efectivo, flujo génico,
+              efecto fundador y exposición ambiental amortiguada por el hábitat.
+            </p>
+          </div>
+
+          <div class="offworldDivergenceGrid">
+            <article>
+              <span>Flujo génico</span>
+              <strong id="offworldGeneFlow">—</strong>
+            </article>
+            <article>
+              <span>Deriva</span>
+              <strong id="offworldDrift">—</strong>
+            </article>
+            <article>
+              <span>Selección ambiental</span>
+              <strong id="offworldSelection">—</strong>
+            </article>
+            <article>
+              <span>Divergencia</span>
+              <strong id="offworldDivergence">—</strong>
+            </article>
+          </div>
+
+          <div class="offworldCausal">
+            <span>Estado del linaje</span>
+            <strong id="offworldContinuity">Sin población extraplanetaria persistente.</strong>
+            <p id="offworldWhy">No se infiere especiación ni cambio anatómico automático.</p>
+          </div>
+        </div>
+
         <div id="interplanetaryMetrics" class="metricGrid scientific-only"></div>
         <p class="surfaceCaveat">
           El tiempo de viaje usa una transferencia de Hohmann idealizada entre órbitas circulares y coplanares.
@@ -802,6 +886,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase9a-20260925"></script>
+  <script type="module" src="./app.js?v=phase9c-20260925"></script>
 </body>
 </html>
