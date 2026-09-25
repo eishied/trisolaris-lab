@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase5-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase5b-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -367,6 +367,34 @@
         <p class="surfaceCaveat">Modelo poblacional ambiental. No es una predicción médica individual ni implica adaptación genética automática.</p>
       </section>
 
+      <section class="refugiaSystem" aria-labelledby="refugiaHeadline">
+        <div class="refugiaIntro">
+          <p class="eyebrow">MIGRACIÓN · PHASE 5.1</p>
+          <h3 id="refugiaHeadline">Poblaciones separadas por el planeta.</h3>
+          <p id="refugiaText">Los refugios habitables se convierten en regiones poblacionales con nombres propios. La movilidad determina cuánto se conectan o se aíslan.</p>
+        </div>
+
+        <div class="refugiaControls">
+          <label>
+            <span>Movilidad entre refugios</span>
+            <output id="mobilityOut">45%</output>
+            <input id="mobility" type="range" min="0" max="100" step="1" value="45" />
+          </label>
+        </div>
+
+        <div class="refugiaStage">
+          <canvas id="refugiaCanvas" width="1200" height="500" aria-label="Red de refugios poblacionales y migración potencial"></canvas>
+        </div>
+
+        <div class="refugiaNarrative">
+          <strong id="refugiaState">Buscando refugios conectados…</strong>
+          <p id="refugiaDetail">El aislamiento es geográfico y demográfico. No implica todavía divergencia genética ni una nueva especie.</p>
+        </div>
+
+        <div id="refugiaList" class="refugiaList"></div>
+        <div id="refugiaMetrics" class="metricGrid scientific-only"></div>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -439,6 +467,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase5-20260925"></script>
+  <script type="module" src="./app.js?v=phase5b-20260925"></script>
 </body>
 </html>

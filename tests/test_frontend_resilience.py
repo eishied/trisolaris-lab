@@ -92,10 +92,26 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function renderSettlementWorld()", app)
         self.assertIn("humanSeeded", app)
 
+    def test_refugia_migration_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "mobility",
+            "refugiaCanvas",
+            "refugiaHeadline",
+            "refugiaList",
+            "refugiaMetrics",
+            "refugiaState",
+            "refugiaDetail",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function buildRefugiaNetwork(", app)
+        self.assertIn("function renderRefugiaNetwork()", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase5-20260925", html)
-        self.assertIn("app.js?v=phase5-20260925", html)
+        self.assertIn("styles.css?v=phase5b-20260925", html)
+        self.assertIn("app.js?v=phase5b-20260925", html)
 
 
 if __name__ == "__main__":
