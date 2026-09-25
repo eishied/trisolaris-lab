@@ -13,7 +13,10 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "data/catalog/systems/ltt1445.json"
-OUTPUT = ROOT / "frontend/data/ltt1445.json"
+OUTPUTS = [
+    ROOT / "frontend/data/ltt1445.json",
+    ROOT / "docs/data/ltt1445.json",
+]
 TAP = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
 
 QUERY = """
@@ -78,9 +81,11 @@ def main() -> None:
         }
     }
 
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    print(f"Wrote {OUTPUT} with {len(planets)} observed planets.")
+    encoded = json.dumps(payload, indent=2)
+    for output in OUTPUTS:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(encoded, encoding="utf-8")
+        print(f"Wrote {output} with {len(planets)} observed planets.")
 
 
 if __name__ == "__main__":

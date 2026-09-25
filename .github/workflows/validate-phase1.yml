@@ -20,6 +20,7 @@ jobs:
         run: |
           python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
           python -m json.tool frontend/data/ltt1445.json > /dev/null
+          python -m json.tool docs/data/ltt1445.json > /dev/null
 
       - name: Validate public app files
         run: |
@@ -29,6 +30,10 @@ jobs:
           test -f docs/index.html
           test -f docs/styles.css
           test -f docs/app.js
+          cmp frontend/index.html docs/index.html
+          cmp frontend/styles.css docs/styles.css
+          cmp frontend/app.js docs/app.js
+          cmp frontend/data/ltt1445.json docs/data/ltt1445.json
 
       - name: Validate JavaScript syntax
         run: |

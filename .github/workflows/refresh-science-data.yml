@@ -25,12 +25,12 @@ jobs:
       - name: Commit dataset if changed
         shell: bash
         run: |
-          if git diff --quiet -- frontend/data/ltt1445.json; then
+          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json; then
             echo "No scientific-data changes detected."
             exit 0
           fi
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add frontend/data/ltt1445.json
+          git add frontend/data/ltt1445.json docs/data/ltt1445.json
           git commit -m "data: refresh LTT 1445 NASA snapshot"
           git push
