@@ -41,10 +41,27 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function solveClimateBands(", app)
         self.assertIn("function renderClimateWorld()", app)
 
+    def test_surface_systems_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "pressure",
+            "water",
+            "surfaceCanvas",
+            "surfaceHeadline",
+            "surfaceMetrics",
+            "atmoNarrative",
+            "waterNarrative",
+            "bioNarrative",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function solveSurfaceSystems(", app)
+        self.assertIn("function renderSurfaceWorld()", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase3-20260925", html)
-        self.assertIn("app.js?v=phase3-20260925", html)
+        self.assertIn("styles.css?v=phase4-20260925", html)
+        self.assertIn("app.js?v=phase4-20260925", html)
 
 
 if __name__ == "__main__":
