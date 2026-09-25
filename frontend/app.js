@@ -11,6 +11,7 @@ let lifeSeeded=localStorage.getItem("trisolaris-life-seeded")==="true";
 let humanSeeded=localStorage.getItem("trisolaris-human-seeded")==="true";
 let hitTargets=[];
 let selectedFocus=null;
+let selectedLineageId=null;
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -1523,6 +1524,13 @@ function buildRefugiaNetwork(settlement,mobility=.45,threshold=.50){
       assistedSupport:avg("assistedSupport"),
       agriculturePotential:avg("agriculturePotential"),
       technologyDependency:avg("technologyDependency"),
+      stressComponents:{
+        thermal:cluster.reduce((sum,r,i)=>sum*r.stress.thermal*weights[i],0)/total,
+        oxygen:cluster.reduce((sum,r,i)=>sum*r.stress.oxygen*weights[i],0)/total,
+        pressure:cluster.reduce((sum,r,i)=>sum*r.stress.pressure*weights[i],0)/total,
+        water:cluster.reduce((sum,r,i)=>sum*r.stress.water*weights[i],0)/total,
+        food:cluster.reduce((sum,r,i)=>sum*r.stress.food*weights[i],0)/total
+      },
       relativeCapacityWeight:total*avg("assistedSupport")*(.45+.55*avg("agriculturePotential"))
     };
   });
