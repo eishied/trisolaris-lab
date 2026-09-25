@@ -29,8 +29,8 @@ jobs:
           python -m py_compile engine/ecology/food_web.py
           python -m py_compile pipelines/ecology/build_foodweb_baseline.py
           python -m py_compile engine/human/settlement.py
-          python -m py_compile pipelines/human/build_settlement_baseline.py
           python -m py_compile engine/human/refugia.py
+          python -m py_compile pipelines/human/build_settlement_baseline.py
           python -m py_compile pipelines/human/build_refugia_baseline.py
 
       - name: Run unit tests
@@ -48,9 +48,18 @@ jobs:
 
       - name: Validate JSON
         run: |
-          for file in             data/catalog/systems/ltt1445.json             frontend/data/ltt1445.json docs/data/ltt1445.json             frontend/data/orbital-screen.json docs/data/orbital-screen.json             frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json             frontend/data/climate-baseline.json docs/data/climate-baseline.json             frontend/data/surface-baseline.json docs/data/surface-baseline.json             frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json             frontend/data/settlement-baseline.json docs/data/settlement-baseline.json \
+          FILES=(
+            data/catalog/systems/ltt1445.json
+            frontend/data/ltt1445.json docs/data/ltt1445.json
+            frontend/data/orbital-screen.json docs/data/orbital-screen.json
+            frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
+            frontend/data/climate-baseline.json docs/data/climate-baseline.json
+            frontend/data/surface-baseline.json docs/data/surface-baseline.json
+            frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
+            frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
             frontend/data/refugia-baseline.json docs/data/refugia-baseline.json
-          do
+          )
+          for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
           done
 
