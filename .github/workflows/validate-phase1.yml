@@ -47,6 +47,9 @@ jobs:
       - name: Build food-web baseline
         run: python pipelines/ecology/build_foodweb_baseline.py
 
+      - name: Build ecology baseline
+        run: python pipelines/ecology/build_foodweb_baseline.py
+
       - name: Validate JSON
         run: |
           python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
