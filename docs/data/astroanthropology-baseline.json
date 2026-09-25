@@ -1,0 +1,61 @@
+{
+  "model": "functional_astroanthropology_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "years": 50000.0,
+    "exchange_strength": 1.0
+  },
+  "societies": [
+    {
+      "lineage_id": "L1",
+      "lineage_name": "Linaje Equatoria-1",
+      "refuge_name": "Equatoria-1",
+      "population_alias": "Aster-1",
+      "alias_rule": "stable narrative label only; not an inferred ethnonym",
+      "dominant_pressure": "food reliability",
+      "settlement_style": "dispersed permanent settlements",
+      "agriculture_strategy": "controlled-environment agriculture",
+      "contact_state": "strong local differentiation",
+      "knowledge_state": "fragile continuity",
+      "technology_portfolio": {
+        "water_management": 0.10853469283122909,
+        "thermal_protection": 0.13194822296494207,
+        "open_agriculture": 0.05246648864827503,
+        "controlled_agriculture": 0.20998010522179625,
+        "mobility": 0.1269472166655152,
+        "infrastructure": 0.17088852307835597,
+        "archives_and_knowledge": 0.2514146452414482
+      },
+      "knowledge_retention": 0.30195596632566685,
+      "knowledge_transfer": 0.04389277807362778,
+      "knowledge_loss_pressure": 0.29045291113123095,
+      "technical_balance": 0.15192824466047655,
+      "system_redundancy": 0.18167218506961913,
+      "technology_dependence": 0.15424910275953585,
+      "cultural_exchange": 0.06982096916603336,
+      "cultural_differentiation": 0.9980695458637723,
+      "demographic_status": "stable",
+      "population_index": 418.82732911881277,
+      "carrying_capacity_index": 418.8273296790409
+    }
+  ],
+  "events": [],
+  "summary": {
+    "population_count": 1,
+    "mean_knowledge_retention": 0.30195596632566685,
+    "mean_knowledge_transfer": 0.04389277807362778,
+    "mean_knowledge_loss_pressure": 0.29045291113123095,
+    "mean_system_redundancy": 0.18167218506961913,
+    "mean_technology_dependence": 0.15424910275953585,
+    "mean_cultural_exchange": 0.06982096916603336
+  },
+  "limitations": [
+    "functional strategy proxies, not predictions of real cultures",
+    "population aliases are UI labels, not inferred ethnonyms",
+    "no society is ranked as more advanced, superior or desirable",
+    "technology can be retained, exchanged, lost or rebuilt; no linear progress ladder is assumed",
+    "language, religion, political ideology and moral values are not inferred",
+    "institutions, conflict and economics are not yet explicitly modeled"
+  ],
+  "next_model": "interplanetary settlement, founder effects, off-world isolation and technology transfer between worlds"
+}
