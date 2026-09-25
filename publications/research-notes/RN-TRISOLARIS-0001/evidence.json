@@ -110,5 +110,12 @@
     "claim_scope": "counterfactual_replay",
     "source": "frontend/data/counterfactual-replay-baseline.json",
     "detail": "counterfactual_replay_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0014",
+    "epistemic_level": "MODELED",
+    "claim_scope": "transition_thresholds",
+    "source": "frontend/data/transition-thresholds-baseline.json",
+    "detail": "transition_threshold_atlas_v0.1"
   }
 ]

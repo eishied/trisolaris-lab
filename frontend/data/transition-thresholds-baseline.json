@@ -1,0 +1,406 @@
+{
+  "model": "transition_threshold_atlas_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "years": 50000.0,
+    "runs_per_point": 16,
+    "seed": 1445,
+    "uncertainty": 0.1,
+    "target_frequency": 0.5
+  },
+  "scans": [
+    {
+      "parameter": "capability_multiplier",
+      "label": "Functional capability multiplier",
+      "direction": "higher-can-help",
+      "target_frequency": 0.5,
+      "threshold_reached": true,
+      "first_target_crossing_value": 2.25,
+      "maximum_non_no_launch_frequency": 1.0,
+      "best_scanned_value": 2.5,
+      "curve": [
+        {
+          "value": 0.5,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.75,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.25,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.5,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.75,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 2.0,
+          "non_no_launch_frequency": 0.0625,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 0.9375
+        },
+        {
+          "value": 2.25,
+          "non_no_launch_frequency": 0.9375,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "colony-collapse",
+          "dominant_frequency": 0.5
+        },
+        {
+          "value": 2.5,
+          "non_no_launch_frequency": 1.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "colony-collapse",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 3.0,
+          "non_no_launch_frequency": 1.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "colony-collapse",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 3.5,
+          "non_no_launch_frequency": 1.0,
+          "persistent_colony_frequency": 0.9375,
+          "divergent_lineage_frequency": 0.9375,
+          "dominant_outcome": "divergent-lineage",
+          "dominant_frequency": 0.9375
+        },
+        {
+          "value": 4.0,
+          "non_no_launch_frequency": 1.0,
+          "persistent_colony_frequency": 1.0,
+          "divergent_lineage_frequency": 1.0,
+          "dominant_outcome": "divergent-lineage",
+          "dominant_frequency": 1.0
+        }
+      ]
+    },
+    {
+      "parameter": "founder_size",
+      "label": "Founder cohort size",
+      "direction": "higher-can-help-after-launch",
+      "target_frequency": 0.5,
+      "threshold_reached": false,
+      "first_target_crossing_value": null,
+      "maximum_non_no_launch_frequency": 0.0,
+      "best_scanned_value": 50.0,
+      "curve": [
+        {
+          "value": 50.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 100.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 250.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 500.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1000.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 2000.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 5000.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        }
+      ]
+    },
+    {
+      "parameter": "exchange_strength",
+      "label": "Post-settlement exchange strength",
+      "direction": "context-dependent",
+      "target_frequency": 0.5,
+      "threshold_reached": false,
+      "first_target_crossing_value": null,
+      "maximum_non_no_launch_frequency": 0.0,
+      "best_scanned_value": 0.0,
+      "curve": [
+        {
+          "value": 0.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.15,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.3,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.45,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.6,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.8,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        }
+      ]
+    },
+    {
+      "parameter": "resupply_strength",
+      "label": "Resupply strength",
+      "direction": "higher-can-help-after-arrival",
+      "target_frequency": 0.5,
+      "threshold_reached": false,
+      "first_target_crossing_value": null,
+      "maximum_non_no_launch_frequency": 0.0,
+      "best_scanned_value": 0.0,
+      "curve": [
+        {
+          "value": 0.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.15,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.35,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.5,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.65,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.8,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        }
+      ]
+    },
+    {
+      "parameter": "infrastructure_shock",
+      "label": "Infrastructure shock",
+      "direction": "lower-is-favorable-after-arrival",
+      "target_frequency": 0.5,
+      "threshold_reached": false,
+      "first_target_crossing_value": null,
+      "maximum_non_no_launch_frequency": 0.0,
+      "best_scanned_value": 0.0,
+      "curve": [
+        {
+          "value": 0.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.1,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.25,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.4,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.6,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 0.8,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        },
+        {
+          "value": 1.0,
+          "non_no_launch_frequency": 0.0,
+          "persistent_colony_frequency": 0.0,
+          "divergent_lineage_frequency": 0.0,
+          "dominant_outcome": "no-launch",
+          "dominant_frequency": 1.0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "parameter_count": 5,
+    "parameters_reaching_target": 1,
+    "parameters_not_reaching_target": 4,
+    "target_frequency": 0.5
+  },
+  "limitations": [
+    "thresholds are properties of the current reduced-order model, not real-world engineering requirements",
+    "one-dimensional scans vary one baseline control family at a time",
+    "the grid is finite, so first crossings are bracket values rather than exact mathematical thresholds",
+    "common replay seeds improve comparability but do not remove structural model uncertainty",
+    "post-settlement variables cannot solve a launch-stage bottleneck unless the model reaches that stage"
+  ]
+}

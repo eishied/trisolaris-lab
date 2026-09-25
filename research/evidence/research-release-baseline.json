@@ -5,7 +5,7 @@
   "epistemic_level": "MODELED",
   "title": "TRISOLARIS baseline evolutionary replay and counterfactual release",
   "research_question": "Are modeled multiplanetary outcomes robust to declared uncertainty, and which single interventions alter the simulated historical trajectory?",
-  "git_commit": "58a6a8cdeb661d8277b3830e57a0b740dce82cb5",
+  "git_commit": "9912ab96e5adf38c2071afc01d38d21f004d0119",
   "datasets": [
     {
       "name": "climate",
@@ -379,6 +379,32 @@
         "the intervention range is a scenario choice rather than an empirically calibrated policy effect",
         "all limitations of the underlying Evolutionary Replay and Phase 9 models still apply"
       ]
+    },
+    {
+      "name": "transition_thresholds",
+      "path": "frontend/data/transition-thresholds-baseline.json",
+      "model": "transition_threshold_atlas_v0.1",
+      "epistemic_level": "MODELED",
+      "inputs": {
+        "years": 50000.0,
+        "runs_per_point": 16,
+        "seed": 1445,
+        "uncertainty": 0.1,
+        "target_frequency": 0.5
+      },
+      "summary": {
+        "parameter_count": 5,
+        "parameters_reaching_target": 1,
+        "parameters_not_reaching_target": 4,
+        "target_frequency": 0.5
+      },
+      "limitations": [
+        "thresholds are properties of the current reduced-order model, not real-world engineering requirements",
+        "one-dimensional scans vary one baseline control family at a time",
+        "the grid is finite, so first crossings are bracket values rather than exact mathematical thresholds",
+        "common replay seeds improve comparability but do not remove structural model uncertainty",
+        "post-settlement variables cannot solve a launch-stage bottleneck unless the model reaches that stage"
+      ]
     }
   ],
   "evidence_ledger": [
@@ -493,6 +519,13 @@
       "claim_scope": "counterfactual_replay",
       "source": "frontend/data/counterfactual-replay-baseline.json",
       "detail": "counterfactual_replay_v0.1"
+    },
+    {
+      "evidence_id": "EV-MOD-0014",
+      "epistemic_level": "MODELED",
+      "claim_scope": "transition_thresholds",
+      "source": "frontend/data/transition-thresholds-baseline.json",
+      "detail": "transition_threshold_atlas_v0.1"
     }
   ],
   "claims": [
@@ -527,12 +560,12 @@
     {
       "check": "model_versions_declared",
       "passed": true,
-      "detail": "13/13 datasets declare a model id"
+      "detail": "14/14 datasets declare a model id"
     },
     {
       "check": "limitations_declared",
       "passed": true,
-      "detail": "13/13 datasets declare limitations"
+      "detail": "14/14 datasets declare limitations"
     },
     {
       "check": "replay_seed_declared",
@@ -547,14 +580,14 @@
     {
       "check": "git_commit_declared",
       "passed": true,
-      "detail": "58a6a8cdeb661d8277b3830e57a0b740dce82cb5"
+      "detail": "9912ab96e5adf38c2071afc01d38d21f004d0119"
     }
   ],
   "reproducibility": {
     "replay_seed": 1445,
     "counterfactual_seed": 1445,
-    "dataset_count": 13,
-    "model_count": 13,
+    "dataset_count": 14,
+    "model_count": 14,
     "all_limitations_declared": true,
     "code_and_data_available": true
   },
@@ -563,7 +596,7 @@
     "checks_total": 7,
     "research_note_ready": true,
     "claim_count": 2,
-    "evidence_item_count": 16
+    "evidence_item_count": 17
   },
   "limitations": [
     "RESEARCH_NOTE readiness is an internal reproducibility gate, not peer review",

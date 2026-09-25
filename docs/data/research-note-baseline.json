@@ -2,7 +2,7 @@
   "paper_id": "RN-TRISOLARIS-0001",
   "title": "Robustness of a modeled multiplanetary transition in the TRISOLARIS LTT 1445 scenario",
   "status": "RESEARCH_NOTE",
-  "git_commit": "58a6a8cdeb661d8277b3830e57a0b740dce82cb5",
+  "git_commit": "9912ab96e5adf38c2071afc01d38d21f004d0119",
   "release_id": "REL-TRISOLARIS-0001",
   "experiment_id": "EXP-TRISOLARIS-0001",
   "dominant_outcome": "no-launch",
@@ -12,7 +12,7 @@
   "counterfactual_intervention_fraction": 0.2,
   "counterfactual_outcome_flip_fraction": 0.0,
   "claim_count": 2,
-  "evidence_item_count": 16,
+  "evidence_item_count": 17,
   "arxiv_ready": false,
   "human_review_required": true
 }

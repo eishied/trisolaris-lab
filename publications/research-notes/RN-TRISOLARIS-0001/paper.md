@@ -4,7 +4,7 @@ release_id: REL-TRISOLARIS-0001
 experiment_id: EXP-TRISOLARIS-0001
 title: "Robustness of a modeled multiplanetary transition in the TRISOLARIS LTT 1445 scenario"
 status: RESEARCH_NOTE
-git_commit: 58a6a8cdeb661d8277b3830e57a0b740dce82cb5
+git_commit: 9912ab96e5adf38c2071afc01d38d21f004d0119
 replay_seed: 1445
 counterfactual_seed: 1445
 arxiv_ready: false
@@ -35,8 +35,8 @@ TRISOLARIS combines observed system data, literature parameters and an explicitl
 - Observed planet rows: 2
 - Experimental world: H-01 — SPECULATIVE
 - Release: REL-TRISOLARIS-0001
-- Git commit: 58a6a8cdeb661d8277b3830e57a0b740dce82cb5
-- Evidence items: 16
+- Git commit: 9912ab96e5adf38c2071afc01d38d21f004d0119
+- Evidence items: 17
 
 ## Methods
 
@@ -55,6 +55,7 @@ TRISOLARIS combines observed system data, literature parameters and an explicitl
 - offworld_divergence_v0.1 — frontend/data/offworld-divergence-baseline.json
 - evolutionary_replay_v0.1 — frontend/data/evolutionary-replay-baseline.json
 - counterfactual_replay_v0.1 — frontend/data/counterfactual-replay-baseline.json
+- transition_threshold_atlas_v0.1 — frontend/data/transition-thresholds-baseline.json
 
 ### Evolutionary Replay
 
@@ -114,6 +115,7 @@ Selected upstream limitations:
 - offworld_divergence: divergence is a reduced-order proxy and not a genomic simulation
 - evolutionary_replay: ensemble frequencies are conditional on declared perturbation ranges and are not real-world probabilities
 - counterfactual_replay: the comparison isolates one declared model parameter while holding the replay seed fixed
+- transition_thresholds: thresholds are properties of the current reduced-order model, not real-world engineering requirements
 
 ## Discussion
 
@@ -127,7 +129,7 @@ The current baseline is reproducible and internally traceable. Its ensemble and 
 
 - Release: REL-TRISOLARIS-0001
 - Experiment: EXP-TRISOLARIS-0001
-- Git commit: 58a6a8cdeb661d8277b3830e57a0b740dce82cb5
+- Git commit: 9912ab96e5adf38c2071afc01d38d21f004d0119
 - Evolutionary Replay seed: 1445
 - Counterfactual seed: 1445
 - Exact tables: tables/
@@ -143,7 +145,7 @@ All data used by this note are versioned in the TRISOLARIS repository and enumer
 
 ## Code availability
 
-The analysis code is versioned at commit 58a6a8cdeb661d8277b3830e57a0b740dce82cb5.
+The analysis code is versioned at commit 9912ab96e5adf38c2071afc01d38d21f004d0119.
 
 ## Publication status
 

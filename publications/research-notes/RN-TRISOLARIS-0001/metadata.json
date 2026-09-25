@@ -4,7 +4,7 @@
   "experiment_id": "EXP-TRISOLARIS-0001",
   "title": "Robustness of a modeled multiplanetary transition in the TRISOLARIS LTT 1445 scenario",
   "status": "RESEARCH_NOTE",
-  "git_commit": "58a6a8cdeb661d8277b3830e57a0b740dce82cb5",
+  "git_commit": "9912ab96e5adf38c2071afc01d38d21f004d0119",
   "arxiv_ready": false,
   "human_review_required": true,
   "models": {
@@ -20,7 +20,8 @@
     "interplanetary_network": "interplanetary_network_v0.1",
     "offworld_divergence": "offworld_divergence_v0.1",
     "evolutionary_replay": "evolutionary_replay_v0.1",
-    "counterfactual_replay": "counterfactual_replay_v0.1"
+    "counterfactual_replay": "counterfactual_replay_v0.1",
+    "transition_thresholds": "transition_threshold_atlas_v0.1"
   },
   "dataset_paths": [
     "frontend/data/climate-baseline.json",
@@ -35,7 +36,8 @@
     "frontend/data/interplanetary-network-baseline.json",
     "frontend/data/offworld-divergence-baseline.json",
     "frontend/data/evolutionary-replay-baseline.json",
-    "frontend/data/counterfactual-replay-baseline.json"
+    "frontend/data/counterfactual-replay-baseline.json",
+    "frontend/data/transition-thresholds-baseline.json"
   ],
   "replay_seed": 1445,
   "counterfactual_seed": 1445

@@ -1,6 +1,6 @@
 # Reproduce RN-TRISOLARIS-0001
 
-1. Checkout Git commit 58a6a8cdeb661d8277b3830e57a0b740dce82cb5.
+1. Checkout Git commit 9912ab96e5adf38c2071afc01d38d21f004d0119.
 2. Install requirements-science.txt.
 3. Run python pipelines/evolution/build_evolutionary_replay_baseline.py.
 4. Run python pipelines/evolution/build_counterfactual_replay_baseline.py.

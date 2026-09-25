@@ -20,7 +20,7 @@
     {
       "check": "evidence_map_present",
       "passed": true,
-      "detail": "16 evidence items"
+      "detail": "17 evidence items"
     },
     {
       "check": "experiment_identity_present",
@@ -71,12 +71,12 @@
     }
   ],
   "artifact_checksums_sha256": {
-    "evidence.json": "2010170fbe3aa2891315f63a386cf7e53da5eda4d611dfd1b99eb99fa86a3a84",
+    "evidence.json": "baec7e626d2ed7cbc1c074881b9afbe670b5f85bfb838548863d1c086e4a4491",
     "experiments.json": "df3836c707b6eabf151c9fabf75e936f1b904a7252849b96bce744e87a7ed9e2",
     "figures/counterfactual-deltas.svg": "ad9086aef0485e9cf4d3a08e5c44fc407f747d5999782a645106ea7bbb9406bf",
     "figures/replay-outcomes.svg": "be637be81c3d4f23b8ea9a2ae93fa2b88f6ac74af07a41957dfec518065c36da",
-    "metadata.json": "1cd16931f5fc5c6f1f8cca2abf7438509b0d764f4fecbebc74c0f99da7d8412c",
-    "paper.md": "3ce389992658330af07064003ca0c6f61b3eccbf1032632d7c97786b3f864dfe",
+    "metadata.json": "16b72ebce7a8416da620b93604035467dc86033f72de9b23dfadbf0d6f0c960b",
+    "paper.md": "6b4b0918c6cb999bb9831c3741cd3c904cabd53f1ee5bed0427b3011bbdcb617",
     "tables/counterfactual-deltas.tsv": "95f4fbc1a4e6fd6ebdf34b35d21e5fd0ea6d061e71c35a36d8a479822e2102cf",
     "tables/outcome-frequencies.tsv": "b86fd382117edc8a523d42797dbeee3f82b34352e9502c12fb46c64b8a4392f3"
   },
