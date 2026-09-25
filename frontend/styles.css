@@ -364,3 +364,30 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 .dynamicsSentence[data-state="caution"]{color:#e6c379!important}
 .dynamicsSentence[data-state="fail"]{color:#e39a96!important}
 .dynamicsSentence[data-state="unknown"]{color:#8998a1!important}
+
+
+.nbodyBand{
+  margin-top:34px;
+  padding:34px 0 10px;
+  border-top:1px solid var(--line);
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+  gap:34px;
+  align-items:start
+}
+.nbodyLead h3{
+  margin:8px 0 10px;
+  max-width:760px;
+  font-size:clamp(30px,4vw,48px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.nbodyLead>p:not(.eyebrow){margin:0;color:#9ba8b1;max-width:760px}
+.nbodyLead>span{
+  display:block;margin-top:13px;
+  color:#74828c;font-size:11px;letter-spacing:.04em
+}
+.nbodyBand .metricGrid{margin-top:0}
+@media(max-width:900px){
+  .nbodyBand{grid-template-columns:1fr}
+}

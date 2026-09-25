@@ -11,6 +11,7 @@ on:
       - "pipelines/nasa_exoplanet/build_frontend_dataset.py"
       - "engine/orbital/**"
       - "pipelines/orbital/**"
+      - "requirements-science.txt"
 
 permissions:
   contents: write
@@ -21,21 +22,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install science engine
+        run: python -m pip install --disable-pip-version-check -r requirements-science.txt
+
       - name: Build current LTT 1445 public dataset
         run: python pipelines/nasa_exoplanet/build_frontend_dataset.py
 
       - name: Build baseline orbital screen
         run: python pipelines/orbital/build_screen.py
 
+      - name: Build pilot N-body ensemble
+        run: python pipelines/orbital/build_nbody_ensemble.py --runs 12 --years 100 --samples 160
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
-          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json; then
+          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json; then
             echo "No scientific-data changes detected."
             exit 0
           fi
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json
-          git commit -m "data: refresh NASA snapshot and orbital screen"
+          git add frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
+          git commit -m "data: refresh NASA, orbital screen and N-body pilot"
           git push
