@@ -2592,3 +2592,465 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .thresholdAtlasIntro>p:last-child{grid-column:1;grid-row:auto}
   .thresholdAtlasSummary article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
+
+
+/* UX v3 — contextual light interface */
+:root{
+  color-scheme:light;
+  --bg:#f4f7fa;
+  --surface:#ffffff;
+  --surface2:#f7fafc;
+  --text:#1f2d38;
+  --muted:#637381;
+  --soft:#3f5260;
+  --line:#dbe4ea;
+  --lineStrong:#bdcbd5;
+  --cyan:#1f78ad;
+  --green:#267653;
+  --amber:#9a6516;
+  --violet:#7250a8;
+  --danger:#a74747;
+  --shadow:0 14px 38px rgba(31,54,72,.08);
+}
+[hidden]{display:none!important}
+html{background:var(--bg)}
+body{
+  background:
+    radial-gradient(circle at 12% 0%,rgba(105,174,213,.10),transparent 28%),
+    linear-gradient(180deg,#f8fafc 0,#f4f7fa 48%,#eef3f7 100%)!important;
+  color:var(--text)!important
+}
+body::selection{background:#cfe7f6;color:#173246}
+.siteNav{
+  background:rgba(255,255,255,.91)!important;
+  border-bottom:1px solid var(--line)!important;
+  box-shadow:0 3px 18px rgba(28,52,68,.05)
+}
+.wordmark{color:#173246!important}
+.wordmark span,.navCenter a{color:#60717d!important}
+.viewControl{
+  background:#f3f7fa!important;
+  border-color:var(--line)!important
+}
+.modeBtn{color:#61717e!important}
+.modeBtn.active{
+  color:#173246!important;
+  background:#fff!important;
+  box-shadow:0 1px 5px rgba(31,54,72,.10)!important
+}
+
+.contextSwitcher{
+  position:sticky;
+  top:66px;
+  z-index:45;
+  background:rgba(244,247,250,.94);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px)
+}
+.contextSwitcherInner{
+  width:var(--content);
+  margin:0 auto;
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none
+}
+.contextSwitcherInner::-webkit-scrollbar{display:none}
+.contextSwitcherLabel{
+  flex:0 0 auto;
+  margin-right:5px;
+  color:#71818d;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.contextWorldChoices{display:flex;gap:8px}
+.contextChoice{
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#fff;
+  color:#536672;
+  padding:8px 13px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:650;
+  transition:.18s ease
+}
+.contextChoice:hover{
+  border-color:#9fbccc;
+  color:#21445b;
+  transform:translateY(-1px)
+}
+.contextChoice.active{
+  background:#e6f2f9;
+  border-color:#a8cddd;
+  color:#155b82;
+  box-shadow:inset 0 0 0 1px rgba(31,120,173,.05)
+}
+
+.contextSummary{
+  width:var(--content);
+  margin:26px auto 10px;
+  padding:26px 28px;
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(420px,.8fr);
+  gap:32px;
+  align-items:end;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--shadow)
+}
+.contextMiniLabel{
+  margin:10px 0 3px!important;
+  color:#7d8c97!important;
+  font-size:10px!important;
+  font-weight:750;
+  letter-spacing:.12em;
+  text-transform:uppercase
+}
+.contextSummary h2{
+  margin:0;
+  color:#1d2e3a;
+  font-size:clamp(28px,3.4vw,44px);
+  letter-spacing:-.045em;
+  line-height:1.03
+}
+.contextSummary>div>p:last-child{
+  max-width:720px;
+  margin:10px 0 0!important;
+  color:#637381!important;
+  font-size:14px!important
+}
+.contextEpistemic{
+  display:inline-flex;
+  width:max-content;
+  border-radius:999px;
+  padding:5px 9px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.09em
+}
+.contextEpistemic.observed{background:#e7f5ed;color:#27724f}
+.contextEpistemic.literature{background:#fff4df;color:#8b5c10}
+.contextEpistemic.speculative{background:#f0eafd;color:#6843a2}
+.contextEpistemic.modeled{background:#e5f2f9;color:#17678f}
+.contextFacts{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+  background:#fbfcfd
+}
+.contextFact{
+  min-width:0;
+  padding:13px 14px;
+  border-bottom:1px solid var(--line)
+}
+.contextFact:nth-child(odd){border-right:1px solid var(--line)}
+.contextFact:nth-last-child(-n+2){border-bottom:0}
+.contextFact span{
+  display:block;
+  color:#7a8994;
+  font-size:9px;
+  letter-spacing:.09em;
+  text-transform:uppercase
+}
+.contextFact strong{
+  display:block;
+  margin-top:4px;
+  color:#243642!important;
+  font-size:14px
+}
+.contextFact em{
+  display:block;
+  margin-top:2px;
+  color:#82909a;
+  font-size:9px;
+  font-style:normal
+}
+
+.hero{
+  background:transparent!important;
+  color:var(--text)!important
+}
+.heroGlow{
+  background:radial-gradient(circle,rgba(90,163,205,.14),rgba(255,255,255,0) 68%)!important
+}
+.heroLead,.heroFacts span{color:#667784!important}
+.heroFacts{
+  background:rgba(255,255,255,.72)!important;
+  border-color:var(--line)!important
+}
+.heroFacts strong{color:#223440!important}
+.ctaPrimary{
+  background:#1f78ad!important;
+  color:#fff!important;
+  border-color:#1f78ad!important
+}
+.ctaText{color:#496474!important}
+
+main{color:var(--text)}
+main [data-ui-scope]{
+  scroll-margin-top:150px
+}
+.chapter,
+.experimentChapter{
+  color:var(--text)!important
+}
+.chapterIntro h2,
+.chapterIntro h3,
+[data-ui-scope] h2,
+[data-ui-scope] h3,
+[data-ui-scope] h4,
+[data-ui-scope] strong{
+  color:#22333f!important
+}
+.chapterIntro p,
+[data-ui-scope] p{
+  color:#687984!important
+}
+.chapterNumber,.eyebrow,.overline{
+  color:#52778d!important
+}
+.evidenceMark.observed,.observed{color:#287652!important}
+.evidenceMark.literature,.literature{color:#946217!important}
+.evidenceMark.derived,.derived{color:#176f9a!important}
+.evidenceMark.speculative,.speculative{color:#6e4ba0!important}
+
+.contextRail article,
+.technicalSheet,
+.world,
+.labSurface,
+.orbitWindow,
+.climateWorld,
+.surfaceSystems,
+.ecologySystem,
+.settlementSystem,
+.refugiaSystem,
+.lineageSystem,
+.geneticsSystem,
+.lineageInspector,
+.planetHistorySystem,
+.astroanthropologySystem,
+.interplanetarySystem,
+.evolutionaryReplaySystem,
+.thresholdAtlasSystem,
+.researchReleaseSystem,
+.nbodyBand,
+.methodNote,
+.plainMethod,
+.researchNoteCard,
+.manuscriptReviewGate{
+  background:#fff!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--shadow)
+}
+.orbitWindow,
+.climateWorld,
+.surfaceSystems,
+.ecologySystem,
+.settlementSystem,
+.refugiaSystem,
+.lineageSystem,
+.geneticsSystem,
+.lineageInspector,
+.planetHistorySystem,
+.astroanthropologySystem,
+.interplanetarySystem,
+.evolutionaryReplaySystem,
+.thresholdAtlasSystem,
+.researchReleaseSystem,
+.nbodyBand{
+  border-radius:22px!important;
+  padding-left:clamp(20px,3vw,34px)!important;
+  padding-right:clamp(20px,3vw,34px)!important
+}
+.world{
+  box-shadow:0 8px 26px rgba(31,54,72,.07)!important
+}
+.world:hover{
+  border-color:#aec7d5!important;
+  box-shadow:0 15px 34px rgba(31,82,110,.11)!important
+}
+.worldBody,.worldFacts,.worldExplore{color:#536773!important}
+.worldBody h3{color:#1f3442!important}
+.worldKicker{color:#397697!important}
+.worldHero{
+  background:linear-gradient(145deg,#eaf2f7,#f9fbfc)!important
+}
+.worldSphere{
+  box-shadow:inset -18px -18px 40px rgba(37,83,111,.15),0 14px 30px rgba(37,83,111,.12)!important
+}
+
+.controlsColumn,
+.controlRow,
+.outcome,
+.sheetHeading,
+.focusStory,
+.focusScience,
+.astroAnthroProfile,
+.astroAnthroNarrative,
+.interplanetaryControls,
+.interplanetaryStatus,
+.interplanetarySequence,
+.interplanetaryNarrative,
+.evolutionaryReplayControls,
+.evolutionaryReplaySummary,
+.evolutionaryReplayNarrative,
+.counterfactualControls,
+.counterfactualSummary,
+.counterfactualDeltas,
+.thresholdAtlasSummary,
+.thresholdGrid,
+.researchReleaseSummary,
+.researchReleaseRepro,
+.researchEvidenceLedger,
+.researchClaims,
+.researchValidationChecks,
+.manuscriptReviewSummary,
+.manuscriptHumanCheckList{
+  border-color:var(--line)!important
+}
+
+.thresholdCard,
+.researchEvidenceRow,
+.researchClaim,
+.researchCheck,
+.replayOutcomeRow,
+.replaySensitivityRow,
+.interplanetaryWorld,
+.manuscriptHumanCheck,
+.counterfactualDeltaRow{
+  background:#f9fbfc!important;
+  border-color:var(--line)!important
+}
+.thresholdCard p,
+.researchEvidenceRow p,
+.researchClaim p,
+.researchCheck p,
+.replayOutcomeRow span,
+.replaySensitivityRow span,
+.interplanetaryWorld p,
+.counterfactualDeltaRow span{
+  color:#647682!important
+}
+
+input[type="number"],
+select{
+  background:#fff!important;
+  color:#233541!important;
+  border-color:var(--lineStrong)!important
+}
+input[type="range"]{accent-color:#2379aa}
+button{border-color:var(--line)}
+.quietButton,
+.focusBack,
+.admixtureButton,
+.seedHumanButton,
+.seedLifeButton,
+.interplanetaryLaunchButton,
+.replayRunButton{
+  background:#f6f9fb!important;
+  color:#284150!important;
+  border-color:var(--line)!important
+}
+.quietButton:hover,
+.focusBack:hover,
+.admixtureButton:hover,
+.seedHumanButton:hover,
+.seedLifeButton:hover,
+.interplanetaryLaunchButton:hover,
+.replayRunButton:hover{
+  background:#eaf3f8!important
+}
+.metricGrid .stat,
+.stat{
+  background:#f9fbfc!important;
+  border-color:var(--line)!important
+}
+.stat small{color:#788893!important}
+.stat strong{color:#213642!important}
+.stat em{color:#84939c!important}
+
+.tableWrap{
+  border-color:var(--line)!important;
+  background:#fff!important
+}
+table{color:#324754!important}
+thead{background:#f0f5f8!important}
+th{color:#536a78!important}
+td,th{border-color:var(--line)!important}
+tbody tr:hover{background:#f6fafc!important}
+code{color:#17658d!important;background:#eef6fa;padding:1px 4px;border-radius:4px}
+
+.siteFooter{
+  background:#eaf0f4!important;
+  border-color:var(--line)!important;
+  color:#5d6f7b!important
+}
+.footerBrand strong{color:#213541!important}
+
+.systemVisual,
+.climateStage,
+.surfaceStage,
+.ecologyStage,
+.settlementStage,
+.refugiaStage,
+.lineageStage,
+.geneticsStage,
+.lineageInspectorStage,
+.planetHistoryStage{
+  border:1px solid #cbd7df!important;
+  border-radius:18px!important;
+  overflow:hidden;
+  box-shadow:0 10px 28px rgba(29,54,70,.08)!important
+}
+.visualChrome{
+  background:rgba(255,255,255,.9)!important;
+  color:#536773!important;
+  border-color:var(--line)!important
+}
+
+body[data-context-view="observed"] #mundos{
+  margin-top:22px
+}
+body[data-context-view="observed"] #mundos .worldGallery{
+  grid-template-columns:minmax(0,700px)!important
+}
+body[data-context-view="observed"] #mundos .world{
+  max-width:700px
+}
+body[data-context-view="research"] #experimento{
+  padding-top:8px!important
+}
+body[data-context-view="research"] #experimento>.chapterIntro,
+body[data-context-view="research"] #experimento>.labSurface,
+body[data-context-view="research"] #experimento>.technicalSheet{
+  display:none!important
+}
+
+@media(max-width:900px){
+  .contextSummary{grid-template-columns:1fr}
+}
+@media(max-width:780px){
+  .siteNav{height:58px}
+  .contextSwitcher{top:58px}
+  .contextSwitcherInner{min-height:54px}
+  .contextSummary{
+    width:min(94vw,720px);
+    padding:20px;
+    margin-top:18px;
+    grid-template-columns:1fr
+  }
+  .contextFacts{grid-template-columns:1fr}
+  .contextFact:nth-child(odd){border-right:0}
+  .contextFact:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+  .contextFact:last-child{border-bottom:0}
+}
