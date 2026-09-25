@@ -443,11 +443,11 @@ function initCandidate(){
 
     const historyMode=$("#planetHistoryMode");
     if(historyMode){
-      historyMode.addEventListener("change",()=>safeRender("planetary-history",renderPlanetaryHistory));
+      historyMode.addEventListener("change",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);});
     }
     const historyPlayback=$("#historyPlayback");
     if(historyPlayback){
-      historyPlayback.addEventListener("input",()=>safeRender("planetary-history",renderPlanetaryHistory));
+      historyPlayback.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);});
     }
     const historyDisturbance=$("#historyDisturbance");
     if(historyDisturbance){
@@ -455,11 +455,12 @@ function initCandidate(){
         const severity=$("#historySeverity");
         if(historyDisturbance.value==="none"&&severity) severity.value="0";
         safeRender("planetary-history",renderPlanetaryHistory);
+        safeRender("astroanthropology",renderAstroanthropology);
       });
     }
     const historySeverity=$("#historySeverity");
     if(historySeverity){
-      historySeverity.addEventListener("input",()=>safeRender("planetary-history",renderPlanetaryHistory));
+      historySeverity.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);});
     }
     const historyPlayBtn=$("#historyPlayBtn");
     if(historyPlayBtn){
@@ -480,6 +481,7 @@ function initCandidate(){
           const next=Math.min(100,+control.value+1);
           control.value=String(next);
           safeRender("planetary-history",renderPlanetaryHistory);
+          safeRender("astroanthropology",renderAstroanthropology);
           if(next>=100){
             window.clearInterval(historyPlaybackTimer);
             historyPlaybackTimer=null;
@@ -2940,7 +2942,7 @@ function astroAnthroDominantPressure(population,demography){
     "continuidad del agua":clamp(population.waterRecycling||0),
     "exposición térmica":clamp(population.thermalShelter||0),
     "seguridad alimentaria":clamp(1-Math.max(population.openAgriculture||0,population.controlledAgriculture||0)),
-    "continuidad demográfica":clamp((1-(demography?.reserveProxy||0))+(demography?.bottleneck?.25:0))
+    "continuidad demográfica":clamp((1-(demography?.reserveProxy||0))+(demography?.bottleneck ? .25 : 0))
   };
   return Object.entries(values).sort((a,b)=>b[1]-a[1])[0]?.[0]||"presión ambiental mixta";
 }
