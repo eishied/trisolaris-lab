@@ -108,10 +108,26 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function buildRefugiaNetwork(", app)
         self.assertIn("function renderRefugiaNetwork()", app)
 
+    def test_lineage_divergence_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "lineageYears",
+            "lineageCanvas",
+            "lineageHeadline",
+            "lineageCards",
+            "lineageDetail",
+            "lineageMetrics",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function simulateLineages(", app)
+        self.assertIn("function renderLineages()", app)
+        self.assertIn("selectedLineageId", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase5b-20260925", html)
-        self.assertIn("app.js?v=phase5b-20260925", html)
+        self.assertIn("styles.css?v=phase6-20260925", html)
+        self.assertIn("app.js?v=phase6-20260925", html)
 
 
 if __name__ == "__main__":
