@@ -4,7 +4,7 @@ release_id: REL-TRISOLARIS-0001
 experiment_id: EXP-TRISOLARIS-0001
 title: "Robustness of a modeled multiplanetary transition in the TRISOLARIS LTT 1445 scenario"
 status: RESEARCH_NOTE
-git_commit: f56231a665b532414f041182f2ee46c56a3e4372
+git_commit: 58a6a8cdeb661d8277b3830e57a0b740dce82cb5
 replay_seed: 1445
 counterfactual_seed: 1445
 arxiv_ready: false
@@ -35,7 +35,7 @@ TRISOLARIS combines observed system data, literature parameters and an explicitl
 - Observed planet rows: 2
 - Experimental world: H-01 — SPECULATIVE
 - Release: REL-TRISOLARIS-0001
-- Git commit: f56231a665b532414f041182f2ee46c56a3e4372
+- Git commit: 58a6a8cdeb661d8277b3830e57a0b740dce82cb5
 - Evidence items: 16
 
 ## Methods
@@ -127,7 +127,7 @@ The current baseline is reproducible and internally traceable. Its ensemble and 
 
 - Release: REL-TRISOLARIS-0001
 - Experiment: EXP-TRISOLARIS-0001
-- Git commit: f56231a665b532414f041182f2ee46c56a3e4372
+- Git commit: 58a6a8cdeb661d8277b3830e57a0b740dce82cb5
 - Evolutionary Replay seed: 1445
 - Counterfactual seed: 1445
 - Exact tables: tables/
@@ -143,7 +143,7 @@ All data used by this note are versioned in the TRISOLARIS repository and enumer
 
 ## Code availability
 
-The analysis code is versioned at commit f56231a665b532414f041182f2ee46c56a3e4372.
+The analysis code is versioned at commit 58a6a8cdeb661d8277b3830e57a0b740dce82cb5.
 
 ## Publication status
 

@@ -1,0 +1,106 @@
+{
+  "model": "manuscript_review_gate_v0.1",
+  "publication_state": "RESEARCH_NOTE",
+  "automatic_checks": [
+    {
+      "check": "research_note_status",
+      "passed": true,
+      "detail": "RESEARCH_NOTE"
+    },
+    {
+      "check": "arxiv_not_auto_promoted",
+      "passed": true,
+      "detail": "arxiv_ready=False"
+    },
+    {
+      "check": "human_review_flag_present",
+      "passed": true,
+      "detail": "human_review_required=True"
+    },
+    {
+      "check": "evidence_map_present",
+      "passed": true,
+      "detail": "16 evidence items"
+    },
+    {
+      "check": "experiment_identity_present",
+      "passed": true,
+      "detail": "REL-TRISOLARIS-0001 / EXP-TRISOLARIS-0001"
+    },
+    {
+      "check": "reference_structure_present",
+      "passed": true,
+      "detail": "BibTeX contains a DOI, eprint or URL field"
+    },
+    {
+      "check": "figures_and_tables_present",
+      "passed": true,
+      "detail": "required reproducible figures and tables"
+    },
+    {
+      "check": "artifact_checksums_created",
+      "passed": true,
+      "detail": "8 checksums"
+    }
+  ],
+  "human_checks": [
+    {
+      "check": "claim_review_completed",
+      "passed": false,
+      "detail": "awaiting human certification"
+    },
+    {
+      "check": "references_review_completed",
+      "passed": false,
+      "detail": "awaiting human certification"
+    },
+    {
+      "check": "figures_review_completed",
+      "passed": false,
+      "detail": "awaiting human certification"
+    },
+    {
+      "check": "independent_replication_completed",
+      "passed": false,
+      "detail": "awaiting human certification"
+    },
+    {
+      "check": "reviewer_identified",
+      "passed": false,
+      "detail": "awaiting reviewer identity"
+    }
+  ],
+  "artifact_checksums_sha256": {
+    "evidence.json": "2010170fbe3aa2891315f63a386cf7e53da5eda4d611dfd1b99eb99fa86a3a84",
+    "experiments.json": "df3836c707b6eabf151c9fabf75e936f1b904a7252849b96bce744e87a7ed9e2",
+    "figures/counterfactual-deltas.svg": "ad9086aef0485e9cf4d3a08e5c44fc407f747d5999782a645106ea7bbb9406bf",
+    "figures/replay-outcomes.svg": "be637be81c3d4f23b8ea9a2ae93fa2b88f6ac74af07a41957dfec518065c36da",
+    "metadata.json": "1cd16931f5fc5c6f1f8cca2abf7438509b0d764f4fecbebc74c0f99da7d8412c",
+    "paper.md": "3ce389992658330af07064003ca0c6f61b3eccbf1032632d7c97786b3f864dfe",
+    "tables/counterfactual-deltas.tsv": "95f4fbc1a4e6fd6ebdf34b35d21e5fd0ea6d061e71c35a36d8a479822e2102cf",
+    "tables/outcome-frequencies.tsv": "b86fd382117edc8a523d42797dbeee3f82b34352e9502c12fb46c64b8a4392f3"
+  },
+  "review_input": {
+    "reviewer": null,
+    "review_notes": "",
+    "claim_review_completed": false,
+    "references_review_completed": false,
+    "figures_review_completed": false,
+    "independent_replication_completed": false
+  },
+  "summary": {
+    "automatic_checks_passed": 8,
+    "automatic_checks_total": 8,
+    "human_checks_passed": 0,
+    "human_checks_total": 5,
+    "promotion_eligible_for_working_paper": false,
+    "status_changed_automatically": false
+  },
+  "limitations": [
+    "reference structure validation does not prove bibliographic correctness",
+    "checksums prove artifact identity, not scientific validity",
+    "human review fields cannot be certified by the automated pipeline",
+    "promotion eligibility does not itself change publication state",
+    "independent replication requires a separate human-attested replication record"
+  ]
+}

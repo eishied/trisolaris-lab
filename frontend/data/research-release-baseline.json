@@ -5,7 +5,7 @@
   "epistemic_level": "MODELED",
   "title": "TRISOLARIS baseline evolutionary replay and counterfactual release",
   "research_question": "Are modeled multiplanetary outcomes robust to declared uncertainty, and which single interventions alter the simulated historical trajectory?",
-  "git_commit": "f56231a665b532414f041182f2ee46c56a3e4372",
+  "git_commit": "58a6a8cdeb661d8277b3830e57a0b740dce82cb5",
   "datasets": [
     {
       "name": "climate",
@@ -547,7 +547,7 @@
     {
       "check": "git_commit_declared",
       "passed": true,
-      "detail": "f56231a665b532414f041182f2ee46c56a3e4372"
+      "detail": "58a6a8cdeb661d8277b3830e57a0b740dce82cb5"
     }
   ],
   "reproducibility": {
