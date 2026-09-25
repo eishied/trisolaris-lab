@@ -30,6 +30,7 @@ DATASETS = [
     ("evolutionary_replay", "frontend/data/evolutionary-replay-baseline.json"),
     ("counterfactual_replay", "frontend/data/counterfactual-replay-baseline.json"),
     ("transition_thresholds", "frontend/data/transition-thresholds-baseline.json"),
+    ("threshold_refinement", "frontend/data/threshold-refinement-baseline.json"),
 ]
 OUTPUTS = [
     ROOT / "frontend/data/research-release-baseline.json",
