@@ -34,7 +34,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase6-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase6b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -62,7 +62,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase6-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase6b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -1824,7 +1824,8 @@ function renderLineages(){
 
   $(".lineageCard[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
     selectedLineageId=btn.dataset.lineageId;
-    renderLineages();
+    renderGenetics();
+  renderLineages();
   }));
   renderLineageDetail(model);
 
@@ -1856,6 +1857,173 @@ function renderLineages(){
     stat("Linajes",String(n))+
     stat("Divergencia máxima",maxDiv+"%")+
     stat("Candidatos aislamiento",String(model.summary.candidateCount))+
+    stat("Especies asignadas","0","regla conservadora");
+}
+
+function simulatePopulationGenetics(network,{years=50000,generationYears=28,technologyBuffer=.4,selectionScale=.002,mutationRate=.00001}={}){
+  const clamp=(v,lo=.0001,hi=.9999)=>Math.max(lo,Math.min(hi,v));
+  const loci={
+    "THERM-A":{stressKey:"thermal",label:"Resiliencia térmica"},
+    "WATER-A":{stressKey:"water",label:"Conservación de agua"},
+    "OXY-A":{stressKey:"oxygen",label:"Eficiencia de oxígeno"},
+    "DIET-A":{stressKey:"food",label:"Flexibilidad dietaria"}
+  };
+  const generations=years/generationYears;
+  if(!network.refugia.length)return {loci,populations:[],summary:{meanFst:0,meanHeterozygosity:0,fstByLocus:{}}};
+
+  const ids=network.refugia.map(r=>r.id);
+  const maxFlow=Object.fromEntries(ids.map(id=>[id,0]));
+  network.links.forEach(l=>{
+    maxFlow[l.source]=Math.max(maxFlow[l.source]||0,l.flow);
+    maxFlow[l.target]=Math.max(maxFlow[l.target]||0,l.flow);
+  });
+
+  let state={};
+  network.refugia.forEach(r=>{
+    state[r.id]={};
+    Object.keys(loci).forEach(locus=>{
+      const founder=.5+.08*r.isolationPotential*deterministicSigned("founder:"+r.id+":"+locus);
+      state[r.id][locus]=clamp(founder);
+    });
+  });
+
+  const chunks=Math.max(1,Math.min(240,Math.ceil(generations/25)));
+  const chunkGenerations=generations/chunks;
+  const refugeById=Object.fromEntries(network.refugia.map(r=>[r.id,r]));
+
+  for(let step=0;step<chunks;step++){
+    const means={};
+    Object.keys(loci).forEach(locus=>{
+      means[locus]=ids.reduce((sum,id)=>sum+state[id][locus],0)/ids.length;
+    });
+    const next=Object.fromEntries(ids.map(id=>[id,{...state[id]}]));
+
+    ids.forEach(id=>{
+      const refuge=refugeById[id];
+      const share=Math.max(1e-6,refuge.populationShare||0);
+      const ne=Math.max(500,50000*share);
+      const exposure=Math.max(0,Math.min(1,(1-.72*technologyBuffer)*refuge.isolationPotential));
+      Object.entries(loci).forEach(([locus,spec])=>{
+        let p=state[id][locus];
+        const env=Math.max(0,Math.min(1,refuge.stressComponents?.[spec.stressKey]??.3));
+        const s=selectionScale*env*exposure;
+        const loops=Math.max(1,Math.min(25,Math.ceil(chunkGenerations)));
+        for(let i=0;i<loops;i++)p=p*(1+s)/(1+s*p);
+        const mu=Math.min(.05,mutationRate*chunkGenerations);
+        p=p*(1-2*mu)+mu;
+        const migration=Math.min(.35,(maxFlow[id]||0)*.06*chunkGenerations);
+        p=p+migration*(means[locus]-p);
+        const variance=Math.max(0,p*(1-p)*chunkGenerations/(2*ne));
+        p=clamp(p+Math.sqrt(variance)*deterministicSigned("drift:"+step+":"+id+":"+locus));
+        next[id][locus]=p;
+      });
+    });
+    state=next;
+  }
+
+  const populations=network.refugia.map(r=>{
+    const freqs=state[r.id];
+    const hetero={};
+    Object.entries(freqs).forEach(([locus,p])=>hetero[locus]=2*p*(1-p));
+    return {
+      refugeId:r.id,
+      refugeName:r.name,
+      alleleFrequencies:freqs,
+      heterozygosity:hetero,
+      meanHeterozygosity:Object.values(hetero).reduce((a,b)=>a+b,0)/Object.keys(hetero).length,
+      geneFlow:maxFlow[r.id]||0,
+      isolation:r.isolationPotential
+    };
+  });
+
+  const fstByLocus={};
+  Object.keys(loci).forEach(locus=>{
+    const values=populations.map(p=>p.alleleFrequencies[locus]);
+    const mean=values.reduce((a,b)=>a+b,0)/values.length;
+    const variance=values.reduce((s,v)=>s+Math.pow(v-mean,2),0)/values.length;
+    fstByLocus[locus]=Math.max(0,Math.min(1,variance/Math.max(1e-8,mean*(1-mean))));
+  });
+  const allH=populations.flatMap(p=>Object.values(p.heterozygosity));
+  return {
+    loci,populations,
+    summary:{
+      meanFst:Object.values(fstByLocus).reduce((a,b)=>a+b,0)/Object.keys(fstByLocus).length,
+      fstByLocus,
+      meanHeterozygosity:allH.length?allH.reduce((a,b)=>a+b,0)/allH.length:0
+    }
+  };
+}
+
+function renderGenetics(){
+  const canvas=$("#geneticsCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const years=+$("#lineageYears").value;
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const genetics=simulatePopulationGenetics(network,{years,technologyBuffer:tech});
+
+  const fstPct=(genetics.summary.meanFst*100).toFixed(1);
+  const hPct=(genetics.summary.meanHeterozygosity*100).toFixed(1);
+  $("#geneticsHeadline").textContent=genetics.populations.length>1
+    ?"Las poblaciones empiezan a separarse genéticamente"
+    :genetics.populations.length===1
+      ?"Una sola población conserva la mayor parte de la variación compartida"
+      :"Sin poblaciones viables no hay genética poblacional que comparar";
+  $("#geneticsText").textContent="FST proxy medio "+fstPct+"% · heterocigosidad media "+hPct+"%. Estos valores describen frecuencias poblacionales, no taxonomía.";
+  $("#geneticsState").textContent=genetics.summary.meanFst>=.15
+    ?"La diferenciación entre refugios es marcada en este escenario."
+    :genetics.summary.meanFst>=.05
+      ?"Existe diferenciación moderada entre poblaciones."
+      :"Las poblaciones siguen genéticamente próximas.";
+  $("#geneticsDetail").textContent="Migración reduce diferencias; deriva y selección pueden aumentarlas. Ningún umbral de esta pantalla crea una especie automáticamente.";
+
+  $("#geneticsList").innerHTML=genetics.populations.map(p=>{
+    const values=Object.entries(p.alleleFrequencies).map(([locus,v])=>locus+" "+Math.round(v*100)+"%").join(" · ");
+    return '<article class="geneticsCard"><span>Población genética</span><strong>'+p.refugeName+'</strong><p>'+values+'</p></article>';
+  }).join("") || '<article class="geneticsCard"><span>Sin datos</span><strong>No hay poblaciones viables</strong><p>El modelo genético necesita al menos un refugio poblacional.</p></article>';
+
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#060b0f";ctx.fillRect(0,0,w,h);
+  const left=220,right=w-80,top=100,rowGap=88;
+  ctx.fillStyle="rgba(239,244,247,.94)";ctx.font="700 24px system-ui";ctx.fillText("Frecuencias alélicas",58,48);
+  ctx.fillStyle="rgba(147,160,169,.9)";ctx.font="13px system-ui";ctx.fillText("Cada punto es una población; el eje va de 0% a 100%.",58,74);
+
+  const palette=["#75c6df","#82d5a3","#d3b66b","#b89ce9","#e18c86"];
+  Object.entries(genetics.loci).forEach(([locus,spec],rowIndex)=>{
+    const y=top+rowIndex*rowGap;
+    ctx.fillStyle="rgba(214,224,229,.92)";ctx.font="700 13px system-ui";ctx.fillText(spec.label,58,y+5);
+    ctx.strokeStyle="rgba(255,255,255,.10)";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
+    for(let tick=0;tick<=4;tick++){
+      const x=left+(right-left)*(tick/4);
+      ctx.strokeStyle="rgba(255,255,255,.06)";ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x,y+12);ctx.stroke();
+    }
+    genetics.populations.forEach((p,i)=>{
+      const x=left+(right-left)*p.alleleFrequencies[locus];
+      ctx.fillStyle=palette[i%palette.length];ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="rgba(147,160,169,.9)";ctx.font="10px system-ui";ctx.textAlign="center";ctx.fillText(p.refugeName,x,y+24);
+    });
+    ctx.textAlign="left";
+  });
+
+  ctx.fillStyle="rgba(119,133,142,.9)";ctx.font="11px system-ui";
+  ctx.fillText("0%",left,h-34);ctx.fillText("50%",(left+right)/2-10,h-34);ctx.fillText("100%",right-26,h-34);
+
+  $("#geneticsMetrics").innerHTML=
+    stat("Poblaciones",String(genetics.populations.length))+
+    stat("FST proxy medio",fstPct+"%","diferenciación")+
+    stat("Heterocigosidad media",hPct+"%","diversidad")+
+    stat("Loci","4","bialélicos abstractos")+
     stat("Especies asignadas","0","regla conservadora");
 }
 
