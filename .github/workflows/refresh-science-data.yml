@@ -95,6 +95,9 @@ jobs:
       - name: Build transition threshold atlas baseline
         run: python pipelines/evolution/build_transition_thresholds_baseline.py
 
+      - name: Build adaptive threshold refinement baseline
+        run: python pipelines/evolution/build_threshold_refinement_baseline.py
+
       - name: Build research release manifest
         run: python pipelines/research/build_research_release_baseline.py
 
@@ -127,6 +130,7 @@ jobs:
             frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
             frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
             frontend/data/transition-thresholds-baseline.json docs/data/transition-thresholds-baseline.json
+            frontend/data/threshold-refinement-baseline.json docs/data/threshold-refinement-baseline.json
             frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
             research/evidence/research-release-baseline.json
             frontend/data/research-note-baseline.json docs/data/research-note-baseline.json
@@ -151,5 +155,5 @@ jobs:
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
           git add "${FILES[@]}"
-          git commit -m "data: refresh scientific baselines, thresholds and research artifacts"
+          git commit -m "data: refresh scientific baselines, refined thresholds and research artifacts"
           git push
