@@ -48,7 +48,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase6d-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase7-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -76,7 +76,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase6d-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase7-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -439,6 +439,12 @@ function initCandidate(){
         renderLineageInspector();
       });
     }
+
+    const historyMode=$("#planetHistoryMode");
+    if(historyMode){
+      historyMode.addEventListener("change",()=>safeRender("planetary-history",renderPlanetaryHistory));
+    }
+    initPlanetHistoryCanvas();
 
     const humanBtn=$("#seedHumansBtn");
     if(humanBtn){
@@ -2282,6 +2288,344 @@ function renderLineageInspector(){
     stat("Aislamiento",Math.round(selected.isolation*100)+"%")+
     stat("Compatibilidad",pair?Math.round(pair.compatibility*100)+"%":"—","con linaje comparado")+
     stat("Mezcla",admixtureActive&&admixtureH!=null?Math.round(admixtureH*100)+"% heterocigosidad":"inactiva","escenario");
+}
+
+function historyMaturation(years,timescale){
+  if(years<=0)return 0;
+  return 1-Math.exp(-years/Math.max(1,timescale));
+}
+
+function simulatePlanetaryHistory(network,lineageModel,{years=50000,technologySupport=.4,mobility=.45}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  technologySupport=clamp(technologySupport);
+  mobility=clamp(mobility);
+  const refugiaById=Object.fromEntries(network.refugia.map(r=>[r.id,r]));
+
+  const populations=lineageModel.lineages.map(lineage=>{
+    const refuge=refugiaById[lineage.refugeId];
+    if(!refuge)return null;
+
+    const support=clamp(refuge.assistedSupport||0);
+    const natural=clamp(refuge.naturalSupport||0);
+    const agriculture=clamp(refuge.agriculturePotential||0);
+    const isolation=clamp(lineage.isolation||0);
+    const geneFlow=clamp(lineage.geneFlow||0);
+    const share=clamp(refuge.populationShare||0);
+    const stress=refuge.stressComponents||{};
+
+    const settlement=clamp(
+      support*(.30+.70*historyMaturation(years,2000))*(.62+.38*technologySupport)
+    );
+    const openAgriculture=clamp(
+      agriculture*settlement*(.55+.45*natural)
+    );
+    const controlledAgriculture=clamp(
+      settlement*technologySupport*(.35+.65*(1-agriculture))
+    );
+    const infrastructure=clamp(
+      settlement*technologySupport*(.55+.45*mobility)*(.70+.30*historyMaturation(years,5000))
+    );
+    const waterRecycling=clamp(
+      technologySupport*(stress.water||0)*(.45+.55*settlement)
+    );
+    const thermalShelter=clamp(
+      technologySupport*(stress.thermal||0)*(.45+.55*settlement)
+    );
+    const mobilityNetwork=clamp(
+      mobility*(.45+.55*geneFlow)*(.55+.45*infrastructure)
+    );
+    const knowledgeContinuity=clamp(
+      .30+.34*technologySupport+.18*mobilityNetwork+.18*settlement-.16*isolation
+    );
+    const culturalDifferentiation=clamp(
+      historyMaturation(years,8000)*isolation*(1-.72*geneFlow)
+    );
+    const anthropogenicFootprint=clamp(
+      .34*settlement+
+      .24*Math.max(openAgriculture,controlledAgriculture)+
+      .24*infrastructure+
+      .18*mobilityNetwork
+    );
+
+    let settlementPattern="presencia de baja densidad";
+    if(infrastructure>=.65)settlementPattern="red de infraestructura conectada";
+    else if(controlledAgriculture>=.55)settlementPattern="red de asentamientos protegidos";
+    else if(settlement>=.55)settlementPattern="asentamientos regionales permanentes";
+    else if(settlement>=.25)settlementPattern="asentamiento disperso";
+
+    return {
+      lineageId:lineage.id,
+      lineageName:lineage.name,
+      refugeId:refuge.id,
+      refugeName:refuge.name,
+      centerLat:refuge.centerLat,
+      minLat:refuge.minLat,
+      maxLat:refuge.maxLat,
+      relativeCapacityShare:share,
+      settlement,
+      settlementPattern,
+      openAgriculture,
+      controlledAgriculture,
+      infrastructure,
+      waterRecycling,
+      thermalShelter,
+      mobilityNetwork,
+      knowledgeContinuity,
+      culturalDifferentiation,
+      anthropogenicFootprint
+    };
+  }).filter(Boolean);
+
+  const byRefuge=Object.fromEntries(populations.map(p=>[p.refugeId,p]));
+  const migrationLinks=network.links.map(link=>{
+    const source=byRefuge[link.source],target=byRefuge[link.target];
+    if(!source||!target)return null;
+    const realized=clamp(
+      link.flow*mobility*(.55+.45*Math.min(source.settlement,target.settlement))
+    );
+    return {
+      sourceLineageId:source.lineageId,
+      targetLineageId:target.lineageId,
+      sourceRefugeId:source.refugeId,
+      targetRefugeId:target.refugeId,
+      migrationFlow:realized
+    };
+  }).filter(Boolean);
+
+  const events=[];
+  populations.forEach(p=>{
+    if(p.settlement>=.25)events.push({type:"asentamiento",lineageId:p.lineageId,label:p.refugeName+" · asentamiento persistente"});
+    if(p.openAgriculture>=.35)events.push({type:"agricultura",lineageId:p.lineageId,label:p.refugeName+" · agricultura abierta viable"});
+    if(p.controlledAgriculture>=.45)events.push({type:"agricultura controlada",lineageId:p.lineageId,label:p.refugeName+" · agricultura protegida importante"});
+    if(p.infrastructure>=.50)events.push({type:"infraestructura",lineageId:p.lineageId,label:p.refugeName+" · red de infraestructura intensificada"});
+  });
+
+  const weighted=key=>{
+    const denom=populations.reduce((s,p)=>s+Math.max(1e-9,p.relativeCapacityShare),0)||1;
+    return populations.reduce((s,p)=>s+p[key]*Math.max(1e-9,p.relativeCapacityShare),0)/denom;
+  };
+
+  return {
+    populations,
+    migrationLinks,
+    events,
+    summary:{
+      populationRegions:populations.length,
+      meanSettlement:populations.length?weighted("settlement"):0,
+      meanOpenAgriculture:populations.length?weighted("openAgriculture"):0,
+      meanControlledAgriculture:populations.length?weighted("controlledAgriculture"):0,
+      meanInfrastructure:populations.length?weighted("infrastructure"):0,
+      meanKnowledgeContinuity:populations.length?weighted("knowledgeContinuity"):0,
+      meanCulturalDifferentiation:populations.length?weighted("culturalDifferentiation"):0,
+      meanFootprint:populations.length?weighted("anthropogenicFootprint"):0
+    }
+  };
+}
+
+function historyMetricForMode(population,mode){
+  if(mode==="migration")return population.mobilityNetwork;
+  if(mode==="agriculture")return Math.max(population.openAgriculture,population.controlledAgriculture);
+  if(mode==="infrastructure")return population.infrastructure;
+  if(mode==="culture")return population.culturalDifferentiation;
+  return population.anthropogenicFootprint;
+}
+
+function historyModeLabel(mode){
+  return {
+    footprint:"huella antropogénica",
+    migration:"movilidad y conexión",
+    agriculture:"agricultura",
+    infrastructure:"infraestructura",
+    culture:"diferenciación cultural"
+  }[mode]||"huella antropogénica";
+}
+
+function renderPlanetaryHistory(){
+  const canvas=$("#planetHistoryCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const years=+$("#lineageYears").value;
+  const mode=$("#planetHistoryMode")?.value||"footprint";
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const lineageModel=simulateLineages(network,{years,technologyBuffer:tech});
+  const history=simulatePlanetaryHistory(network,lineageModel,{years,technologySupport:tech,mobility});
+
+  const active=humanSeeded;
+  const s=history.summary;
+  $("#planetHistoryHeadline").textContent=!history.populations.length
+    ?"Todavía no hay regiones donde construir historia humana"
+    :active
+      ?history.populations.length+" poblaciones dejan una huella distinta sobre el planeta"
+      :"El planeta muestra dónde podrían surgir historias poblacionales";
+
+  $("#planetHistoryText").textContent=active
+    ?years.toLocaleString("es")+" años de escenario · "+history.populations.length+" regiones poblacionales · vista actual: "+historyModeLabel(mode)+"."
+    :"La población humana experimental está desactivada. Se muestran capacidades potenciales, no una ocupación realizada.";
+
+  $("#historyDistributionText").textContent=history.populations.length
+    ?history.populations.map(p=>p.refugeName).join(" · ")
+    :"Sin refugios poblacionales viables.";
+
+  $("#historyTechnologyText").textContent=
+    "Infraestructura media "+Math.round(s.meanInfrastructure*100)+"% · agricultura abierta "+Math.round(s.meanOpenAgriculture*100)+"% · agricultura controlada "+Math.round(s.meanControlledAgriculture*100)+"%.";
+
+  $("#historyCultureText").textContent=
+    "Diferenciación cultural proxy "+Math.round(s.meanCulturalDifferentiation*100)+"% · continuidad de conocimiento "+Math.round(s.meanKnowledgeContinuity*100)+"%. No son escalas de valor.";
+
+  $("#planetHistoryPopulations").innerHTML=history.populations.map(p=>{
+    const techNeeds=[];
+    if(p.waterRecycling>=.25)techNeeds.push("reciclaje de agua");
+    if(p.thermalShelter>=.25)techNeeds.push("protección térmica");
+    if(p.controlledAgriculture>p.openAgriculture)techNeeds.push("agricultura protegida");
+    const needs=techNeeds.length?techNeeds.join(" · "):"baja dependencia técnica adicional";
+    return '<article class="historyPopulation">'+
+      '<span>'+p.settlementPattern+'</span>'+
+      '<strong>'+p.refugeName+'</strong>'+
+      '<p>Huella '+Math.round(p.anthropogenicFootprint*100)+'% · agricultura '+Math.round(Math.max(p.openAgriculture,p.controlledAgriculture)*100)+'% · infraestructura '+Math.round(p.infrastructure*100)+'% · '+needs+'.</p>'+
+    '</article>';
+  }).join("") || '<article class="historyPopulation"><span>Sin población</span><strong>No hay regiones viables</strong><p>El entorno actual no produce refugios suficientes para esta fase.</p></article>';
+
+  const visibleEvents=active?history.events:[];
+  $("#historyEventCount").textContent=visibleEvents.length+" evento"+(visibleEvents.length===1?"":"s");
+  $("#historyEvents").innerHTML=visibleEvents.length
+    ?visibleEvents.map((event,i)=>
+      '<article class="historyEvent"><span>'+event.type+' · '+Math.round((i+1)/(visibleEvents.length+1)*years).toLocaleString("es")+' años</span><strong>'+event.label+'</strong></article>'
+    ).join("")
+    :'<article class="historyEvent"><span>Escenario potencial</span><strong>Activa la población experimental para materializar eventos históricos.</strong></article>';
+
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#050a0e";ctx.fillRect(0,0,w,h);
+
+  const cx=w*.49,cy=h*.51,R=Math.min(w*.29,h*.40);
+  const halo=ctx.createRadialGradient(cx,cy,R*.25,cx,cy,R*1.35);
+  halo.addColorStop(0,"rgba(65,139,171,.14)");
+  halo.addColorStop(1,"rgba(65,139,171,0)");
+  ctx.fillStyle=halo;ctx.beginPath();ctx.arc(cx,cy,R*1.35,0,Math.PI*2);ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.clip();
+
+  const ocean=ctx.createRadialGradient(cx-R*.35,cy-R*.35,R*.05,cx,cy,R*1.25);
+  ocean.addColorStop(0,"#264958");ocean.addColorStop(.48,"#12303d");ocean.addColorStop(1,"#071117");
+  ctx.fillStyle=ocean;ctx.fillRect(cx-R,cy-R,R*2,R*2);
+
+  // Diagrammatic land masses: visual context only.
+  const lands=[
+    [-.46,-.30,.34,.20,-.30],[-.10,.08,.26,.17,.15],[.30,-.18,.30,.15,.34],
+    [.42,.30,.20,.12,-.22],[-.35,.35,.22,.12,.25],[.02,-.48,.18,.10,.08]
+  ];
+  lands.forEach(([dx,dy,rx,ry,rot],i)=>{
+    ctx.fillStyle=i%2?"rgba(86,104,85,.56)":"rgba(99,113,91,.53)";
+    ctx.beginPath();ctx.ellipse(cx+dx*R,cy+dy*R,rx*R,ry*R,rot,0,Math.PI*2);ctx.fill();
+  });
+
+  // latitude grid
+  [-60,-30,0,30,60].forEach(lat=>{
+    const y=cy-Math.sin(lat*Math.PI/180)*R;
+    const half=Math.sqrt(Math.max(0,R*R-(y-cy)*(y-cy)));
+    ctx.strokeStyle="rgba(196,220,231,.08)";
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.ellipse(cx,y,half,half*.16,0,0,Math.PI*2);ctx.stroke();
+  });
+
+  // terminator/shadow
+  const shadow=ctx.createLinearGradient(cx-R*.2,0,cx+R,0);
+  shadow.addColorStop(0,"rgba(0,0,0,0)");
+  shadow.addColorStop(1,"rgba(0,0,0,.64)");
+  ctx.fillStyle=shadow;ctx.fillRect(cx-R,cy-R,R*2,R*2);
+  ctx.restore();
+
+  ctx.strokeStyle="rgba(130,189,211,.34)";ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.stroke();
+
+  const nodeById={};
+  history.populations.forEach((p,i)=>{
+    const lon=deterministicSigned("history-lon:"+p.refugeId)*65;
+    const lat=p.centerLat;
+    const phi=lat*Math.PI/180,lambda=lon*Math.PI/180;
+    const x=cx+Math.cos(phi)*Math.sin(lambda)*R*.92;
+    const y=cy-Math.sin(phi)*R*.92;
+    const depth=Math.cos(phi)*Math.cos(lambda);
+    nodeById[p.lineageId]={x,y,depth,p};
+  });
+
+  if(mode==="migration"||mode==="footprint"){
+    history.migrationLinks.forEach(link=>{
+      const A=nodeById[link.sourceLineageId],B=nodeById[link.targetLineageId];
+      if(!A||!B)return;
+      const flow=link.migrationFlow;
+      ctx.strokeStyle="rgba(114,202,221,"+(.10+.60*flow)+")";
+      ctx.lineWidth=1+6*flow;
+      const mx=(A.x+B.x)/2,my=Math.min(A.y,B.y)-55-90*flow;
+      ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.quadraticCurveTo(mx,my,B.x,B.y);ctx.stroke();
+    });
+  }
+
+  const palette=["#76c7df","#82d5a3","#d6b66a","#b89ce9","#e18c86","#78aee4"];
+  const hits=[];
+  history.populations.forEach((p,i)=>{
+    const n=nodeById[p.lineageId];
+    const value=historyMetricForMode(p,mode);
+    const radius=8+20*value;
+    ctx.fillStyle=palette[i%palette.length];
+    ctx.globalAlpha=active?.92:.42;
+    ctx.beginPath();ctx.arc(n.x,n.y,radius,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+    if(selectedLineageId===p.lineageId){
+      ctx.strokeStyle="rgba(245,249,250,.92)";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(n.x,n.y,radius+7,0,Math.PI*2);ctx.stroke();
+    }
+    ctx.fillStyle="rgba(235,241,244,.95)";ctx.font="700 12px system-ui";ctx.textAlign="center";
+    ctx.fillText(p.refugeName,n.x,n.y+radius+22);
+    hits.push({x:n.x,y:n.y,r:Math.max(22,radius+8),lineageId:p.lineageId});
+  });
+  ctx.textAlign="left";
+  canvas._historyHits=hits;
+
+  ctx.fillStyle="rgba(239,244,247,.95)";ctx.font="700 26px system-ui";ctx.fillText("Huella planetaria",54,54);
+  ctx.fillStyle="rgba(145,160,169,.92)";ctx.font="13px system-ui";
+  ctx.fillText("Vista: "+historyModeLabel(mode)+" · longitud diagramática, latitud modelada",54,80);
+
+  $("#planetHistoryMetrics").innerHTML=
+    stat("Regiones",String(s.populationRegions))+
+    stat("Asentamiento",Math.round(s.meanSettlement*100)+"%","proxy")+
+    stat("Agricultura abierta",Math.round(s.meanOpenAgriculture*100)+"%")+
+    stat("Agricultura controlada",Math.round(s.meanControlledAgriculture*100)+"%")+
+    stat("Infraestructura",Math.round(s.meanInfrastructure*100)+"%")+
+    stat("Huella media",Math.round(s.meanFootprint*100)+"%","MODELED")+
+    stat("Diferenciación cultural",Math.round(s.meanCulturalDifferentiation*100)+"%","separación, no ranking");
+}
+
+function initPlanetHistoryCanvas(){
+  const canvas=$("#planetHistoryCanvas");
+  if(!canvas||canvas.dataset.bound==="1")return;
+  canvas.dataset.bound="1";
+  canvas.addEventListener("click",event=>{
+    const rect=canvas.getBoundingClientRect();
+    const px=(event.clientX-rect.left)*(canvas.width/rect.width);
+    const py=(event.clientY-rect.top)*(canvas.height/rect.height);
+    const hit=(canvas._historyHits||[])
+      .map(h=>({...h,d:Math.hypot(px-h.x,py-h.y)}))
+      .filter(h=>h.d<=h.r)
+      .sort((a,b)=>a.d-b.d)[0];
+    if(!hit)return;
+    selectedLineageId=hit.lineageId;
+    safeRender("lineages",renderLineages);
+    safeRender("genetics",renderGenetics);
+    safeRender("lineage-inspector",renderLineageInspector);
+    safeRender("planetary-history",renderPlanetaryHistory);
+  });
 }
 
 function candidateLabel(score,celsius){
