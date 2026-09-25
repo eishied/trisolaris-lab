@@ -36,6 +36,8 @@ jobs:
           python -m py_compile pipelines/human/build_planetary_history_baseline.py
           python -m py_compile engine/human/demography.py
           python -m py_compile pipelines/human/build_demography_baseline.py
+          python -m py_compile engine/human/astroanthropology.py
+          python -m py_compile pipelines/human/build_astroanthropology_baseline.py
           python -m py_compile engine/evolution/lineages.py
           python -m py_compile pipelines/evolution/build_lineage_baseline.py
           python -m py_compile engine/evolution/popgen.py
@@ -58,6 +60,7 @@ jobs:
           python pipelines/evolution/build_popgen_baseline.py
           python pipelines/human/build_planetary_history_baseline.py
           python pipelines/human/build_demography_baseline.py
+          python pipelines/human/build_astroanthropology_baseline.py
 
       - name: Validate JSON
         run: |
@@ -75,6 +78,7 @@ jobs:
             frontend/data/popgen-baseline.json docs/data/popgen-baseline.json
             frontend/data/planetary-history-baseline.json docs/data/planetary-history-baseline.json
             frontend/data/demography-baseline.json docs/data/demography-baseline.json
+            frontend/data/astroanthropology-baseline.json docs/data/astroanthropology-baseline.json
           )
           for file in "${FILES[@]}"; do
             python -m json.tool "$file" > /dev/null
@@ -97,6 +101,7 @@ jobs:
           cmp frontend/data/popgen-baseline.json docs/data/popgen-baseline.json
           cmp frontend/data/planetary-history-baseline.json docs/data/planetary-history-baseline.json
           cmp frontend/data/demography-baseline.json docs/data/demography-baseline.json
+          cmp frontend/data/astroanthropology-baseline.json docs/data/astroanthropology-baseline.json
 
       - name: Validate JavaScript syntax
         run: |
