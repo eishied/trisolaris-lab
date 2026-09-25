@@ -191,10 +191,25 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function renderPlanetaryHistory()", app)
         self.assertIn('safeRender("planetary-history",renderPlanetaryHistory)', app)
 
+    def test_reveal_startup_uses_multi_element_selector(self):
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertIn('const items=$(".reveal:not([data-observed])")', app)
+        self.assertIn('$(".reveal.reveal-ready:not(.in)").forEach', app)
+        self.assertIn('$(".chapter").forEach', app)
+        self.assertNotIn('const items=$(".reveal:not([data-observed])")', app)
+        self.assertNotIn('\n$(".chapter").forEach', app)
+
+    def test_phase7_history_is_in_main_render_chain(self):
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        start = app.index("function renderCandidate()")
+        end = app.index("\nfunction ", start + 20)
+        block = app[start:end]
+        self.assertIn('safeRender("planetary-history",renderPlanetaryHistory)', block)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase7-20260925", html)
-        self.assertIn("app.js?v=phase7-20260925", html)
+        self.assertIn("styles.css?v=phase7b-20260925", html)
+        self.assertIn("app.js?v=phase7b-20260925", html)
 
 
 if __name__ == "__main__":
