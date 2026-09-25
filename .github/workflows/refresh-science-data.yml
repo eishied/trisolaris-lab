@@ -9,6 +9,8 @@ on:
     paths:
       - "data/catalog/systems/ltt1445.json"
       - "pipelines/nasa_exoplanet/build_frontend_dataset.py"
+      - "engine/orbital/**"
+      - "pipelines/orbital/**"
 
 permissions:
   contents: write
@@ -22,15 +24,18 @@ jobs:
       - name: Build current LTT 1445 public dataset
         run: python pipelines/nasa_exoplanet/build_frontend_dataset.py
 
-      - name: Commit dataset if changed
+      - name: Build baseline orbital screen
+        run: python pipelines/orbital/build_screen.py
+
+      - name: Commit derived datasets if changed
         shell: bash
         run: |
-          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json; then
+          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json; then
             echo "No scientific-data changes detected."
             exit 0
           fi
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add frontend/data/ltt1445.json docs/data/ltt1445.json
-          git commit -m "data: refresh LTT 1445 NASA snapshot"
+          git add frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json
+          git commit -m "data: refresh NASA snapshot and orbital screen"
           git push
