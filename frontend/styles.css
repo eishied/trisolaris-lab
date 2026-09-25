@@ -820,3 +820,23 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 .refugiaCard strong{display:block;margin-top:5px;font-size:18px;color:#e0e6ea}.refugiaCard p{margin:5px 0 0;color:#8f9ca5;font-size:12px}
 .refugiaSystem .metricGrid{margin-top:18px}
 @media(max-width:780px){.refugiaIntro{grid-template-columns:1fr;gap:9px}.refugiaIntro>p:last-child{grid-column:1;grid-row:auto}.refugiaNarrative{grid-template-columns:1fr;gap:8px}}
+
+
+.lineageSystem{margin-top:40px;padding:40px 0 34px;border-top:1px solid var(--line)}
+.lineageIntro{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:36px;align-items:end}
+.lineageIntro h3{grid-column:1;margin:8px 0 0;font-size:clamp(30px,4vw,48px);line-height:1.04;letter-spacing:-.045em}
+.lineageIntro>p:last-child{grid-column:2;grid-row:1 / span 2;margin:0;color:#97a5ae}
+.lineageControls{margin-top:24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.lineageControls label{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:18px 0}
+.lineageControls label span{font-size:13px;color:#d1d9de}.lineageControls output{font-size:12px;color:#9fdff6;font-weight:700}.lineageControls input{grid-column:1/-1;width:100%}
+.lineageStage{margin-top:22px;border:1px solid var(--line);border-radius:30px;overflow:hidden;background:#060b0f}
+#lineageCanvas{display:block;width:100%;height:auto;min-height:0;background:transparent}
+.lineageNarrative{margin-top:16px;display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:26px}
+.lineageNarrative strong{font-size:18px;color:#dbe3e7;line-height:1.35}.lineageNarrative p{margin:0;color:#8997a0}
+.lineageCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;margin-top:18px;background:var(--line);border:1px solid var(--line)}
+.lineageCard{background:#080d12;border:0;color:inherit;text-align:left;padding:16px 17px;cursor:pointer}.lineageCard[aria-pressed="true"]{background:#0d171d}
+.lineageCard span{display:block;color:#71808a;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.lineageCard strong{display:block;margin-top:5px;font-size:18px;color:#e0e6ea}.lineageCard p{margin:5px 0 0;color:#8f9ca5;font-size:12px}
+.lineageDetail{margin-top:1px;padding:18px;background:#080d12;border:1px solid var(--line);color:#9ba8b0}
+.lineageTraitGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}.lineageTraitGrid div{border-top:1px solid var(--line);padding-top:10px}.lineageTraitGrid span{display:block;color:#71808a;font-size:10px;text-transform:uppercase;letter-spacing:.08em}.lineageTraitGrid strong{display:block;margin-top:4px;color:#dce4e8;font-size:16px}
+.lineageSystem .metricGrid{margin-top:18px}
+@media(max-width:780px){.lineageIntro{grid-template-columns:1fr;gap:9px}.lineageIntro>p:last-child{grid-column:1;grid-row:auto}.lineageNarrative{grid-template-columns:1fr;gap:8px}.lineageTraitGrid{grid-template-columns:1fr 1fr}}

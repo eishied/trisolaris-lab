@@ -64,6 +64,13 @@ def build_refugia_network(
         agriculture = sum(float(r["agriculture_potential"]) * w for r, w in zip(cluster, weights)) / total_w
         dependency = sum(float(r["technology_dependency"]) * w for r, w in zip(cluster, weights)) / total_w
 
+        stress_components = {}
+        for key in ("thermal", "oxygen", "pressure", "water", "food"):
+            stress_components[key] = sum(
+                float(r.get("stress_components", {}).get(key, 0.0)) * w
+                for r, w in zip(cluster, weights)
+            ) / total_w
+
         refugia.append({
             "id": f"R{idx}",
             "name": _name_region(center, idx),
@@ -74,6 +81,7 @@ def build_refugia_network(
             "assisted_support": assisted,
             "agriculture_potential": agriculture,
             "technology_dependency": dependency,
+            "stress_components": stress_components,
             "relative_capacity_weight": total_w * assisted * (0.45 + 0.55 * agriculture),
         })
 

@@ -19,6 +19,8 @@ on:
       - "pipelines/ecology/**"
       - "engine/human/**"
       - "pipelines/human/**"
+      - "engine/evolution/**"
+      - "pipelines/evolution/**"
       - "requirements-science.txt"
       - ".github/workflows/refresh-science-data.yml"
 
@@ -58,6 +60,9 @@ jobs:
       - name: Build refugia and migration baseline
         run: python pipelines/human/build_refugia_baseline.py
 
+      - name: Build lineage divergence baseline
+        run: python pipelines/evolution/build_lineage_baseline.py
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
@@ -70,6 +75,7 @@ jobs:
             frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
             frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
             frontend/data/refugia-baseline.json docs/data/refugia-baseline.json
+            frontend/data/lineage-baseline.json docs/data/lineage-baseline.json
           )
           if git diff --quiet -- "${FILES[@]}" && git ls-files --others --exclude-standard -- "${FILES[@]}" | grep -q '^$'; then
             echo "No scientific-data changes detected."
@@ -78,5 +84,5 @@ jobs:
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
           git add "${FILES[@]}"
-          git commit -m "data: refresh orbital, climate, ecology and settlement baselines"
+          git commit -m "data: refresh orbital, climate, ecology, settlement and lineage baselines"
           git push
