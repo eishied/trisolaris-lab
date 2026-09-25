@@ -67,8 +67,8 @@ def build_simulation(
     sim.integrator = "ias15"
 
     # Host star.
-    sim.add(m=host_mass, hash="A")
-    host = sim.particles["A"]
+    sim.add(m=host_mass)
+    host = sim.particles[0]
 
     # Observed planets around A. Unknown eccentricity is sampled conservatively
     # rather than silently set to exactly zero.
@@ -91,7 +91,6 @@ def build_simulation(
             Omega=rng.uniform(0.0, 2.0 * math.pi),
             omega=rng.uniform(0.0, 2.0 * math.pi),
             M=rng.uniform(0.0, 2.0 * math.pi),
-            hash=f"planet-{i}",
         )
 
     h01_e = rng.uniform(0.0, 0.08)
@@ -104,7 +103,6 @@ def build_simulation(
         Omega=rng.uniform(0.0, 2.0 * math.pi),
         omega=rng.uniform(0.0, 2.0 * math.pi),
         M=rng.uniform(0.0, 2.0 * math.pi),
-        hash="H01",
     )
 
     # Phase 2.1 approximation: the unresolved B+C binary is replaced by its
@@ -120,7 +118,6 @@ def build_simulation(
         Omega=rng.uniform(0.0, 2.0 * math.pi),
         omega=rng.uniform(0.0, 2.0 * math.pi),
         M=rng.uniform(0.0, 2.0 * math.pi),
-        hash="BC",
     )
 
     sim.move_to_com()
@@ -128,6 +125,7 @@ def build_simulation(
         "h01_e": h01_e,
         "outer_e": outer_e,
         "outer_a_au": outer_a,
+        "h01_index": float(h01_index),
     }
 
 
@@ -145,8 +143,8 @@ def run_one(
         candidate_a_au=candidate_a_au,
     )
 
-    host = sim.particles["A"]
-    h01 = sim.particles["H01"]
+    host = sim.particles[0]
+    h01 = sim.particles[int(sampled["h01_index"])]
     initial_a = candidate_a_au
 
     max_e = 0.0
