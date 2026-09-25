@@ -6,6 +6,7 @@ let data=null;
 let running=true;
 let phase=0;
 let candidateInitialized=false;
+let orbitScanInitialized=false;
 let hitTargets=[];
 let selectedFocus=null;
 
@@ -383,9 +384,129 @@ function initCandidate(){
     $("#albedo").value=h.albedo;
     $("#greenhouse").value=h.greenhouse_k;
     ["axis","albedo","greenhouse"].forEach(id=>$("#"+id).addEventListener("input",renderCandidate));
+    initOrbitWindow();
     candidateInitialized=true;
   }
   renderCandidate();
+}
+
+function evaluateOrbitPoint(a,albedo,gh){
+  const A=data.stars.find(s=>s.id==="A");
+  const B=data.stars.find(s=>s.id==="B");
+  const C=data.stars.find(s=>s.id==="C");
+  const outerAu=(data.hierarchy?.outer_projected_separation_arcsec_approx||7)*(data.system.distance_pc||6.86);
+  const fluxA=A.luminosity_solar/(a*a);
+  const fluxBC=(B.luminosity_solar+C.luminosity_solar)/(outerAu*outerAu);
+  const flux=fluxA+fluxBC;
+  const teq=278.5*Math.pow(Math.max(0.001,flux*(1-albedo)),0.25);
+  const surface=teq+gh;
+  const celsius=surface-273.15;
+  const liquid=Math.max(0,Math.min(1,1-Math.abs(celsius-18)/55));
+  const fluxScore=Math.max(0,Math.min(1,1-Math.abs(flux-1)/1.1));
+  const proxy=0.56*liquid+0.44*fluxScore;
+  return {fluxA,fluxBC,flux,teq,surface,celsius,liquid,fluxScore,proxy,orbital:orbitalScreen(a,1)};
+}
+
+function renderOrbitWindow(){
+  const canvas=$("#orbitScanCanvas");
+  if(!canvas||!data)return;
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width;
+  const h=canvas.height;
+  const minA=0.04;
+  const maxA=0.22;
+  const albedo=+$("#albedo").value;
+  const gh=+$("#greenhouse").value;
+  const currentA=+$("#axis").value;
+
+  ctx.clearRect(0,0,w,h);
+  const bg=ctx.createLinearGradient(0,0,w,0);
+  bg.addColorStop(0,"rgba(255,255,255,.015)");
+  bg.addColorStop(1,"rgba(255,255,255,.035)");
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,w,h);
+
+  const samples=180;
+  const stepW=w/samples;
+  const candidateFlags=[];
+
+  for(let i=0;i<samples;i++){
+    const a=minA+(maxA-minA)*(i/(samples-1));
+    const e=evaluateOrbitPoint(a,albedo,gh);
+    let fill="rgba(92,112,124,.28)";
+    if(e.orbital.state==="fail") fill="rgba(224,104,100,.48)";
+    else if(e.proxy>=.76) fill="rgba(91,205,151,.62)";
+    else if(e.proxy>=.55) fill="rgba(221,178,86,.48)";
+    else if(e.proxy>=.35) fill="rgba(93,155,188,.40)";
+    ctx.fillStyle=fill;
+    ctx.fillRect(i*stepW,24,Math.ceil(stepW)+1,h-60);
+    candidateFlags.push(e.orbital.state!=="fail"&&e.proxy>=.76);
+  }
+
+  // Current H-01 position.
+  const x=(currentA-minA)/(maxA-minA)*w;
+  ctx.strokeStyle="rgba(245,247,249,.92)";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(x,10);
+  ctx.lineTo(x,h-18);
+  ctx.stroke();
+
+  ctx.fillStyle="rgba(245,247,249,.96)";
+  ctx.beginPath();
+  ctx.arc(x,18,6,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.font="600 18px system-ui";
+  ctx.fillStyle="rgba(239,244,247,.92)";
+  ctx.fillText("H-01",Math.min(w-58,x+10),19);
+
+  ctx.font="13px system-ui";
+  ctx.fillStyle="rgba(170,183,191,.86)";
+  ctx.fillText("más energía",14,h-14);
+  const label="menos energía";
+  const m=ctx.measureText(label);
+  ctx.fillText(label,w-m.width-14,h-14);
+
+  // Longest contiguous high-interest interval.
+  let bestStart=-1,bestEnd=-1,runStart=-1;
+  for(let i=0;i<=candidateFlags.length;i++){
+    const on=i<candidateFlags.length&&candidateFlags[i];
+    if(on&&runStart<0) runStart=i;
+    if(!on&&runStart>=0){
+      const end=i-1;
+      if(bestStart<0||(end-runStart)>(bestEnd-bestStart)){
+        bestStart=runStart;
+        bestEnd=end;
+      }
+      runStart=-1;
+    }
+  }
+
+  const labelNode=$("#orbitBestWindow");
+  if(labelNode){
+    if(bestStart>=0){
+      const a0=minA+(maxA-minA)*(bestStart/(samples-1));
+      const a1=minA+(maxA-minA)*(bestEnd/(samples-1));
+      labelNode.textContent=`Ventana de interés actual · ${a0.toFixed(3)}–${a1.toFixed(3)} AU`;
+    }else{
+      labelNode.textContent="No aparece una ventana fuerte con los supuestos actuales";
+    }
+  }
+}
+
+function initOrbitWindow(){
+  if(orbitScanInitialized)return;
+  const canvas=$("#orbitScanCanvas");
+  if(!canvas)return;
+  canvas.addEventListener("click",event=>{
+    const rect=canvas.getBoundingClientRect();
+    const ratio=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
+    const a=0.04+ratio*(0.22-0.04);
+    $("#axis").value=a.toFixed(3);
+    renderCandidate();
+  });
+  orbitScanInitialized=true;
 }
 
 function candidateLabel(score,celsius){
@@ -479,6 +600,8 @@ function renderCandidate(){
     "<b>Cadena climática rápida.</b> Luminosidad y distancia → flujo recibido → corrección por albedo → temperatura de equilibrio → calentamiento atmosférico simplificado → proxy de habitabilidad. "
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
+
+  renderOrbitWindow();
 
   if(selectedFocus?.kind==="hypothetical"){
     openFocus(selectedFocus,{scroll:false});
