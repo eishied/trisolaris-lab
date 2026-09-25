@@ -193,9 +193,9 @@ class FrontendResilienceTests(unittest.TestCase):
 
     def test_reveal_startup_uses_multi_element_selector(self):
         app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
-        self.assertIn('const items=$(".reveal:not([data-observed])")', app)
-        self.assertIn('$(".reveal.reveal-ready:not(.in)").forEach', app)
-        self.assertIn('$(".chapter").forEach', app)
+        self.assertIn('const items=$$(".reveal:not([data-observed])")', app)
+        self.assertIn('$$(".reveal.reveal-ready:not(.in)").forEach', app)
+        self.assertIn('$$(".chapter").forEach', app)
         self.assertNotIn('const items=$(".reveal:not([data-observed])")', app)
         self.assertNotIn('\n$(".chapter").forEach', app)
 
