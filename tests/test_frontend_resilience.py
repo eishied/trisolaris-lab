@@ -138,10 +138,40 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("function simulatePopulationGenetics(", app)
         self.assertIn("function renderGenetics()", app)
 
+    def test_runtime_views_are_isolated(self):
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertIn("function safeRender(", app)
+        self.assertIn('safeRender("lineage-inspector",renderLineageInspector)', app)
+        self.assertIn('safeRender("genetics",renderGenetics)', app)
+        self.assertIn('safeRender("surface",renderSurfaceWorld)', app)
+        self.assertIn('$(".lineageCard[data-lineage-id]").forEach', app)
+        self.assertNotIn('$(".lineageCard[data-lineage-id]").forEach', app)
+
+    def test_all_interactive_controls_are_wired(self):
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for control_id in ("techSupport", "mobility", "lineageYears"):
+            self.assertIn(control_id, app)
+        self.assertIn('localStorage.setItem("trisolaris-human-seeded"', app)
+
+    def test_lineage_inspector_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "phenotypeCanvas",
+            "lineagePartner",
+            "admixtureBtn",
+            "functionalAtlas",
+            "admixtureResult",
+            "lineageInspectorMetrics",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function renderLineageInspector()", app)
+        self.assertIn("function drawRepresentativePortrait(", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase6b-20260925", html)
-        self.assertIn("app.js?v=phase6b-20260925", html)
+        self.assertIn("styles.css?v=phase6d-20260925", html)
+        self.assertIn("app.js?v=phase6d-20260925", html)
 
 
 if __name__ == "__main__":
