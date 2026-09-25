@@ -1780,3 +1780,158 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .interplanetaryStatus article+article,
   .interplanetaryNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:14px;margin-top:14px}
 }
+
+
+.interplanetaryExtension{
+  margin-top:34px;
+  padding-top:32px;
+  border-top:1px solid var(--line)
+}
+.interplanetaryExtensionHead{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,.8fr);
+  gap:32px;
+  align-items:end
+}
+.interplanetaryExtensionHead h4{
+  margin:7px 0 0;
+  max-width:760px;
+  color:#e2e9ec;
+  font-size:clamp(25px,3.2vw,38px);
+  line-height:1.06;
+  letter-spacing:-.035em
+}
+.interplanetaryExtensionHead>p{
+  margin:0;
+  color:#87949d;
+  font-size:13px;
+  line-height:1.5
+}
+.interplanetaryNetworkControls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  margin-top:22px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.interplanetaryNetworkControls label{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px 18px;
+  padding:16px 20px 16px 0
+}
+.interplanetaryNetworkControls label+label{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.interplanetaryNetworkControls span{
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.interplanetaryNetworkControls output{
+  color:#dce4e8;
+  font-size:12px
+}
+.interplanetaryNetworkControls input{
+  grid-column:1/-1;
+  width:100%
+}
+.interplanetaryNetworkSummary,
+.offworldDivergenceGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  border-bottom:1px solid var(--line)
+}
+.interplanetaryNetworkSummary article,
+.offworldDivergenceGrid article{
+  padding:18px 18px 18px 0
+}
+.interplanetaryNetworkSummary article+article,
+.offworldDivergenceGrid article+article{
+  border-left:1px solid var(--line);
+  padding-left:18px
+}
+.interplanetaryNetworkSummary span,
+.offworldDivergenceGrid span,
+.offworldCausal>span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.interplanetaryNetworkSummary strong,
+.offworldDivergenceGrid strong{
+  display:block;
+  margin-top:6px;
+  color:#e2e9ec;
+  font-size:17px
+}
+.interplanetaryColonyTimeline{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:1px;
+  margin-top:18px;
+  border:1px solid var(--line);
+  background:var(--line)
+}
+.interplanetaryTimelinePoint{
+  background:#080d12;
+  padding:14px 13px;
+  min-height:82px
+}
+.interplanetaryTimelinePoint span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em
+}
+.interplanetaryTimelinePoint strong{
+  display:block;
+  margin-top:7px;
+  color:#dce4e8;
+  font-size:14px
+}
+.interplanetaryTimelinePoint em{
+  display:block;
+  margin-top:5px;
+  color:#70808a;
+  font-style:normal;
+  font-size:9px
+}
+.offworldHead{margin-top:34px}
+.offworldCausal{
+  padding:18px 0 0
+}
+.offworldCausal strong{
+  display:block;
+  margin-top:6px;
+  color:#e2e9ec;
+  font-size:17px
+}
+.offworldCausal p{
+  margin:8px 0 0;
+  color:#87949d;
+  font-size:12px;
+  line-height:1.5
+}
+@media(max-width:900px){
+  .interplanetaryNetworkSummary,
+  .offworldDivergenceGrid{grid-template-columns:1fr 1fr}
+  .interplanetaryColonyTimeline{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:780px){
+  .interplanetaryExtensionHead{grid-template-columns:1fr;gap:10px}
+  .interplanetaryNetworkControls{grid-template-columns:1fr}
+  .interplanetaryNetworkControls label,
+  .interplanetaryNetworkControls label+label{border-left:0;padding:14px 0}
+  .interplanetaryNetworkControls label+label{border-top:1px solid var(--line)}
+  .interplanetaryNetworkSummary,
+  .offworldDivergenceGrid{grid-template-columns:1fr}
+  .interplanetaryNetworkSummary article+article,
+  .offworldDivergenceGrid article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
+  .interplanetaryColonyTimeline{grid-template-columns:1fr 1fr}
+}

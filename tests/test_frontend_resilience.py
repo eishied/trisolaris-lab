@@ -265,10 +265,43 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("persistent-offworld-branch", app)
         self.assertNotIn("newSpecies", app)
 
+    def test_phase9_1_colony_network_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "interplanetaryResupply",
+            "interplanetaryShock",
+            "interplanetaryColonyState",
+            "interplanetaryColonyPopulation",
+            "interplanetarySelfSufficiency",
+            "interplanetaryInfrastructure",
+            "interplanetaryColonyTimeline",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function simulateInterplanetaryNetworkLive(", app)
+        self.assertIn("function interplanetaryLogisticPopulation(", app)
+        self.assertIn("returnMigrants", app)
+
+    def test_phase9_2_offworld_divergence_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "offworldGeneFlow",
+            "offworldDrift",
+            "offworldSelection",
+            "offworldDivergence",
+            "offworldContinuity",
+            "offworldWhy",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function simulateOffworldDivergenceLive(", app)
+        self.assertIn("No es una afirmación de especiación", app)
+        self.assertNotIn("speciesClaim", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase9a-20260925", html)
-        self.assertIn("app.js?v=phase9a-20260925", html)
+        self.assertIn("styles.css?v=phase9c-20260925", html)
+        self.assertIn("app.js?v=phase9c-20260925", html)
 
 
 if __name__ == "__main__":
