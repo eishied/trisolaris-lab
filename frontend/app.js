@@ -2931,7 +2931,7 @@ $("#pauseBtn").addEventListener("click",()=>{
 });
 
 function activateRevealObserver(){
-  const items=$(".reveal:not([data-observed])");
+  const items=$$(".reveal:not([data-observed])");
   if(!items.length)return;
 
   // Content is visible by default. Animation is progressive enhancement only.
@@ -2961,14 +2961,14 @@ function activateRevealObserver(){
 
   // iOS/in-app browser fallback: never leave scientific modules hidden.
   window.setTimeout(()=>{
-    $(".reveal.reveal-ready:not(.in)").forEach(item=>{
+    $$(".reveal.reveal-ready:not(.in)").forEach(item=>{
       item.classList.add("in");
       item.classList.remove("reveal-ready");
     });
   },1400);
 }
 
-$(".chapter").forEach(el=>el.classList.add("reveal"));
+$$(".chapter").forEach(el=>el.classList.add("reveal"));
 activateRevealObserver();
 
 const logo=$(".noodboxLogo");
