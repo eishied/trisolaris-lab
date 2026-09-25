@@ -2391,3 +2391,92 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .researchNoteFacts{border-left:0}
   .researchNoteLink{justify-self:start}
 }
+
+.manuscriptReviewGate{
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid var(--line)
+}
+.manuscriptReviewHead{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:24px;
+  align-items:end
+}
+.manuscriptReviewHead span,
+.manuscriptReviewSummary span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.manuscriptReviewHead>div>strong{
+  display:block;
+  margin-top:7px;
+  color:#e2e9ec;
+  font-size:18px;
+  line-height:1.4
+}
+.manuscriptReviewHead>strong{
+  color:#dce4e8;
+  font-size:13px;
+  text-align:right
+}
+.manuscriptReviewSummary{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  margin-top:18px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.manuscriptReviewSummary article{padding:14px 15px 14px 0}
+.manuscriptReviewSummary article+article{border-left:1px solid var(--line);padding-left:15px}
+.manuscriptReviewSummary strong{
+  display:block;
+  margin-top:5px;
+  color:#dce4e8;
+  font-size:14px
+}
+.manuscriptHumanCheckList{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  margin-top:16px;
+  border:1px solid var(--line)
+}
+.manuscriptHumanCheck{
+  padding:13px 12px;
+  background:#080d12
+}
+.manuscriptHumanCheck+.manuscriptHumanCheck{border-left:1px solid var(--line)}
+.manuscriptHumanCheck span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  line-height:1.35
+}
+.manuscriptHumanCheck strong{
+  display:block;
+  margin-top:6px;
+  font-size:11px
+}
+.manuscriptHumanCheck[data-passed="true"] strong{color:#a7e5c8}
+.manuscriptHumanCheck[data-passed="false"] strong{color:#e5b1a7}
+.manuscriptReviewExplanation{
+  margin:14px 0 0;
+  color:#87949d;
+  font-size:12px;
+  line-height:1.5
+}
+@media(max-width:900px){
+  .manuscriptReviewSummary{grid-template-columns:1fr 1fr}
+  .manuscriptHumanCheckList{grid-template-columns:1fr 1fr}
+}
+@media(max-width:780px){
+  .manuscriptReviewHead,
+  .manuscriptReviewSummary,
+  .manuscriptHumanCheckList{grid-template-columns:1fr}
+  .manuscriptReviewHead>strong{text-align:left}
+  .manuscriptReviewSummary article+article,
+  .manuscriptHumanCheck+.manuscriptHumanCheck{border-left:0;border-top:1px solid var(--line)}
+}
