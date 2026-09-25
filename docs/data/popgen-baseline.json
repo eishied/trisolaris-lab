@@ -1,0 +1,70 @@
+{
+  "model": "population_genetics_v0.1",
+  "epistemic_level": "MODELED",
+  "loci": {
+    "THERM-A": {
+      "stress_key": "thermal",
+      "label": "Resiliencia t\u00e9rmica"
+    },
+    "WATER-A": {
+      "stress_key": "water",
+      "label": "Conservaci\u00f3n de agua"
+    },
+    "OXY-A": {
+      "stress_key": "oxygen",
+      "label": "Eficiencia de ox\u00edgeno"
+    },
+    "DIET-A": {
+      "stress_key": "food",
+      "label": "Flexibilidad dietaria"
+    }
+  },
+  "inputs": {
+    "years": 50000.0,
+    "generation_years": 28.0,
+    "generations": 1785.7142857142858,
+    "technology_buffer": 0.4,
+    "selection_scale": 0.002,
+    "mutation_rate": 1e-05
+  },
+  "populations": [
+    {
+      "refuge_id": "R1",
+      "refuge_name": "Equatoria-1",
+      "allele_frequencies": {
+        "THERM-A": 0.7597570986556478,
+        "WATER-A": 0.683544257849351,
+        "OXY-A": 0.4745550670260205,
+        "DIET-A": 0.8544070275158755
+      },
+      "heterozygosity": {
+        "THERM-A": 0.36505249939600015,
+        "WATER-A": 0.4326230108210619,
+        "OXY-A": 0.49870511077189933,
+        "DIET-A": 0.24879131769472293
+      },
+      "mean_heterozygosity": 0.3862929846709211,
+      "gene_flow_proxy": 0.0,
+      "isolation_potential": 1.0
+    }
+  ],
+  "summary": {
+    "mean_fst_proxy": 0.0,
+    "fst_by_locus": {
+      "THERM-A": 0.0,
+      "WATER-A": 0.0,
+      "OXY-A": 0.0,
+      "DIET-A": 0.0
+    },
+    "mean_heterozygosity": 0.3862929846709211
+  },
+  "limitations": [
+    "four abstract biallelic loci only",
+    "selection coefficients are environmental proxies",
+    "deterministic drift is used for reproducible scenarios",
+    "no recombination map, dominance, epistasis or developmental genetics",
+    "FST is a simple frequency-variance proxy",
+    "no species assignment follows automatically from allele frequencies"
+  ],
+  "next_model": "multi-locus recombination, bottlenecks, admixture events and persistent lineage genomes"
+}
