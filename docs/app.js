@@ -1,7 +1,9 @@
 const DATA_URL="./data/ltt1445.json";
 const NBODY_URL="./data/nbody-ensemble.json";
+const RESEARCH_RELEASE_URL="./data/research-release-baseline.json";
 const BUNDLED_DATA={"generated_at":"2026-09-25T14:43:37.731510+00:00","status":"official-nasa-plus-literature","system":{"id":"LTT-1445-ABC","name":"LTT 1445 ABC","architecture":"hierarchical triple M-dwarf system","distance_pc":6.86,"epistemic_level":"LITERATURE","notes":"LTT 1445 A is orbited at large separation by the tighter B-C pair. Known planets orbit A."},"stars":[{"id":"A","name":"LTT 1445 A","mass_solar":0.257,"radius_solar":0.268,"luminosity_solar":0.00794,"epistemic_level":"LITERATURE"},{"id":"B","name":"LTT 1445 B","mass_solar":0.215,"radius_solar":0.236,"luminosity_solar":0.00596,"epistemic_level":"LITERATURE"},{"id":"C","name":"LTT 1445 C","mass_solar":0.161,"radius_solar":0.197,"luminosity_solar":0.00368,"epistemic_level":"LITERATURE"}],"hierarchy":{"outer_projected_separation_arcsec_approx":7,"outer_period_years_approx":250,"bc_projected_separation_arcsec_approx":1,"bc_period_years_approx":36,"epistemic_level":"LITERATURE"},"observed_planets":[{"name":"LTT 1445 A c","host":"LTT 1445 A","period_days":3.1239035,"semi_major_axis_au":0.02661,"eccentricity":0.223,"radius_earth":1.147,"mass_earth":1.54,"equilibrium_temperature_k":508,"discovery_year":2022,"epistemic_level":"OBSERVED","source":"NASA Exoplanet Archive / ps"},{"name":"LTT 1445 A b","host":"LTT 1445 A","period_days":5.3587635,"semi_major_axis_au":0.0381,"eccentricity":null,"radius_earth":1.34,"mass_earth":2.73,"equilibrium_temperature_k":431,"discovery_year":2019,"epistemic_level":"OBSERVED","source":"NASA Exoplanet Archive / ps"}],"hypothetical_experiment":{"id":"H-01","name":"TRISOLARIS H-01","host":"LTT 1445 A","semi_major_axis_au":0.09,"albedo":0.3,"greenhouse_k":33,"epistemic_level":"SPECULATIVE","notes":"Interactive test world only. Its orbit is not asserted to be stable; future REBOUND ensembles must evaluate stability against observed planets and stellar companions."},"literature":[{"title":"Three Red Suns in the Sky: A Transiting, Terrestrial Planet in a Triple M Dwarf System at 6.9 Parsecs","arxiv":"1906.10147","doi":"10.3847/1538-3881/ab364d"},{"title":"A Second Planet Transiting LTT 1445A and a Determination of the Masses of Both Worlds","arxiv":"2107.14737"}],"provenance":{"nasa_query":"select hostname,pl_name,default_flag,pl_orbper,pl_orbsmax,pl_orbeccen,\n       pl_rade,pl_bmasse,pl_eqt,st_teff,st_rad,st_mass,sy_dist,disc_year\nfrom ps\nwhere hostname='LTT 1445 A' and default_flag=1","nasa_endpoint":"https://exoplanetarchive.ipac.caltech.edu/TAP/sync","observed_planet_count":2,"epistemic_rule":"NASA planet rows are OBSERVED; triple-star properties are LITERATURE; H-01 is SPECULATIVE."}};
 let nbodyResult=null;
+let researchRelease=null;
 let data=null;
 let running=true;
 let phase=0;
@@ -51,7 +53,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase10b-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase11a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -66,6 +68,7 @@ async function load(){
     renderAll();
     requestAnimationFrame(loop);
     loadNbodyResult();
+    loadResearchRelease();
   }catch(err){
     console.error("TRISOLARIS interface render failed",err);
     $("#heroDataState").textContent="Error de interfaz";
@@ -79,7 +82,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase10b-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase11a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -90,6 +93,53 @@ async function loadNbodyResult(){
     const meta=$("#nbodyMeta");
     if(meta) meta.textContent="Pendiente de primera corrida · el filtro Hill sigue disponible en vivo";
   }
+}
+
+
+async function loadResearchRelease(){
+  try{
+    const response=await fetch(RESEARCH_RELEASE_URL+"?v=phase11a-20260925",{cache:"no-store"});
+    if(!response.ok)throw new Error("research release not published");
+    researchRelease=await response.json();
+    renderResearchRelease();
+  }catch(err){
+    console.info("Research release manifest not available yet",err);
+    const state=$("#researchReleaseState");
+    if(state)state.textContent="Pendiente de publicación";
+    const ledger=$("#researchEvidenceLedger");
+    if(ledger)ledger.innerHTML='<div class="researchEvidenceRow"><span><span>Manifest</span><strong>Pendiente</strong></span><p>El release aparecerá cuando el pipeline publique el manifest reproducible.</p></div>';
+  }
+}
+
+function renderResearchRelease(){
+  if(!researchRelease)return;
+  const r=researchRelease;
+  const summary=r.summary||{};
+  const repro=r.reproducibility||{};
+  $("#researchReleaseState").textContent=r.publication_state||"—";
+  $("#researchReleaseId").textContent=r.release_id||"—";
+  $("#researchReleaseCommit").textContent=(r.git_commit||"—").slice(0,12);
+  $("#researchReleaseChecks").textContent=(summary.checks_passed??0)+"/"+(summary.checks_total??0);
+  $("#researchModelCount").textContent=(repro.model_count??0)+" modelos";
+  $("#researchReplaySeed").textContent=repro.replay_seed??"—";
+  $("#researchCounterfactualSeed").textContent=repro.counterfactual_seed??"—";
+  $("#researchLimitationsState").textContent=repro.all_limitations_declared?"Declaradas":"Incompletas";
+
+  $("#researchEvidenceLedger").innerHTML=(r.evidence_ledger||[]).map(row=>{
+    const level=String(row.epistemic_level||"MODELED").toLowerCase();
+    return '<div class="researchEvidenceRow"><span><span class="researchEvidenceBadge '+level+'">'+row.epistemic_level+
+      '</span><strong>'+row.evidence_id+'</strong></span><p>'+row.claim_scope+' · '+(row.detail||"")+'</p></div>';
+  }).join("");
+
+  $("#researchClaims").innerHTML=(r.claims||[]).length
+    ?(r.claims||[]).map(claim=>'<div class="researchClaim"><strong>'+claim.text+'</strong><em>'+claim.qualifier+
+      ' · '+claim.evidence_ids.join(", ")+'</em></div>').join("")
+    :'<div class="researchClaim"><strong>Sin claims automatizados</strong><em>El release conserva datos y evidencia, pero no formula una afirmación adicional.</em></div>';
+
+  $("#researchValidationChecks").innerHTML=(r.validation_checks||[]).map(check=>
+    '<div class="researchCheck" data-passed="'+check.passed+'"><span><span>'+check.check+'</span><strong>'+
+    (check.passed?"PASS":"PENDIENTE")+'</strong></span><p>'+check.detail+'</p></div>'
+  ).join("");
 }
 
 function renderNbodyResult(result){
