@@ -1,0 +1,25 @@
+name: Ingest NASA Exoplanet Archive
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * 1"
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch official NASA TAP snapshot
+        run: python pipelines/nasa_exoplanet/fetch_system.py "LTT 1445 A" --output-dir artifact/nasa
+
+      - name: Upload raw snapshot and provenance manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-exoplanet-snapshot
+          path: artifact/nasa/
+          if-no-files-found: error
+          retention-days: 90
