@@ -31,7 +31,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase2-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase3-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -59,7 +59,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase2-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase3-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -509,6 +509,214 @@ function initOrbitWindow(){
   orbitScanInitialized=true;
 }
 
+function solveClimateBands(stellarFluxEarth,albedo,greenhouseK,bands=36){
+  const SOLAR=1361;
+  const A=210;
+  const B=2;
+  const D=0.55;
+  const S2=-0.482;
+  const referenceGreenhouse=33;
+  const lats=[];
+  const targets=[];
+  const absorbed=[];
+  const greenhouseDelta=greenhouseK-referenceGreenhouse;
+
+  const p2=x=>0.5*(3*x*x-1);
+  for(let i=0;i<bands;i++){
+    const lat=-90+(i+0.5)*(180/bands);
+    const phi=lat*Math.PI/180;
+    const shape=Math.max(.10,1+S2*p2(Math.sin(phi)));
+    const incoming=(SOLAR/4)*stellarFluxEarth*shape;
+    const abs=incoming*(1-albedo);
+    lats.push(lat);
+    absorbed.push(abs);
+    targets.push((abs-A)/B+greenhouseDelta);
+  }
+
+  let temps=targets.slice();
+  const mixing=D/B;
+  for(let iter=0;iter<900;iter++){
+    const next=temps.slice();
+    for(let i=0;i<bands;i++){
+      const south=i>0?temps[i-1]:temps[i];
+      const north=i<bands-1?temps[i+1]:temps[i];
+      const neighbor=.5*(south+north);
+      const equilibrium=targets[i]+mixing*(neighbor-temps[i]);
+      next[i]=temps[i]+.08*(equilibrium-temps[i]);
+    }
+    temps=next;
+  }
+
+  const rows=[];
+  let weightSum=0;
+  let mean=0;
+  let windowWeight=0;
+  for(let i=0;i<bands;i++){
+    const weight=Math.max(0,Math.cos(lats[i]*Math.PI/180));
+    weightSum+=weight;
+    mean+=temps[i]*weight;
+    if(temps[i]>=0&&temps[i]<=40)windowWeight+=weight;
+
+    let state="temperate";
+    if(temps[i]<-30)state="deep-freeze";
+    else if(temps[i]<0)state="cold";
+    else if(temps[i]>50)state="extreme-hot";
+    else if(temps[i]>30)state="hot";
+
+    rows.push({
+      latitudeDeg:lats[i],
+      temperatureC:temps[i],
+      temperatureK:temps[i]+273.15,
+      absorbedFluxWm2:absorbed[i],
+      state
+    });
+  }
+
+  const values=rows.map(r=>r.temperatureC);
+  return {
+    rows,
+    summary:{
+      globalMeanC:mean/(weightSum||1),
+      minC:Math.min(...values),
+      maxC:Math.max(...values),
+      contrastK:Math.max(...values)-Math.min(...values),
+      thermalWindowFraction:windowWeight/(weightSum||1)
+    }
+  };
+}
+
+function climateColor(tempC){
+  if(tempC<-30)return "#7895aa";
+  if(tempC<0)return "#7ab6d1";
+  if(tempC<15)return "#58bfa6";
+  if(tempC<30)return "#8bcf8a";
+  if(tempC<45)return "#d5b66f";
+  return "#d07b68";
+}
+
+function renderClimateWorld(){
+  const canvas=$("#climateCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value;
+  const albedo=+$("#albedo").value;
+  const gh=+$("#greenhouse").value;
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#070c11";
+  ctx.fillRect(0,0,w,h);
+
+  const cx=315,cy=h/2,r=165;
+
+  // Ambient glow.
+  const glow=ctx.createRadialGradient(cx,cy,30,cx,cy,r*1.7);
+  glow.addColorStop(0,"rgba(99,178,208,.13)");
+  glow.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=glow;
+  ctx.beginPath();
+  ctx.arc(cx,cy,r*1.7,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.clip();
+
+  // Latitude bands projected onto a disc.
+  for(let y=Math.floor(cy-r);y<=Math.ceil(cy+r);y++){
+    const normalized=(cy-y)/r;
+    if(Math.abs(normalized)>1)continue;
+    const lat=Math.asin(normalized)*180/Math.PI;
+    const row=climate.rows.reduce((best,item)=>
+      Math.abs(item.latitudeDeg-lat)<Math.abs(best.latitudeDeg-lat)?item:best
+    );
+    ctx.fillStyle=climateColor(row.temperatureC);
+    const halfWidth=Math.sqrt(Math.max(0,r*r-(y-cy)*(y-cy)));
+    ctx.fillRect(cx-halfWidth,y,halfWidth*2,2);
+  }
+
+  // Stylized land masses: visual context only.
+  ctx.fillStyle="rgba(20,40,35,.32)";
+  ctx.beginPath();
+  ctx.moveTo(cx-95,cy-58);
+  ctx.bezierCurveTo(cx-40,cy-100,cx+20,cy-75,cx+45,cy-28);
+  ctx.bezierCurveTo(cx+70,cy+3,cx+35,cy+30,cx-15,cy+18);
+  ctx.bezierCurveTo(cx-55,cy+10,cx-85,cy-10,cx-95,cy-58);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx+45,cy+45);
+  ctx.bezierCurveTo(cx+100,cy+20,cx+122,cy+72,cx+72,cy+108);
+  ctx.bezierCurveTo(cx+30,cy+123,cx+10,cy+75,cx+45,cy+45);
+  ctx.fill();
+
+  // Soft atmospheric rim.
+  const rim=ctx.createRadialGradient(cx,cy,r*.78,cx,cy,r);
+  rim.addColorStop(0,"rgba(255,255,255,0)");
+  rim.addColorStop(1,"rgba(192,229,244,.20)");
+  ctx.fillStyle=rim;
+  ctx.fillRect(cx-r,cy-r,r*2,r*2);
+
+  ctx.restore();
+
+  ctx.strokeStyle="rgba(220,239,247,.28)";
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.stroke();
+
+  // Narrative metrics to the right of the globe.
+  const eq=climate.rows.reduce((best,item)=>
+    Math.abs(item.latitudeDeg)<Math.abs(best.latitudeDeg)?item:best
+  );
+  const north=climate.rows[climate.rows.length-1];
+  const south=climate.rows[0];
+  const summary=climate.summary;
+
+  ctx.fillStyle="rgba(244,247,249,.94)";
+  ctx.font="700 26px system-ui";
+  ctx.fillText("Clima por latitud",570,98);
+  ctx.fillStyle="rgba(157,171,181,.92)";
+  ctx.font="15px system-ui";
+  ctx.fillText("Mismo planeta. Regiones térmicas diferentes.",570,127);
+
+  const metrics=[
+    ["Ecuador",eq.temperatureC],
+    ["Polo norte",north.temperatureC],
+    ["Polo sur",south.temperatureC],
+    ["Media global",summary.globalMeanC]
+  ];
+  metrics.forEach((m,i)=>{
+    const y=180+i*48;
+    ctx.fillStyle="rgba(123,139,149,.92)";
+    ctx.font="12px system-ui";
+    ctx.fillText(m[0],570,y);
+    ctx.fillStyle="rgba(236,242,245,.96)";
+    ctx.font="700 20px system-ui";
+    ctx.fillText(`${m[1].toFixed(1)} °C`,760,y);
+  });
+
+  const fraction=Math.round(summary.thermalWindowFraction*100);
+  $("#climateHeadline").textContent=fraction>55
+    ?"Aparece una franja térmica amplia"
+    :fraction>20
+      ?"La habitabilidad térmica se concentra en refugios"
+      :"Las regiones térmicamente favorables son escasas";
+
+  $("#climateText").textContent=
+    `${fraction}% del área latitudinal cae entre 0 y 40 °C en este modelo anual simplificado. La diferencia entre las bandas más cálida y más fría es de ${summary.contrastK.toFixed(1)} K.`;
+
+  $("#climateMetrics").innerHTML=
+    stat("Media global",summary.globalMeanC.toFixed(1)+" °C","área ponderada")+
+    stat("Banda más fría",summary.minC.toFixed(1)+" °C")+
+    stat("Banda más cálida",summary.maxC.toFixed(1)+" °C")+
+    stat("Contraste latitudinal",summary.contrastK.toFixed(1)+" K")+
+    stat("Ventana térmica",fraction+"%","0–40 °C · proxy");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -601,6 +809,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  renderClimateWorld();
   renderOrbitWindow();
 
   if(selectedFocus?.kind==="hypothetical"){
