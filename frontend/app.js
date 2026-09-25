@@ -33,7 +33,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase5-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase5b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -61,7 +61,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase5-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase5b-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -1489,6 +1489,181 @@ function renderSettlementWorld(){
     stat("pO₂ proxy",s.pO2.toFixed(3)+" bar","ambiental");
 }
 
+function refugeName(centerLat,index){
+  const stem=centerLat>=50?"Borealis"
+    :centerLat>=18?"Septentria"
+      :centerLat>-18?"Equatoria"
+        :centerLat>-50?"Australis"
+          :"Polaris Sur";
+  return stem+"-"+index;
+}
+
+function buildRefugiaNetwork(settlement,mobility=.45,threshold=.50){
+  mobility=Math.max(0,Math.min(1,mobility));
+  const clusters=[];
+  let current=[];
+  settlement.bands.forEach(row=>{
+    if(row.assistedSupport>=threshold)current.push(row);
+    else if(current.length){clusters.push(current);current=[];}
+  });
+  if(current.length)clusters.push(current);
+
+  const refugia=clusters.map((cluster,idx)=>{
+    const weights=cluster.map(r=>Math.max(0,Math.cos(r.latitudeDeg*Math.PI/180)));
+    const total=weights.reduce((a,b)=>a+b,0)||1;
+    const avg=key=>cluster.reduce((sum,r,i)=>sum+r[key]*weights[i],0)/total;
+    const center=cluster.reduce((sum,r,i)=>sum+r.latitudeDeg*weights[i],0)/total;
+    return {
+      id:"R"+(idx+1),
+      name:refugeName(center,idx+1),
+      centerLat:center,
+      minLat:cluster[0].latitudeDeg,
+      maxLat:cluster[cluster.length-1].latitudeDeg,
+      naturalSupport:avg("naturalSupport"),
+      assistedSupport:avg("assistedSupport"),
+      agriculturePotential:avg("agriculturePotential"),
+      technologyDependency:avg("technologyDependency"),
+      relativeCapacityWeight:total*avg("assistedSupport")*(.45+.55*avg("agriculturePotential"))
+    };
+  });
+
+  const links=[];
+  for(let i=0;i<refugia.length;i++){
+    for(let j=i+1;j<refugia.length;j++){
+      const a=refugia[i],b=refugia[j];
+      const distance=Math.abs(a.centerLat-b.centerLat);
+      const geographic=Math.exp(-distance/42);
+      const support=Math.sqrt(Math.max(0,a.assistedSupport*b.assistedSupport));
+      const flow=Math.max(0,Math.min(1,mobility*geographic*support));
+      links.push({source:a.id,target:b.id,distanceDeg:distance,flow});
+    }
+  }
+
+  refugia.forEach(r=>{
+    const incident=links.filter(l=>l.source===r.id||l.target===r.id).map(l=>l.flow);
+    r.isolationPotential=1-Math.max(0,...incident);
+  });
+
+  const totalCapacity=refugia.reduce((s,r)=>s+r.relativeCapacityWeight,0)||1;
+  refugia.forEach(r=>r.populationShare=r.relativeCapacityWeight/totalCapacity);
+
+  const maxIsolation=Math.max(0,...refugia.map(r=>r.isolationPotential));
+  const state=refugia.length===0?"no viable refugia"
+    :refugia.length===1?"single connected refugium"
+      :maxIsolation>=.75?"multiple refugia with strong isolation potential"
+        :"multiple refugia with migration connectivity";
+
+  return {refugia,links,summary:{count:refugia.length,maxIsolation,state}};
+}
+
+function renderRefugiaNetwork(){
+  const canvas=$("#refugiaCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value;
+  const albedo=+$("#albedo").value;
+  const gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value;
+  const water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100;
+  const nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100;
+  const mobility=(+$("#mobility").value)/100;
+  $("#mobilityOut").textContent=Math.round(mobility*100)+"%";
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+
+  const count=network.summary.count;
+  const isolationPct=Math.round(network.summary.maxIsolation*100);
+  $("#refugiaHeadline").textContent=count===0
+    ?"No aparecen refugios poblacionales viables"
+    :count===1
+      ?"Una sola región concentra la población potencial"
+      :`${count} refugios pueden sostener poblaciones separadas`;
+
+  $("#refugiaText").textContent=humanSeeded
+    ?`Escenario poblacional activo. Las regiones reciben nombres para seguir su historia y sus movimientos; la movilidad actual conecta la red al ${Math.round(mobility*100)}% del parámetro máximo.`
+    :"Los nombres identifican regiones potenciales. No se asume población hasta activar el escenario humano.";
+
+  $("#refugiaState").textContent=count===0
+    ?"Sin refugios conectables bajo los supuestos actuales."
+    :network.summary.state==="multiple refugia with strong isolation potential"
+      ?"La geografía favorece poblaciones aisladas."
+      :network.summary.state==="multiple refugia with migration connectivity"
+        ?"Existen varias poblaciones con corredores de migración potencial."
+        :"La población potencial permanece concentrada en un solo refugio.";
+
+  $("#refugiaDetail").textContent=count>1
+    ?`El aislamiento máximo alcanza ${isolationPct}%. Esto todavía no es divergencia genética: solo establece la presión espacial que luego alimentará gene flow, deriva y selección.`
+    :"Para generar linajes divergentes necesitaremos múltiples refugios, tiempo generacional e intercambio genético explícito.";
+
+  $("#refugiaList").innerHTML=network.refugia.map(r=>`
+    <article class="refugiaCard">
+      <span>${humanSeeded?"Población regional":"Refugio potencial"}</span>
+      <strong>${r.name}</strong>
+      <p>${r.minLat.toFixed(1)}° a ${r.maxLat.toFixed(1)}° · soporte ${Math.round(r.assistedSupport*100)}% · aislamiento ${Math.round(r.isolationPotential*100)}%</p>
+    </article>
+  `).join("") || '<article class="refugiaCard"><span>Sin regiones</span><strong>No hay refugios viables</strong><p>Ajusta clima, atmósfera, agua o tecnología para abrir nuevas regiones.</p></article>';
+
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#060b0f";ctx.fillRect(0,0,w,h);
+
+  const left=80,right=w-80,midY=h*.52;
+  ctx.strokeStyle="rgba(255,255,255,.08)";
+  ctx.beginPath();ctx.moveTo(left,midY);ctx.lineTo(right,midY);ctx.stroke();
+
+  const xForLat=lat=>left+(lat+90)/180*(right-left);
+  const byId=Object.fromEntries(network.refugia.map(r=>[r.id,r]));
+
+  network.links.forEach(link=>{
+    const ra=byId[link.source],rb=byId[link.target];
+    const x1=xForLat(ra.centerLat),x2=xForLat(rb.centerLat);
+    const y1=midY,y2=midY;
+    const arch=80+Math.abs(x2-x1)*.12;
+    ctx.strokeStyle=`rgba(100,186,207,${.08+.55*link.flow})`;
+    ctx.lineWidth=1+5*link.flow;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.bezierCurveTo(x1,midY-arch,x2,midY-arch,x2,y2);
+    ctx.stroke();
+  });
+
+  network.refugia.forEach((r,i)=>{
+    const x=xForLat(r.centerLat),y=midY;
+    const radius=24+32*r.populationShare;
+    const alpha=humanSeeded?.88:.48;
+    ctx.fillStyle=`rgba(86,157,178,${alpha})`;
+    ctx.strokeStyle=`rgba(190,228,239,${.30+.45*(1-r.isolationPotential)})`;
+    ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();ctx.stroke();
+
+    ctx.fillStyle="rgba(239,244,247,.95)";
+    ctx.font="700 13px system-ui";ctx.textAlign="center";
+    ctx.fillText(r.name,x,y+4);
+    ctx.fillStyle="rgba(142,157,166,.92)";ctx.font="11px system-ui";
+    ctx.fillText(Math.round(r.populationShare*100)+"% capacidad relativa",x,y+radius+20);
+  });
+  ctx.textAlign="left";
+  ctx.fillStyle="rgba(119,133,142,.9)";ctx.font="11px system-ui";
+  ctx.fillText("90°S",left,midY+95);ctx.fillText("Ecuador",(left+right)/2-22,midY+95);ctx.fillText("90°N",right-34,midY+95);
+  ctx.fillStyle="rgba(241,245,247,.94)";ctx.font="700 24px system-ui";
+  ctx.fillText("Red de refugios y migración",left,54);
+  ctx.fillStyle="rgba(151,164,173,.9)";ctx.font="13px system-ui";
+  ctx.fillText("Los enlaces muestran potencial de movimiento, no migración observada.",left,79);
+
+  $("#refugiaMetrics").innerHTML=
+    stat("Refugios",String(count))+
+    stat("Enlaces",String(network.links.length))+
+    stat("Movilidad",Math.round(mobility*100)+"%","control")+
+    stat("Aislamiento máximo",isolationPct+"%","precursor espacial")+
+    stat("Estado",humanSeeded?"población activa":"capacidad solamente","MODELED");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -1583,6 +1758,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  renderRefugiaNetwork();
   renderSettlementWorld();
   renderFoodWeb();
   renderSurfaceWorld();
