@@ -51,7 +51,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase9c-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase10a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -79,7 +79,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase9c-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase10a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -445,11 +445,11 @@ function initCandidate(){
 
     const historyMode=$("#planetHistoryMode");
     if(historyMode){
-      historyMode.addEventListener("change",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);});
+      historyMode.addEventListener("change",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);});
     }
     const historyPlayback=$("#historyPlayback");
     if(historyPlayback){
-      historyPlayback.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);});
+      historyPlayback.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);});
     }
     const historyDisturbance=$("#historyDisturbance");
     if(historyDisturbance){
@@ -457,12 +457,12 @@ function initCandidate(){
         const severity=$("#historySeverity");
         if(historyDisturbance.value==="none"&&severity) severity.value="0";
         safeRender("planetary-history",renderPlanetaryHistory);
-        safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
+        safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
       });
     }
     const historySeverity=$("#historySeverity");
     if(historySeverity){
-      historySeverity.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);});
+      historySeverity.addEventListener("input",()=>{safeRender("planetary-history",renderPlanetaryHistory);safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);});
     }
     const historyPlayBtn=$("#historyPlayBtn");
     if(historyPlayBtn){
@@ -483,7 +483,7 @@ function initCandidate(){
           const next=Math.min(100,+control.value+1);
           control.value=String(next);
           safeRender("planetary-history",renderPlanetaryHistory);
-          safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
+          safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
           if(next>=100){
             window.clearInterval(historyPlaybackTimer);
             historyPlaybackTimer=null;
@@ -500,7 +500,7 @@ function initCandidate(){
       interplanetaryDestination.addEventListener("change",()=>{
         selectedInterplanetaryWorldId=interplanetaryDestination.value||"OBS-1";
         localStorage.setItem("trisolaris-interplanetary-world",selectedInterplanetaryWorldId);
-        safeRender("interplanetary",renderInterplanetary);
+        safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
       });
     }
     const interplanetaryFounder=$("#interplanetaryFounder");
@@ -516,7 +516,7 @@ function initCandidate(){
       interplanetaryLaunchBtn.addEventListener("click",()=>{
         interplanetaryLaunchActive=!interplanetaryLaunchActive;
         localStorage.setItem("trisolaris-interplanetary-launch",String(interplanetaryLaunchActive));
-        safeRender("interplanetary",renderInterplanetary);
+        safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
       });
     }
     const interplanetaryResupply=$("#interplanetaryResupply");
@@ -527,6 +527,15 @@ function initCandidate(){
     if(interplanetaryShock){
       interplanetaryShock.addEventListener("input",()=>safeRender("interplanetary",renderInterplanetary));
     }
+
+    const replayRuns=$("#replayRuns");
+    if(replayRuns)replayRuns.addEventListener("input",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
+    const replayUncertainty=$("#replayUncertainty");
+    if(replayUncertainty)replayUncertainty.addEventListener("input",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
+    const replaySeed=$("#replaySeed");
+    if(replaySeed)replaySeed.addEventListener("change",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
+    const replayRunBtn=$("#replayRunBtn");
+    if(replayRunBtn)replayRunBtn.addEventListener("click",()=>safeRender("evolutionary-replay",renderEvolutionaryReplay));
 
     const humanBtn=$("#seedHumansBtn");
     if(humanBtn){
@@ -1963,7 +1972,7 @@ function renderLineages(){
     renderGenetics();
     renderLineageInspector();
     safeRender("planetary-history",renderPlanetaryHistory);
-    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
+    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
   }));
   renderLineageDetail(model);
 
@@ -2925,7 +2934,7 @@ function initPlanetHistoryCanvas(){
     safeRender("genetics",renderGenetics);
     safeRender("lineage-inspector",renderLineageInspector);
     safeRender("planetary-history",renderPlanetaryHistory);
-    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
+    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
   });
 }
 
@@ -3163,7 +3172,7 @@ function renderAstroanthropology(){
     safeRender("genetics",renderGenetics);
     safeRender("lineage-inspector",renderLineageInspector);
     safeRender("planetary-history",renderPlanetaryHistory);
-    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
+    safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
   }));
 
   $("#astroAnthroSelected").textContent=selected.populationAlias+" · "+selected.lineageName;
@@ -3623,6 +3632,251 @@ function renderInterplanetary(){
 }
 
 
+
+function replayMulberry32(seed){
+  let a=seed>>>0;
+  return function(){
+    a|=0;
+    a=a+0x6D2B79F5|0;
+    let t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+
+function replayUniform(rng,min,max){
+  return min+(max-min)*rng();
+}
+
+function replayPearson(xs,ys){
+  if(xs.length!==ys.length||xs.length<2)return 0;
+  const mx=xs.reduce((a,b)=>a+b,0)/xs.length;
+  const my=ys.reduce((a,b)=>a+b,0)/ys.length;
+  let num=0,dx=0,dy=0;
+  for(let i=0;i<xs.length;i++){
+    const x=xs[i]-mx,y=ys[i]-my;
+    num+=x*y;dx+=x*x;dy+=y*y;
+  }
+  const den=Math.sqrt(dx*dy);
+  return den>0?Math.max(-1,Math.min(1,num/den)):0;
+}
+
+function replayScaledSociety(society,factor){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const copy={
+    ...society,
+    technicalBalance:clamp((society.technicalBalance||0)*factor),
+    knowledgeRetention:clamp((society.knowledgeRetention||0)*factor),
+    systemRedundancy:clamp((society.systemRedundancy||0)*factor),
+    technologyPortfolio:{...(society.technologyPortfolio||{})}
+  };
+  ["Infraestructura","Movilidad"].forEach(key=>{
+    if(key in copy.technologyPortfolio)copy.technologyPortfolio[key]=clamp((copy.technologyPortfolio[key]||0)*factor);
+  });
+  return copy;
+}
+
+function replayOutcome(result,colony,divergence){
+  if(!result.launchFeasible)return {code:"no-launch",score:0};
+  if(!result.persists)return {code:"settlement-failure",score:1};
+  if(!colony.active)return {code:"colony-collapse",score:2};
+  if(divergence.lineageBranch)return {code:"divergent-lineage",score:4};
+  return {code:"connected-colony",score:3};
+}
+
+function replayOutcomeLabel(code){
+  return ({
+    "no-launch":"Sin salida",
+    "settlement-failure":"Asentamiento fallido",
+    "colony-collapse":"Colonia colapsa",
+    "connected-colony":"Colonia conectada",
+    "divergent-lineage":"Rama divergente"
+  })[code]||code;
+}
+
+function runEvolutionaryReplayLive(world,society,{
+  years=0,runs=64,seed=1445,uncertainty=.25,founderSize=500,
+  exchangeStrength=.30,resupplyStrength=.35,infrastructureShock=0
+}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const rng=replayMulberry32(Math.max(1,Math.floor(seed)));
+  const labels=["no-launch","settlement-failure","colony-collapse","connected-colony","divergent-lineage"];
+  const records=[];
+
+  for(let i=0;i<runs;i++){
+    const founderFactor=1+replayUniform(rng,-uncertainty,uncertainty);
+    const capabilityFactor=1+replayUniform(rng,-.75*uncertainty,.75*uncertainty);
+    const founder=Math.max(2,Math.round(founderSize*founderFactor));
+    const exchange=clamp(exchangeStrength+replayUniform(rng,-.50*uncertainty,.50*uncertainty));
+    const resupply=clamp(resupplyStrength+replayUniform(rng,-.50*uncertainty,.50*uncertainty));
+    const shock=clamp(infrastructureShock+replayUniform(rng,0,.65*uncertainty));
+    const perturbed=replayScaledSociety(society,capabilityFactor);
+    const result=simulateInterplanetarySettlement(world,perturbed,{
+      years,founderSize:founder,exchangeStrength:exchange,launchActive:true
+    });
+    const colony=simulateInterplanetaryNetworkLive(world,result,{
+      years,resupplyStrength:resupply,infrastructureShock:shock
+    });
+    const divergence=simulateOffworldDivergenceLive(world,result,colony,{years,generationYears:28});
+    const outcome=replayOutcome(result,colony,divergence);
+    records.push({
+      run:i+1,founderSize:founder,capabilityFactor,exchangeStrength:exchange,
+      resupplyStrength:resupply,infrastructureShock:shock,
+      outcome:outcome.code,outcomeScore:outcome.score,
+      divergence:divergence.divergence||0,
+      launchFeasible:result.launchFeasible,
+      settlementPersists:result.persists,
+      colonyActive:colony.active,
+      branch:divergence.lineageBranch
+    });
+  }
+
+  const counts=Object.fromEntries(labels.map(label=>[label,records.filter(r=>r.outcome===label).length]));
+  const frequencies=Object.fromEntries(labels.map(label=>[label,counts[label]/runs]));
+  const score=records.map(r=>r.outcomeScore);
+  const divergences=records.map(r=>r.divergence);
+  const params={
+    founderSize:records.map(r=>r.founderSize),
+    capabilityFactor:records.map(r=>r.capabilityFactor),
+    exchangeStrength:records.map(r=>r.exchangeStrength),
+    resupplyStrength:records.map(r=>r.resupplyStrength),
+    infrastructureShock:records.map(r=>r.infrastructureShock)
+  };
+  const sensitivity=Object.entries(params).map(([parameter,values])=>({
+    parameter,
+    outcomeCorrelation:replayPearson(values,score),
+    divergenceCorrelation:replayPearson(values,divergences)
+  })).sort((a,b)=>Math.abs(b.outcomeCorrelation)-Math.abs(a.outcomeCorrelation));
+
+  const dominant=labels.reduce((best,label)=>counts[label]>counts[best]?label:best,labels[0]);
+  const dominantFrequency=frequencies[dominant];
+  let entropy=0;
+  Object.values(frequencies).forEach(p=>{if(p>0)entropy-=p*Math.log(p);});
+  const contingency=entropy/Math.log(labels.length);
+
+  return {
+    records,counts,frequencies,sensitivity,dominant,dominantFrequency,contingency,
+    meanOutcomeScore:score.reduce((a,b)=>a+b,0)/runs,
+    meanDivergence:divergences.reduce((a,b)=>a+b,0)/runs,
+    maxDivergence:Math.max(...divergences,0)
+  };
+}
+
+function replayParameterLabel(key){
+  return ({
+    founderSize:"Tamaño fundador",
+    capabilityFactor:"Capacidad funcional",
+    exchangeStrength:"Intercambio / contacto",
+    resupplyStrength:"Reabastecimiento",
+    infrastructureShock:"Choque de infraestructura"
+  })[key]||key;
+}
+
+function renderEvolutionaryReplay(){
+  const root=$("#replayOutcomeDistribution");
+  if(!root||!data)return;
+
+  const a=+$("#axis").value,albedo=+$("#albedo").value,gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value,water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100,nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100,mobility=(+$("#mobility").value)/100;
+  const totalYears=+$("#lineageYears").value;
+  const playback=Math.max(0,Math.min(1,(+($("#historyPlayback")?.value||100))/100));
+  const years=totalYears*playback;
+  const disturbance=$("#historyDisturbance")?.value||"none";
+  const severity=disturbance==="none"?0:Math.max(0,Math.min(1,(+($("#historySeverity")?.value||0))/100));
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{pressureBar:pressure,waterOceans:water,stellarFluxEarth:point.flux,spectralFactor:.55});
+  const web=evaluateFoodWeb(surface,{oxygenFraction:oxygen,nutrientAvailability:nutrients,seeded:lifeSeeded});
+  const settlement=evaluateSettlementSupport(surface,web,{pressureBar:pressure,oxygenFraction:oxygen,technologySupport:tech,nutrients});
+  const network=buildRefugiaNetwork(settlement,mobility,.50);
+  const lineageModel=simulateLineages(network,{years,technologyBuffer:tech});
+  const history=simulatePlanetaryHistory(network,lineageModel,{years,technologySupport:tech,mobility});
+  const demography=simulateDemography(history,{totalYears,viewYears:years,disturbance,severity});
+  const anthropology=simulateAstroanthropology(history,demography,{years,exchangeStrength:1});
+
+  if(!anthropology.societies.length){
+    root.innerHTML='<div class="replayOutcomeRow"><span><span>Sin escenario</span><strong>0%</strong></span><div class="replayBar"><i style="width:0%"></i></div></div>';
+    $("#replayScenario").textContent="Sin población de origen";
+    $("#replayDominant").textContent="—";
+    $("#replayDominantFrequency").textContent="—";
+    $("#replayContingency").textContent="—";
+    $("#replaySensitivity").innerHTML="";
+    $("#replayInterpretation").textContent="No existe una historia poblacional que repetir.";
+    $("#replayMetrics").innerHTML="";
+    return;
+  }
+
+  if(!selectedLineageId||!anthropology.societies.some(s=>s.lineageId===selectedLineageId)){
+    selectedLineageId=anthropology.societies[0].lineageId;
+  }
+  const society=anthropology.societies.find(s=>s.lineageId===selectedLineageId);
+  const worlds=interplanetaryWorldCatalog().filter(w=>w.role==="destination");
+  if(!selectedInterplanetaryWorldId||!worlds.some(w=>w.worldId===selectedInterplanetaryWorldId)){
+    selectedInterplanetaryWorldId=worlds[0]?.worldId||null;
+  }
+  const world=worlds.find(w=>w.worldId===selectedInterplanetaryWorldId)||worlds[0];
+  if(!world)return;
+
+  const runs=+($("#replayRuns")?.value||64);
+  const uncertainty=(+($("#replayUncertainty")?.value||25))/100;
+  const seed=Math.max(1,Math.floor(+($("#replaySeed")?.value||1445)));
+  const founderSize=+($("#interplanetaryFounder")?.value||500);
+  const exchange=(+($("#interplanetaryExchange")?.value||30))/100;
+  const resupply=(+($("#interplanetaryResupply")?.value||35))/100;
+  const shock=(+($("#interplanetaryShock")?.value||0))/100;
+
+  $("#replayRunsOut").textContent=String(runs);
+  $("#replayUncertaintyOut").textContent=Math.round(uncertainty*100)+"%";
+
+  const replay=runEvolutionaryReplayLive(world,society,{
+    years,runs,seed,uncertainty,founderSize,
+    exchangeStrength:exchange,resupplyStrength:resupply,infrastructureShock:shock
+  });
+
+  $("#replayScenario").textContent=society.populationAlias+" → "+world.name;
+  $("#replayDominant").textContent=replayOutcomeLabel(replay.dominant);
+  $("#replayDominantFrequency").textContent=Math.round(replay.dominantFrequency*100)+"% del ensemble";
+  $("#replayContingency").textContent=Math.round(replay.contingency*100)+"%";
+
+  const order=["no-launch","settlement-failure","colony-collapse","connected-colony","divergent-lineage"];
+  root.innerHTML=order.map(code=>{
+    const value=replay.frequencies[code]||0;
+    return '<div class="replayOutcomeRow"><span><span>'+replayOutcomeLabel(code)+'</span><strong>'+
+      Math.round(value*100)+'%</strong></span><div class="replayBar"><i style="width:'+Math.round(value*100)+'%"></i></div></div>';
+  }).join("");
+
+  $("#replaySensitivity").innerHTML=replay.sensitivity.map(row=>{
+    const corr=row.outcomeCorrelation;
+    const direction=corr>.12?"favorece continuidad":corr<-.12?"reduce continuidad":"efecto débil en este ensemble";
+    return '<div class="replaySensitivityRow"><span><span>'+replayParameterLabel(row.parameter)+'</span><strong>'+
+      (corr>=0?"+":"")+fmt(corr,2)+'</strong></span><em>'+direction+' · correlación de cribado</em></div>';
+  }).join("");
+
+  let interpretation="El desenlace cambia con facilidad dentro del sobre ensayado.";
+  if(replay.dominantFrequency>=.85){
+    interpretation="El desenlace dominante es robusto dentro de este modelo y del sobre de variación seleccionado.";
+  }else if(replay.dominantFrequency>=.60){
+    interpretation="Existe una tendencia dominante, pero una fracción relevante de historias toma otra trayectoria.";
+  }
+  if(replay.contingency<.08){
+    interpretation+=" La dispersión de desenlaces es muy baja.";
+  }else if(replay.contingency>.55){
+    interpretation+=" La historia es altamente contingente frente a las variaciones ensayadas.";
+  }
+  $("#replayInterpretation").textContent=interpretation;
+
+  $("#replayMetrics").innerHTML=
+    stat("Historias",String(runs),"semilla "+seed)+
+    stat("Variación",Math.round(uncertainty*100)+"%","rango declarado")+
+    stat("Dominante",replayOutcomeLabel(replay.dominant),Math.round(replay.dominantFrequency*100)+"%")+
+    stat("Contingencia",Math.round(replay.contingency*100)+"%","entropía normalizada")+
+    stat("Divergencia media",Math.round(replay.meanDivergence*100)+"%","proxy")+
+    stat("Divergencia máxima",Math.round(replay.maxDivergence*100)+"%","proxy");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -3718,7 +3972,7 @@ function renderCandidate(){
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
   safeRender("planetary-history",renderPlanetaryHistory);
-  safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);
+  safeRender("astroanthropology",renderAstroanthropology);safeRender("interplanetary",renderInterplanetary);safeRender("evolutionary-replay",renderEvolutionaryReplay);
   safeRender("lineage-inspector",renderLineageInspector);
   safeRender("genetics",renderGenetics);
   safeRender("lineages",renderLineages);
