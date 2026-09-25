@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase6-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase6b-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -425,6 +425,26 @@
         <p class="surfaceCaveat">Los rasgos son índices fisiológicos poblacionales. No representan ideales corporales, etnias ni cambios de un individuo durante su vida.</p>
       </section>
 
+      <section class="geneticsSystem" aria-labelledby="geneticsHeadline">
+        <div class="geneticsIntro">
+          <p class="eyebrow">GENÉTICA POBLACIONAL · PHASE 6.1</p>
+          <h3 id="geneticsHeadline">Ahora los linajes tienen frecuencias alélicas.</h3>
+          <p id="geneticsText">Selección, mutación, deriva y migración modifican cuatro loci fisiológicos abstractos. La diferenciación genética no equivale automáticamente a una especie.</p>
+        </div>
+
+        <div class="geneticsStage">
+          <canvas id="geneticsCanvas" width="1200" height="500" aria-label="Frecuencias alélicas por población"></canvas>
+        </div>
+
+        <div class="geneticsNarrative">
+          <strong id="geneticsState">Calculando diferenciación genética…</strong>
+          <p id="geneticsDetail">La heterocigosidad y un FST proxy resumen diversidad y separación entre poblaciones.</p>
+        </div>
+
+        <div id="geneticsList" class="geneticsList"></div>
+        <div id="geneticsMetrics" class="metricGrid scientific-only"></div>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -497,6 +517,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase6-20260925"></script>
+  <script type="module" src="./app.js?v=phase6b-20260925"></script>
 </body>
 </html>
