@@ -23,6 +23,15 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("async function loadNbodyResult()", app)
         self.assertIn("function renderNbodyResult(result)", app)
 
+    def test_orbital_window_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertIn('id="orbitScanCanvas"', html)
+        self.assertIn('id="orbitBestWindow"', html)
+        self.assertIn("function evaluateOrbitPoint(", app)
+        self.assertIn("function renderOrbitWindow()", app)
+        self.assertIn("function initOrbitWindow()", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
         self.assertIn("styles.css?v=phase2-20260925", html)
