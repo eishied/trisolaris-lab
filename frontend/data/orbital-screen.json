@@ -1,0 +1,46 @@
+{
+  "model": "pairwise_hill_screen_v0.1",
+  "epistemic_level": "DERIVED",
+  "candidate": {
+    "name": "TRISOLARIS H-01",
+    "semimajor_axis_au": 0.09,
+    "assumed_mass_earth": 1.0,
+    "kepler_period_days": 19.452923969069637
+  },
+  "host_star": {
+    "name": "LTT 1445 A",
+    "mass_solar": 0.257
+  },
+  "thresholds": {
+    "two_planet_hill_delta": 3.4641016151377544,
+    "strong_spacing_heuristic_delta": 8.0
+  },
+  "pairwise": [
+    {
+      "planet": "LTT 1445 A c",
+      "delta_mutual_hill": 50.64226580757067,
+      "threshold": 3.4641016151377544,
+      "passes_pairwise_screen": true
+    },
+    {
+      "planet": "LTT 1445 A b",
+      "delta_mutual_hill": 33.20636686462759,
+      "threshold": 3.4641016151377544,
+      "passes_pairwise_screen": true
+    }
+  ],
+  "minimum_delta_mutual_hill": 33.20636686462759,
+  "passes_pairwise_screen": true,
+  "interpretation": "well separated in the pairwise analytic screen",
+  "outer_companion_tidal_index_approx": 9.631984671066421e-09,
+  "limitations": [
+    "not an N-body integration",
+    "assumes a 1 Earth-mass H-01 unless overridden",
+    "pairwise Hill criterion assumes nearly circular coplanar low-mass planets",
+    "does not test mean-motion resonances",
+    "does not propagate uncertainties",
+    "does not solve the full LTT 1445 ABC stellar orbit",
+    "outer-companion forcing uses projected separation only"
+  ],
+  "next_model": "long-term N-body ensemble with observed-parameter uncertainties"
+}
