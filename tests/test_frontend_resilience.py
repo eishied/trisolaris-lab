@@ -321,10 +321,28 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("not real-world probabilities", (ROOT / "docs/EVOLUTIONARY_REPLAY_MODEL.md").read_text(encoding="utf-8"))
         self.assertNotIn("realWorldProbability", app)
 
+    def test_phase10_1_counterfactual_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "counterfactualParameter",
+            "counterfactualDelta",
+            "counterfactualFlipRate",
+            "counterfactualReference",
+            "counterfactualIntervention",
+            "counterfactualDivergenceDelta",
+            "counterfactualDeltas",
+            "counterfactualInterpretation",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function runCounterfactualReplayLive(", app)
+        self.assertIn("function renderCounterfactual(", app)
+        self.assertIn("same seed", (ROOT / "docs/COUNTERFACTUAL_REPLAY_MODEL.md").read_text(encoding="utf-8"))
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase10a-20260925", html)
-        self.assertIn("app.js?v=phase10a-20260925", html)
+        self.assertIn("styles.css?v=phase10b-20260925", html)
+        self.assertIn("app.js?v=phase10b-20260925", html)
 
 
 if __name__ == "__main__":
