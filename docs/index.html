@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase5b-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase6-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -395,6 +395,36 @@
         <div id="refugiaMetrics" class="metricGrid scientific-only"></div>
       </section>
 
+      <section class="lineageSystem" aria-labelledby="lineageHeadline">
+        <div class="lineageIntro">
+          <p class="eyebrow">LINAJES · PHASE 6.0</p>
+          <h3 id="lineageHeadline">La historia biológica empieza con poblaciones.</h3>
+          <p id="lineageText">Tiempo, aislamiento, selección, deriva y flujo génico cambian promedios poblacionales. Ninguna especie aparece solo porque pasan los años.</p>
+        </div>
+
+        <div class="lineageControls">
+          <label>
+            <span>Tiempo transcurrido</span>
+            <output id="lineageYearsOut">50,000 años</output>
+            <input id="lineageYears" type="range" min="0" max="500000" step="5000" value="50000" />
+          </label>
+        </div>
+
+        <div class="lineageStage">
+          <canvas id="lineageCanvas" width="1200" height="520" aria-label="Árbol de divergencia de poblaciones"></canvas>
+        </div>
+
+        <div class="lineageNarrative">
+          <strong id="lineageState">Calculando divergencia poblacional…</strong>
+          <p id="lineageDetailText">El modelo mantiene la compatibilidad entre poblaciones como un proxy continuo, no como una frontera taxonómica automática.</p>
+        </div>
+
+        <div id="lineageCards" class="lineageCards"></div>
+        <div id="lineageDetail" class="lineageDetail"></div>
+        <div id="lineageMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">Los rasgos son índices fisiológicos poblacionales. No representan ideales corporales, etnias ni cambios de un individuo durante su vida.</p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -467,6 +497,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase5b-20260925"></script>
+  <script type="module" src="./app.js?v=phase6-20260925"></script>
 </body>
 </html>
