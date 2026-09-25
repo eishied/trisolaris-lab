@@ -854,3 +854,183 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 .geneticsCard{background:#080d12;padding:16px 17px}.geneticsCard span{display:block;color:#71808a;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.geneticsCard strong{display:block;margin-top:5px;font-size:18px;color:#e0e6ea}.geneticsCard p{margin:5px 0 0;color:#8f9ca5;font-size:12px}
 .geneticsSystem .metricGrid{margin-top:18px}
 @media(max-width:780px){.geneticsIntro{grid-template-columns:1fr;gap:9px}.geneticsIntro>p:last-child{grid-column:1;grid-row:auto}.geneticsNarrative{grid-template-columns:1fr;gap:8px}}
+
+
+.lineageInspector{
+  margin-top:40px;
+  padding:42px 0 34px;
+  border-top:1px solid var(--line)
+}
+.lineageInspectorIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
+  gap:36px;
+  align-items:end
+}
+.lineageInspectorIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(30px,4vw,48px);
+  line-height:1.04;
+  letter-spacing:-.045em
+}
+.lineageInspectorIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#97a5ae
+}
+.lineageInspectorControls{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:0;
+  margin-top:24px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.lineageInspectorControls label{
+  display:grid;
+  grid-template-columns:auto minmax(180px,320px);
+  align-items:center;
+  gap:14px;
+  padding:16px 20px 16px 0
+}
+.lineageInspectorControls label span{
+  color:#71808a;
+  font-size:11px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+#lineagePartner{
+  appearance:none;
+  border:1px solid var(--line);
+  background:#0b1217;
+  color:#dce4e8;
+  border-radius:999px;
+  padding:10px 38px 10px 14px;
+  font:inherit;
+  background-image:linear-gradient(45deg,transparent 50%,#7f909a 50%),linear-gradient(135deg,#7f909a 50%,transparent 50%);
+  background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat
+}
+.admixtureButton{
+  border:0;
+  border-left:1px solid var(--line);
+  background:rgba(255,255,255,.025);
+  color:#aab6bd;
+  padding:0 22px;
+  min-width:220px;
+  cursor:pointer
+}
+.admixtureButton[aria-pressed="true"]{
+  color:#d8f0e1;
+  background:rgba(89,166,119,.11)
+}
+.lineageInspectorStage{
+  margin-top:22px;
+  overflow:hidden;
+  border-radius:30px;
+  border:1px solid var(--line);
+  background:
+    radial-gradient(circle at 20% 40%,rgba(83,145,174,.09),transparent 34%),
+    radial-gradient(circle at 80% 40%,rgba(92,158,119,.07),transparent 34%),
+    #060b0f
+}
+#phenotypeCanvas{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:0;
+  background:transparent
+}
+.lineageInspectorNarrative{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  border-top:1px solid var(--line);
+  margin-top:18px
+}
+.lineageInspectorNarrative article{
+  padding:18px 20px 16px 0
+}
+.lineageInspectorNarrative article+article{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.lineageInspectorNarrative span{
+  display:block;
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:6px
+}
+.lineageInspectorNarrative strong{
+  display:block;
+  color:#d9e2e6;
+  font-size:16px;
+  line-height:1.4
+}
+.functionalAtlas{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1px;
+  margin-top:18px;
+  background:var(--line);
+  border:1px solid var(--line)
+}
+.functionalSystem{
+  background:#080d12;
+  padding:18px
+}
+.functionalSystem span{
+  display:block;
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.functionalSystem strong{
+  display:block;
+  margin-top:6px;
+  color:#e0e7ea;
+  font-size:18px
+}
+.functionalSystem p{
+  margin:6px 0 0;
+  color:#8f9ca5;
+  font-size:12px;
+  line-height:1.45
+}
+.systemBar{
+  height:4px;
+  margin-top:14px;
+  background:rgba(255,255,255,.06);
+  overflow:hidden;
+  border-radius:999px
+}
+.systemBar i{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#73b8d0,#7dd4a1);
+  border-radius:inherit
+}
+.admixtureResult{
+  margin-top:1px;
+  padding:18px;
+  border:1px solid var(--line);
+  background:#080d12;
+  color:#96a3ab
+}
+.admixtureResult strong{color:#dce4e8}
+.lineageInspector .metricGrid{margin-top:18px}
+@media(max-width:780px){
+  .lineageInspectorIntro{grid-template-columns:1fr;gap:9px}
+  .lineageInspectorIntro>p:last-child{grid-column:1;grid-row:auto}
+  .lineageInspectorControls{grid-template-columns:1fr}
+  .lineageInspectorControls label{grid-template-columns:1fr;padding-right:0}
+  .admixtureButton{border-left:0;border-top:1px solid var(--line);min-height:54px}
+  .lineageInspectorNarrative{grid-template-columns:1fr}
+  .lineageInspectorNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
+  .functionalAtlas{grid-template-columns:1fr 1fr}
+}
