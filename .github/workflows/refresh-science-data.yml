@@ -55,6 +55,9 @@ jobs:
       - name: Build human settlement baseline
         run: python pipelines/human/build_settlement_baseline.py
 
+      - name: Build refugia and migration baseline
+        run: python pipelines/human/build_refugia_baseline.py
+
       - name: Commit derived datasets if changed
         shell: bash
         run: |
@@ -66,6 +69,7 @@ jobs:
             frontend/data/surface-baseline.json docs/data/surface-baseline.json
             frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
             frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
+            frontend/data/refugia-baseline.json docs/data/refugia-baseline.json
           )
           if git diff --quiet -- "${FILES[@]}" && git ls-files --others --exclude-standard -- "${FILES[@]}" | grep -q '^$'; then
             echo "No scientific-data changes detected."
