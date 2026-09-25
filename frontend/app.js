@@ -3387,7 +3387,7 @@ function simulateOffworldDivergenceLive(world,result,colony,{years=0,generationY
   const networkContact=clamp(.55*(result.contactCapacity||0)+.45*colony.resupply);
   const geneFlow=clamp((result.geneFlow||0)+.40*networkContact);
   const drift=clamp((1-Math.exp(-generations/(2*effectivePopulation)))*(1-.65*geneFlow));
-  const gravityDifference=world.gravityEarth==null?.25:Math.min(1,Math.abs(world.gravityEarth-1));
+  const gravityDifference=world.gravityEarth==null ? .25 : Math.min(1,Math.abs(world.gravityEarth-1));
   const environmentalDifference=clamp(
     .52*(world.settlementBurden||0)+.20*gravityDifference+.28*(1-(result.habitatCapacity||0))
   );
