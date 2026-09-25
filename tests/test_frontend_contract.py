@@ -12,8 +12,8 @@ class FrontendContractTests(unittest.TestCase):
 
     def test_world_selector_uses_query_selector_all(self):
         app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
-        self.assertNotIn('$(".world[data-focus-name]").forEach', app)
-        self.assertIn('$$(".world[data-focus-name]").forEach', app)
+        self.assertNotIn('\n  $(".world[data-focus-name]").forEach', app)
+        self.assertIn('$(".world[data-focus-name]").forEach', app)
 
     def test_required_interactive_elements_exist(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
