@@ -7,7 +7,6 @@ let running=true;
 let phase=0;
 let candidateInitialized=false;
 let orbitScanInitialized=false;
-let lifeSeeded=false;
 let lifeSeeded=localStorage.getItem("trisolaris-life-seeded")==="true";
 let hitTargets=[];
 let selectedFocus=null;
@@ -400,6 +399,8 @@ function initCandidate(){
       seedBtn.textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
       renderCandidate();
     });
+    $("#seedLifeBtn").setAttribute("aria-pressed",String(lifeSeeded));
+    $("#seedLifeBtn").textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
     initOrbitWindow();
     candidateInitialized=true;
   }
