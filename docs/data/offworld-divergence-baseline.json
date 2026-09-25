@@ -1,0 +1,23 @@
+{
+  "model": "offworld_divergence_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "years": 50000.0,
+    "generation_years": 28.0
+  },
+  "branches": [],
+  "events": [],
+  "summary": {
+    "active_branch_population_count": 0,
+    "persistent_lineage_branch_count": 0,
+    "mean_divergence_proxy": 0.0,
+    "mean_gene_flow": 0.0
+  },
+  "limitations": [
+    "divergence is a reduced-order proxy and not a genomic simulation",
+    "no new species is asserted by this model",
+    "no anatomical feature is inferred without a separate explicit physiology/genetics model",
+    "selection pressure is buffered by controlled habitats and depends on infrastructure continuity",
+    "future SLiM integration should replace aggregate drift and selection proxies"
+  ]
+}

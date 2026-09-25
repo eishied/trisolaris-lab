@@ -1,0 +1,28 @@
+{
+  "model": "interplanetary_network_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "years": 50000.0,
+    "resupply_strength": 0.35,
+    "infrastructure_shock": 0.0,
+    "enable_return_migration": true
+  },
+  "colonies": [],
+  "routes": [],
+  "events": [],
+  "summary": {
+    "colony_count": 0,
+    "active_colony_count": 0,
+    "collapsed_colony_count": 0,
+    "network_route_count": 0,
+    "offworld_population": 0,
+    "return_migrants": 0
+  },
+  "limitations": [
+    "population dynamics are reduced-order demographic proxies, not forecasts",
+    "resource production, life support and infrastructure are aggregated indices rather than engineering mass balances",
+    "resupply strength is an explicit scenario parameter, not an assumed capability",
+    "colony collapse remains possible after a successful Phase 9.0 arrival",
+    "population values are scenario headcounts only after the explicit founder cohort is created"
+  ]
+}
