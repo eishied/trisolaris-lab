@@ -445,6 +445,46 @@
         <div id="geneticsMetrics" class="metricGrid scientific-only"></div>
       </section>
 
+      <section class="lineageInspector" aria-labelledby="lineageInspectorHeadline">
+        <div class="lineageInspectorIntro">
+          <p class="eyebrow">ANATOMÍA FUNCIONAL · PHASE 6.2</p>
+          <h3 id="lineageInspectorHeadline">Qué cambia realmente en cada linaje.</h3>
+          <p id="lineageInspectorText">La interfaz separa cambios fisiológicos respaldados por el modelo de cambios visibles que todavía no podemos justificar. Los retratos representan adultos del linaje; no predicen rasgos faciales específicos.</p>
+        </div>
+
+        <div class="lineageInspectorControls">
+          <label>
+            <span>Comparar con</span>
+            <select id="lineagePartner"></select>
+          </label>
+          <button id="admixtureBtn" class="admixtureButton" aria-pressed="false">Explorar mezcla poblacional</button>
+        </div>
+
+        <div class="lineageInspectorStage">
+          <canvas id="phenotypeCanvas" width="1200" height="540" aria-label="Representación funcional del linaje seleccionado"></canvas>
+        </div>
+
+        <div class="lineageInspectorNarrative">
+          <article>
+            <span>Exterior visible</span>
+            <strong id="visibleMorphologyText">No se infiere cambio macroscópico sin evidencia genética suficiente.</strong>
+          </article>
+          <article>
+            <span>Fisiología</span>
+            <strong id="functionalMorphologyText">Calculando sistemas funcionales dominantes…</strong>
+          </article>
+          <article>
+            <span>Compatibilidad</span>
+            <strong id="compatibilityText">Selecciona dos linajes para comparar flujo génico y compatibilidad.</strong>
+          </article>
+        </div>
+
+        <div id="functionalAtlas" class="functionalAtlas"></div>
+        <div id="admixtureResult" class="admixtureResult"></div>
+        <div id="lineageInspectorMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">El modelo actual no inventa cambios craneofaciales, estéticos ni una “apariencia alienígena”. Solo muestra cambios funcionales cuando la genética y la selección los sostienen.</p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
