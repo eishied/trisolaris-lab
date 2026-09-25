@@ -2579,7 +2579,7 @@ function renderPlanetaryHistory(){
     const value=historyMetricForMode(p,mode);
     const radius=8+20*value;
     ctx.fillStyle=palette[i%palette.length];
-    ctx.globalAlpha=active?.92:.42;
+    ctx.globalAlpha=active ? 0.92 : 0.42;
     ctx.beginPath();ctx.arc(n.x,n.y,radius,0,Math.PI*2);ctx.fill();
     ctx.globalAlpha=1;
     if(selectedLineageId===p.lineageId){
