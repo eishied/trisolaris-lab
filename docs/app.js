@@ -232,7 +232,7 @@ function closeFocus(){
 }
 
 function activateWorldFocus(){
-  $(".world[data-focus-name]").forEach(card=>{
+  $$(".world[data-focus-name]").forEach(card=>{
     const activate=()=>{
       openFocus({kind:"planet",name:card.dataset.focusName});
     };
