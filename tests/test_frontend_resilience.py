@@ -403,10 +403,32 @@ class FrontendResilienceTests(unittest.TestCase):
             (ROOT / "docs/MANUSCRIPT_REVIEW_GATE.md").read_text(encoding="utf-8"),
         )
 
+    def test_phase12_transition_threshold_atlas_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "thresholdAtlasHeadline",
+            "thresholdTarget",
+            "thresholdParameterCount",
+            "thresholdReachedCount",
+            "thresholdSeed",
+            "thresholdGrid",
+            "thresholdInterpretation",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("THRESHOLD_ATLAS_URL", app)
+        self.assertIn("function loadThresholdAtlas()", app)
+        self.assertIn("function renderThresholdAtlas()", app)
+        self.assertIn("loadThresholdAtlas();", app)
+        self.assertIn(
+            "properties of the current reduced-order simulator",
+            (ROOT / "docs/TRANSITION_THRESHOLD_ATLAS.md").read_text(encoding="utf-8"),
+        )
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase11c-20260925", html)
-        self.assertIn("app.js?v=phase11c-20260925", html)
+        self.assertIn("styles.css?v=phase12a-20260925", html)
+        self.assertIn("app.js?v=phase12a-20260925", html)
 
 
 if __name__ == "__main__":
