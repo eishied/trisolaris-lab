@@ -51,7 +51,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase9a-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase9c-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -79,7 +79,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase9a-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase9c-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -518,6 +518,14 @@ function initCandidate(){
         localStorage.setItem("trisolaris-interplanetary-launch",String(interplanetaryLaunchActive));
         safeRender("interplanetary",renderInterplanetary);
       });
+    }
+    const interplanetaryResupply=$("#interplanetaryResupply");
+    if(interplanetaryResupply){
+      interplanetaryResupply.addEventListener("input",()=>safeRender("interplanetary",renderInterplanetary));
+    }
+    const interplanetaryShock=$("#interplanetaryShock");
+    if(interplanetaryShock){
+      interplanetaryShock.addEventListener("input",()=>safeRender("interplanetary",renderInterplanetary));
     }
 
     const humanBtn=$("#seedHumansBtn");
@@ -3304,6 +3312,128 @@ function simulateInterplanetarySettlement(world,society,{years=0,founderSize=500
   };
 }
 
+
+function interplanetaryLogisticPopulation(initial,capacity,rate,years){
+  if(initial<=0||capacity<=0)return 0;
+  if(initial>=capacity)return capacity;
+  const exponent=Math.min(60,Math.max(-60,rate*Math.max(0,years)));
+  return capacity/(1+((capacity-initial)/initial)*Math.exp(-exponent));
+}
+
+function simulateInterplanetaryNetworkLive(world,result,{years=0,resupplyStrength=.35,infrastructureShock=0}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  if(!result.persists){
+    return {
+      active:false,initialPopulation:0,population:0,carryingCapacity:0,growthState:"not-established",
+      infrastructureIntegrity:0,selfSufficiency:0,supplyDependency:0,resourceMargin:0,
+      failurePressure:0,resupply:0,returnMigrants:0,timeline:[]
+    };
+  }
+
+  const arrival=Math.max(0,result.survivors||0);
+  const burden=clamp(world.settlementBurden||0);
+  const habitat=clamp(result.habitatCapacity||0);
+  const technical=clamp(result.technologyContinuity||0);
+  const contact=clamp(result.contactCapacity||0);
+  const resupply=clamp(resupplyStrength*(.42+.58*contact));
+  const infrastructureIntegrity=clamp(
+    .44*technical+.32*habitat+.24*resupply-.52*clamp(infrastructureShock)
+  );
+  const selfSufficiency=clamp(
+    .36*habitat+.30*technical+.20*(1-burden)+.14*infrastructureIntegrity
+  );
+  const supplyDependency=clamp(1-selfSufficiency+.20*burden-.18*resupply);
+  const resourceMargin=clamp(
+    .42*habitat+.30*infrastructureIntegrity+.28*Math.max(selfSufficiency,resupply)-.34*burden
+  );
+  const capacityMultiplier=1+8*resourceMargin*(.45+.55*infrastructureIntegrity);
+  const carryingCapacity=Math.max(arrival,arrival*capacityMultiplier);
+  const annualRate=Math.max(-.0015,.00012+.00062*resourceMargin-.00075*clamp(infrastructureShock));
+  let population=interplanetaryLogisticPopulation(Math.max(1,arrival),carryingCapacity,annualRate,years);
+  const failurePressure=clamp(
+    .38*burden+.34*(1-infrastructureIntegrity)+.28*supplyDependency-.24*resupply
+  );
+  const active=!!(
+    arrival>=40&&infrastructureIntegrity>=.10&&resourceMargin>=.08&&failurePressure<.88&&population>=20
+  );
+  if(!active)population=0;
+  const returnFraction=active?clamp(contact*(.06+.18*failurePressure)*(1-selfSufficiency)):0;
+  const returnMigrants=active?Math.round(population*returnFraction):0;
+  const growthState=!active?"collapse":population>arrival*1.35?"expansion":population>=arrival*.75?"stable":"decline";
+  const timeline=[0,.10,.25,.50,.75,1].map(fraction=>{
+    let p=interplanetaryLogisticPopulation(Math.max(1,arrival),carryingCapacity,annualRate,years*fraction);
+    if(!active&&fraction===1)p=0;
+    return {years:years*fraction,population:p,capacity:carryingCapacity};
+  });
+  return {
+    active,initialPopulation:arrival,population,carryingCapacity,growthState,
+    infrastructureIntegrity,selfSufficiency,supplyDependency,resourceMargin,
+    failurePressure,resupply,returnMigrants,timeline
+  };
+}
+
+function simulateOffworldDivergenceLive(world,result,colony,{years=0,generationYears=28}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  if(!colony.active){
+    return {
+      active:false,geneFlow:0,drift:0,selectionPressure:0,technicalDivergence:0,
+      divergence:0,lineageBranch:false,continuityState:"Sin población extraplanetaria persistente."
+    };
+  }
+  const population=Math.max(1,colony.population);
+  const founderNe=Math.max(20,result.effectiveFounders||20);
+  const effectivePopulation=Math.max(founderNe,population*(.38+.22*colony.resourceMargin));
+  const generations=years/Math.max(1,generationYears);
+  const networkContact=clamp(.55*(result.contactCapacity||0)+.45*colony.resupply);
+  const geneFlow=clamp((result.geneFlow||0)+.40*networkContact);
+  const drift=clamp((1-Math.exp(-generations/(2*effectivePopulation)))*(1-.65*geneFlow));
+  const gravityDifference=world.gravityEarth==null?.25:Math.min(1,Math.abs(world.gravityEarth-1));
+  const environmentalDifference=clamp(
+    .52*(world.settlementBurden||0)+.20*gravityDifference+.28*(1-(result.habitatCapacity||0))
+  );
+  const exposure=clamp(.25+.75*(1-colony.infrastructureIntegrity));
+  const selectionPressure=clamp(environmentalDifference*exposure);
+  const founderEffect=clamp(result.founderEffect||0);
+  const technicalDivergence=clamp(
+    .45*colony.selfSufficiency+.35*(1-networkContact)+.20*colony.supplyDependency
+  );
+  const timeFactor=years?1-Math.exp(-years/25000):0;
+  const divergence=clamp(
+    timeFactor*(.34*drift+.30*selectionPressure+.22*founderEffect+.14*technicalDivergence)
+  );
+  const lineageBranch=!!(years>=5000&&divergence>=.24&&geneFlow<.40);
+  const continuityState=geneFlow>=.45
+    ?"Continuidad de alto contacto"
+    :divergence>=.42&&geneFlow<.22
+      ?"Rama aislada persistente"
+      :divergence>=.24
+        ?"Rama extraplanetaria en divergencia"
+        :"Población extraplanetaria conectada";
+  return {
+    active:true,effectivePopulation,generations,geneFlow,drift,environmentalDifference,
+    selectionPressure,technicalDivergence,divergence,lineageBranch,continuityState
+  };
+}
+
+function clearInterplanetaryExtensions(message="Sin población extraplanetaria persistente."){
+  const values={
+    interplanetaryColonyState:"No establecida",
+    interplanetaryColonyPopulation:"—",
+    interplanetarySelfSufficiency:"—",
+    interplanetaryInfrastructure:"—",
+    offworldGeneFlow:"—",
+    offworldDrift:"—",
+    offworldSelection:"—",
+    offworldDivergence:"—",
+    offworldContinuity:message,
+    offworldWhy:"No se infiere especiación ni cambio anatómico automático."
+  };
+  Object.entries(values).forEach(([id,value])=>{const el=$("#"+id);if(el)el.textContent=value;});
+  const timeline=$("#interplanetaryColonyTimeline");
+  if(timeline)timeline.innerHTML='<div class="interplanetaryTimelinePoint"><span>Sin cronología</span><strong>La colonia todavía no existe</strong><em>La llegada no garantiza persistencia.</em></div>';
+}
+
+
 function interplanetaryStatusLabel(status){
   return ({
     "assessment-only":"Evaluación sin salida",
@@ -3346,6 +3476,7 @@ function renderInterplanetary(){
     $("#interplanetaryStatus").textContent="Sin población de origen";
     $("#interplanetaryBranch").textContent="No aplica";
     $("#interplanetaryMetrics").innerHTML="";
+    clearInterplanetaryExtensions("H-01 todavía no sostiene una población de origen.");
     return;
   }
 
@@ -3428,6 +3559,53 @@ function renderInterplanetary(){
   else if(destination.controlledHabitatRequired)risk="El destino exige soporte ambiental continuo; una pérdida prolongada de infraestructura puede terminar el asentamiento.";
   if(result.persists&&result.technologyContinuity<.45)risk="El asentamiento persiste, pero la continuidad tecnológica queda frágil y puede perder capacidades críticas.";
   $("#interplanetaryRisk").textContent=risk;
+
+  const resupply=(+($("#interplanetaryResupply")?.value||35))/100;
+  const manualShock=(+($("#interplanetaryShock")?.value||0))/100;
+  const inheritedInfrastructureShock=disturbance==="infrastructure"?severity:0;
+  const infrastructureShock=Math.max(manualShock,inheritedInfrastructureShock);
+  $("#interplanetaryResupplyOut").textContent=Math.round(resupply*100)+"%";
+  $("#interplanetaryShockOut").textContent=Math.round(infrastructureShock*100)+"%";
+
+  const colony=simulateInterplanetaryNetworkLive(destination,result,{
+    years:viewYears,
+    resupplyStrength:resupply,
+    infrastructureShock
+  });
+  const offworld=simulateOffworldDivergenceLive(destination,result,colony,{years:viewYears,generationYears:28});
+
+  $("#interplanetaryColonyState").textContent=colony.active
+    ?({"expansion":"Expansión","stable":"Estable","decline":"Declive"}[colony.growthState]||"Activa")
+    :(result.persists?"Colapso":"No establecida");
+  $("#interplanetaryColonyPopulation").textContent=colony.active
+    ?Math.round(colony.population).toLocaleString("es-ES")+" / "+Math.round(colony.carryingCapacity).toLocaleString("es-ES")
+    :"—";
+  $("#interplanetarySelfSufficiency").textContent=colony.active?Math.round(colony.selfSufficiency*100)+"%":"—";
+  $("#interplanetaryInfrastructure").textContent=colony.active?Math.round(colony.infrastructureIntegrity*100)+"%":"—";
+
+  const timeline=$("#interplanetaryColonyTimeline");
+  timeline.innerHTML=colony.timeline.length
+    ?colony.timeline.map(point=>
+      '<div class="interplanetaryTimelinePoint">'+
+        '<span>'+Math.round(point.years).toLocaleString("es-ES")+' años</span>'+
+        '<strong>'+Math.round(point.population).toLocaleString("es-ES")+'</strong>'+
+        '<em>capacidad '+Math.round(point.capacity).toLocaleString("es-ES")+'</em>'+
+      '</div>'
+    ).join("")
+    :'<div class="interplanetaryTimelinePoint"><span>Sin cronología</span><strong>La colonia todavía no existe</strong><em>La llegada no garantiza persistencia.</em></div>';
+
+  $("#offworldGeneFlow").textContent=offworld.active?Math.round(offworld.geneFlow*100)+"%":"—";
+  $("#offworldDrift").textContent=offworld.active?Math.round(offworld.drift*100)+"%":"—";
+  $("#offworldSelection").textContent=offworld.active?Math.round(offworld.selectionPressure*100)+"%":"—";
+  $("#offworldDivergence").textContent=offworld.active?Math.round(offworld.divergence*100)+"%":"—";
+  $("#offworldContinuity").textContent=offworld.continuityState;
+  $("#offworldWhy").textContent=offworld.active
+    ?"Población local → tamaño efectivo → contacto "+Math.round(offworld.geneFlow*100)+"% → deriva "+Math.round(offworld.drift*100)+"% → selección ambiental amortiguada "+Math.round(offworld.selectionPressure*100)+"% → divergencia "+Math.round(offworld.divergence*100)+"%. No es una afirmación de especiación."
+    :"La divergencia no se calcula mientras el asentamiento no mantenga una población propia.";
+
+  $("#interplanetaryBranch").textContent=offworld.lineageBranch
+    ?society.lineageId+"-"+destination.worldId+" · rama persistente"
+    :(colony.active?"Población conectada; sin rama persistente":"No existe");
 
   $("#interplanetaryMetrics").innerHTML=
     stat("Destino",destination.name,destination.epistemicLevel)+
