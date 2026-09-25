@@ -840,3 +840,17 @@ body[data-mode="scientific"] .simple-only{display:none!important}
 .lineageTraitGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}.lineageTraitGrid div{border-top:1px solid var(--line);padding-top:10px}.lineageTraitGrid span{display:block;color:#71808a;font-size:10px;text-transform:uppercase;letter-spacing:.08em}.lineageTraitGrid strong{display:block;margin-top:4px;color:#dce4e8;font-size:16px}
 .lineageSystem .metricGrid{margin-top:18px}
 @media(max-width:780px){.lineageIntro{grid-template-columns:1fr;gap:9px}.lineageIntro>p:last-child{grid-column:1;grid-row:auto}.lineageNarrative{grid-template-columns:1fr;gap:8px}.lineageTraitGrid{grid-template-columns:1fr 1fr}}
+
+
+.geneticsSystem{margin-top:40px;padding:40px 0 34px;border-top:1px solid var(--line)}
+.geneticsIntro{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:36px;align-items:end}
+.geneticsIntro h3{grid-column:1;margin:8px 0 0;font-size:clamp(30px,4vw,48px);line-height:1.04;letter-spacing:-.045em}
+.geneticsIntro>p:last-child{grid-column:2;grid-row:1 / span 2;margin:0;color:#97a5ae}
+.geneticsStage{margin-top:22px;border:1px solid var(--line);border-radius:30px;overflow:hidden;background:#060b0f}
+#geneticsCanvas{display:block;width:100%;height:auto;min-height:0;background:transparent}
+.geneticsNarrative{margin-top:16px;display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:26px}
+.geneticsNarrative strong{font-size:18px;color:#dbe3e7;line-height:1.35}.geneticsNarrative p{margin:0;color:#8997a0}
+.geneticsList{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;margin-top:18px;background:var(--line);border:1px solid var(--line)}
+.geneticsCard{background:#080d12;padding:16px 17px}.geneticsCard span{display:block;color:#71808a;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.geneticsCard strong{display:block;margin-top:5px;font-size:18px;color:#e0e6ea}.geneticsCard p{margin:5px 0 0;color:#8f9ca5;font-size:12px}
+.geneticsSystem .metricGrid{margin-top:18px}
+@media(max-width:780px){.geneticsIntro{grid-template-columns:1fr;gap:9px}.geneticsIntro>p:last-child{grid-column:1;grid-row:auto}.geneticsNarrative{grid-template-columns:1fr;gap:8px}}
