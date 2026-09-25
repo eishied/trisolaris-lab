@@ -14,6 +14,7 @@ on:
       - "engine/climate/**"
       - "pipelines/climate/**"
       - "requirements-science.txt"
+      - ".github/workflows/refresh-science-data.yml"
 
 permissions:
   contents: write
