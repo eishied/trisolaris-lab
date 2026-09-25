@@ -104,6 +104,7 @@ def build_simulation(
         omega=rng.uniform(0.0, 2.0 * math.pi),
         M=rng.uniform(0.0, 2.0 * math.pi),
     )
+    h01_index = len(sim.particles) - 1
 
     # Phase 2.1 approximation: the unresolved B+C binary is replaced by its
     # barycentric mass. Unknown outer eccentricity and phase are sampled.
