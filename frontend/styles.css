@@ -1326,3 +1326,232 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .planetHistoryNarrative{grid-template-columns:1fr}
   .planetHistoryNarrative article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
+
+
+.astroanthropologySystem{
+  margin-top:48px;
+  padding:46px 0 38px;
+  border-top:1px solid var(--line)
+}
+.astroAnthroIntro{
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:38px;
+  align-items:end
+}
+.astroAnthroIntro h3{
+  grid-column:1;
+  margin:8px 0 0;
+  font-size:clamp(34px,4.7vw,58px);
+  line-height:1.02;
+  letter-spacing:-.05em
+}
+.astroAnthroIntro>p:last-child{
+  grid-column:2;
+  grid-row:1 / span 2;
+  margin:0;
+  color:#96a4ad;
+  font-size:15px
+}
+.astroAnthroSummary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  margin-top:28px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.astroAnthroSummary article{
+  padding:18px 20px 18px 0
+}
+.astroAnthroSummary article+article{
+  border-left:1px solid var(--line);
+  padding-left:20px
+}
+.astroAnthroSummary span,
+.astroAnthroSectionLabel,
+.astroAnthroNarrative span,
+.astroAnthroCausal>span{
+  display:block;
+  color:#71808a;
+  font-size:10px;
+  letter-spacing:.11em;
+  text-transform:uppercase
+}
+.astroAnthroSummary strong{
+  display:block;
+  margin-top:6px;
+  color:#e2e9ec;
+  font-size:17px;
+  line-height:1.35
+}
+.astroAnthroWorkspace{
+  display:grid;
+  grid-template-columns:minmax(250px,.65fr) minmax(0,1.35fr);
+  gap:28px;
+  margin-top:26px;
+  align-items:start
+}
+.astroAnthroPopulationList{
+  display:grid;
+  gap:1px;
+  margin-top:10px;
+  border:1px solid var(--line);
+  background:var(--line)
+}
+.astroAnthroPopulation{
+  appearance:none;
+  border:0;
+  background:#080d12;
+  color:inherit;
+  padding:16px 17px;
+  text-align:left;
+  cursor:pointer
+}
+.astroAnthroPopulation:hover,
+.astroAnthroPopulation[aria-pressed="true"]{
+  background:linear-gradient(90deg,rgba(102,183,213,.12),rgba(255,255,255,.02))
+}
+.astroAnthroPopulation span{
+  display:block;
+  color:#71808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.astroAnthroPopulation strong{
+  display:block;
+  margin-top:4px;
+  color:#e2e9ec;
+  font-size:18px
+}
+.astroAnthroPopulation p{
+  margin:5px 0 0;
+  color:#87949d;
+  font-size:11px;
+  line-height:1.4
+}
+.astroAnthroProfile{
+  border:1px solid var(--line);
+  border-radius:30px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(74,144,174,.08),transparent 30%),
+    #070c10
+}
+.astroAnthroProfileHead{
+  display:flex;
+  justify-content:space-between;
+  gap:24px;
+  align-items:flex-start;
+  padding:26px 28px 22px
+}
+.astroAnthroProfileHead>div>span{
+  color:#70808a;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.astroAnthroProfileHead h4{
+  margin:5px 0 2px;
+  font-size:clamp(30px,4vw,48px);
+  letter-spacing:-.05em;
+  line-height:1
+}
+.astroAnthroProfileHead p{
+  margin:0;
+  color:#87949d
+}
+.astroAnthroContact{
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 10px;
+  color:#9fb0b9;
+  font-size:10px
+}
+.astroAnthroNarrative{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line)
+}
+.astroAnthroNarrative article{
+  padding:18px 20px
+}
+.astroAnthroNarrative article+article{
+  border-left:1px solid var(--line)
+}
+.astroAnthroNarrative strong{
+  display:block;
+  margin-top:6px;
+  font-size:15px;
+  line-height:1.42;
+  color:#dce4e8
+}
+.astroAnthroSystems{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0;
+  padding:0 28px
+}
+.astroAnthroSystemRow{
+  padding:17px 18px 17px 0;
+  border-bottom:1px solid var(--line)
+}
+.astroAnthroSystemRow:nth-child(even){
+  padding-left:18px;
+  border-left:1px solid var(--line)
+}
+.astroAnthroSystemRow span{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  color:#87949d;
+  font-size:11px
+}
+.astroAnthroSystemRow strong{
+  color:#e2e9ec
+}
+.astroAnthroBar{
+  height:4px;
+  margin-top:9px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.055)
+}
+.astroAnthroBar i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#78bfd7,#9bd2b2)
+}
+.astroAnthroCausal{
+  padding:22px 28px 26px
+}
+.astroAnthroCausal p{
+  margin:7px 0 0;
+  color:#9ba8b0;
+  font-size:13px;
+  line-height:1.55
+}
+.astroanthropologySystem .metricGrid{margin-top:20px}
+
+@media(max-width:780px){
+  .astroAnthroIntro{grid-template-columns:1fr;gap:10px}
+  .astroAnthroIntro>p:last-child{grid-column:1;grid-row:auto}
+  .astroAnthroSummary{grid-template-columns:1fr}
+  .astroAnthroSummary article+article{
+    border-left:0;
+    border-top:1px solid var(--line);
+    padding-left:0
+  }
+  .astroAnthroWorkspace{grid-template-columns:1fr}
+  .astroAnthroNarrative{grid-template-columns:1fr}
+  .astroAnthroNarrative article+article{border-left:0;border-top:1px solid var(--line)}
+  .astroAnthroSystems{grid-template-columns:1fr}
+  .astroAnthroSystemRow,
+  .astroAnthroSystemRow:nth-child(even){
+    padding:15px 0;
+    border-left:0
+  }
+}
