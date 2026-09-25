@@ -22,6 +22,13 @@
       "assisted_support": 0.7354192872196378,
       "agriculture_potential": 0.11596085034035003,
       "technology_dependency": 0.18669363406760037,
+      "stress_components": {
+        "thermal": 0.43275388642291623,
+        "oxygen": 0.07503067561830745,
+        "pressure": 0.03760855650906081,
+        "water": 0.35596394615265997,
+        "food": 0.7660254042619292
+      },
       "relative_capacity_weight": 8.662262753272447,
       "isolation_potential": 1.0,
       "relative_population_share_if_settled": 1.0

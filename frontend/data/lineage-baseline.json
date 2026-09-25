@@ -1,0 +1,72 @@
+{
+  "model": "population_lineage_divergence_v0.1",
+  "epistemic_level": "MODELED",
+  "ancestor": {
+    "id": "P0",
+    "name": "Poblaci\u00f3n fundadora",
+    "traits": {
+      "thermal_resilience": 0.35,
+      "water_conservation": 0.3,
+      "oxygen_efficiency": 0.35,
+      "dietary_flexibility": 0.4
+    }
+  },
+  "inputs": {
+    "years": 50000.0,
+    "generation_years": 28.0,
+    "generations": 1785.7142857142858,
+    "selection_rate_per_generation": 0.00035,
+    "technology_buffer": 0.4
+  },
+  "summary": {
+    "lineage_count": 1,
+    "maximum_divergence_index": 0.08744758897187932,
+    "incipient_isolation_candidate_count": 0,
+    "species_count": 0,
+    "taxonomic_rule": "time alone never creates a species"
+  },
+  "lineages": [
+    {
+      "id": "L1",
+      "name": "Linaje Equatoria-1",
+      "parent": "P0",
+      "refuge_id": "R1",
+      "refuge_name": "Equatoria-1",
+      "origin_year": 0.0,
+      "elapsed_years": 50000.0,
+      "generations": 1785.7142857142858,
+      "effective_population_size_proxy": 50000.0,
+      "gene_flow_proxy": 0.0,
+      "isolation_potential": 1.0,
+      "selection_exposure": 0.712,
+      "drift_scale": 0.07349684152591672,
+      "traits": {
+        "thermal_resilience": 0.462712270362377,
+        "water_conservation": 0.3240808421049417,
+        "oxygen_efficiency": 0.3765151905715246,
+        "dietary_flexibility": 0.5864820528486739
+      },
+      "trait_shifts_from_ancestor": {
+        "thermal_resilience": 0.11271227036237702,
+        "water_conservation": 0.024080842104941713,
+        "oxygen_efficiency": 0.026515190571524627,
+        "dietary_flexibility": 0.18648205284867392
+      },
+      "divergence_index": 0.08744758897187932,
+      "classification": "differentiated lineage",
+      "compatibility_to_ancestor_proxy": 0.7259907050156699,
+      "taxonomic_status": "not assigned"
+    }
+  ],
+  "pairwise_compatibility": [],
+  "limitations": [
+    "abstract physiological trait indices, not a genomic simulation",
+    "effective population size is a scenario proxy",
+    "selection targets come from broad environmental stress proxies",
+    "no explicit loci, recombination, dominance, epistasis or developmental genetics yet",
+    "reproductive compatibility is a heuristic proxy, not a biological test",
+    "no species is assigned automatically",
+    "no culture, language, ethnicity or appearance category is inferred"
+  ],
+  "next_model": "explicit allele-frequency distributions, mutation, recombination, drift, migration and persistent lineage histories"
+}
