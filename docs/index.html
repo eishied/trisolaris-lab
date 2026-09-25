@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase10a-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase10b-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -888,6 +888,60 @@
           </article>
         </div>
 
+
+        <div class="counterfactualReplay">
+          <div class="counterfactualHead">
+            <div>
+              <p class="eyebrow">CONTRAFACTUAL · PHASE 10.1</p>
+              <h4>Cambia una sola variable y observa dónde se separan las historias.</h4>
+            </div>
+            <p>
+              Referencia e intervención usan la misma semilla y el mismo sobre de incertidumbre. La diferencia
+              entre ambas historias es atribuible al cambio declarado dentro del modelo.
+            </p>
+          </div>
+
+          <div class="counterfactualControls">
+            <label>
+              <span>Variable</span>
+              <select id="counterfactualParameter">
+                <option value="capability">Capacidad funcional</option>
+                <option value="founder_size">Tamaño fundador</option>
+                <option value="exchange_strength">Intercambio / contacto</option>
+                <option value="resupply_strength">Reabastecimiento</option>
+                <option value="infrastructure_shock">Choque de infraestructura</option>
+              </select>
+            </label>
+            <label>
+              <span>Intervención</span>
+              <output id="counterfactualDeltaOut">+20%</output>
+              <input id="counterfactualDelta" type="range" min="-60" max="60" step="5" value="20" />
+            </label>
+          </div>
+
+          <div class="counterfactualSummary">
+            <article>
+              <span>Historias que cambian</span>
+              <strong id="counterfactualFlipRate">—</strong>
+            </article>
+            <article>
+              <span>Dominante de referencia</span>
+              <strong id="counterfactualReference">—</strong>
+            </article>
+            <article>
+              <span>Dominante con intervención</span>
+              <strong id="counterfactualIntervention">—</strong>
+            </article>
+            <article>
+              <span>Δ divergencia media</span>
+              <strong id="counterfactualDivergenceDelta">—</strong>
+            </article>
+          </div>
+
+          <div id="counterfactualDeltas" class="counterfactualDeltas"></div>
+          <p id="counterfactualInterpretation" class="counterfactualInterpretation">—</p>
+        </div>
+
         <div id="replayMetrics" class="metricGrid scientific-only"></div>
       </section>
 
@@ -963,6 +1017,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase10a-20260925"></script>
+  <script type="module" src="./app.js?v=phase10b-20260925"></script>
 </body>
 </html>
