@@ -3,11 +3,13 @@ const NBODY_URL="./data/nbody-ensemble.json";
 const RESEARCH_RELEASE_URL="./data/research-release-baseline.json";
 const RESEARCH_NOTE_URL="./data/research-note-baseline.json";
 const MANUSCRIPT_REVIEW_URL="./data/manuscript-review-gate-baseline.json";
+const THRESHOLD_ATLAS_URL="./data/transition-thresholds-baseline.json";
 const BUNDLED_DATA={"generated_at":"2026-09-25T14:43:37.731510+00:00","status":"official-nasa-plus-literature","system":{"id":"LTT-1445-ABC","name":"LTT 1445 ABC","architecture":"hierarchical triple M-dwarf system","distance_pc":6.86,"epistemic_level":"LITERATURE","notes":"LTT 1445 A is orbited at large separation by the tighter B-C pair. Known planets orbit A."},"stars":[{"id":"A","name":"LTT 1445 A","mass_solar":0.257,"radius_solar":0.268,"luminosity_solar":0.00794,"epistemic_level":"LITERATURE"},{"id":"B","name":"LTT 1445 B","mass_solar":0.215,"radius_solar":0.236,"luminosity_solar":0.00596,"epistemic_level":"LITERATURE"},{"id":"C","name":"LTT 1445 C","mass_solar":0.161,"radius_solar":0.197,"luminosity_solar":0.00368,"epistemic_level":"LITERATURE"}],"hierarchy":{"outer_projected_separation_arcsec_approx":7,"outer_period_years_approx":250,"bc_projected_separation_arcsec_approx":1,"bc_period_years_approx":36,"epistemic_level":"LITERATURE"},"observed_planets":[{"name":"LTT 1445 A c","host":"LTT 1445 A","period_days":3.1239035,"semi_major_axis_au":0.02661,"eccentricity":0.223,"radius_earth":1.147,"mass_earth":1.54,"equilibrium_temperature_k":508,"discovery_year":2022,"epistemic_level":"OBSERVED","source":"NASA Exoplanet Archive / ps"},{"name":"LTT 1445 A b","host":"LTT 1445 A","period_days":5.3587635,"semi_major_axis_au":0.0381,"eccentricity":null,"radius_earth":1.34,"mass_earth":2.73,"equilibrium_temperature_k":431,"discovery_year":2019,"epistemic_level":"OBSERVED","source":"NASA Exoplanet Archive / ps"}],"hypothetical_experiment":{"id":"H-01","name":"TRISOLARIS H-01","host":"LTT 1445 A","semi_major_axis_au":0.09,"albedo":0.3,"greenhouse_k":33,"epistemic_level":"SPECULATIVE","notes":"Interactive test world only. Its orbit is not asserted to be stable; future REBOUND ensembles must evaluate stability against observed planets and stellar companions."},"literature":[{"title":"Three Red Suns in the Sky: A Transiting, Terrestrial Planet in a Triple M Dwarf System at 6.9 Parsecs","arxiv":"1906.10147","doi":"10.3847/1538-3881/ab364d"},{"title":"A Second Planet Transiting LTT 1445A and a Determination of the Masses of Both Worlds","arxiv":"2107.14737"}],"provenance":{"nasa_query":"select hostname,pl_name,default_flag,pl_orbper,pl_orbsmax,pl_orbeccen,\n       pl_rade,pl_bmasse,pl_eqt,st_teff,st_rad,st_mass,sy_dist,disc_year\nfrom ps\nwhere hostname='LTT 1445 A' and default_flag=1","nasa_endpoint":"https://exoplanetarchive.ipac.caltech.edu/TAP/sync","observed_planet_count":2,"epistemic_rule":"NASA planet rows are OBSERVED; triple-star properties are LITERATURE; H-01 is SPECULATIVE."}};
 let nbodyResult=null;
 let researchRelease=null;
 let researchNote=null;
 let manuscriptReviewGate=null;
+let thresholdAtlas=null;
 let data=null;
 let running=true;
 let phase=0;
@@ -57,7 +59,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase11c-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -75,6 +77,7 @@ async function load(){
     loadResearchRelease();
     loadResearchNote();
     loadManuscriptReviewGate();
+    loadThresholdAtlas();
   }catch(err){
     console.error("TRISOLARIS interface render failed",err);
     $("#heroDataState").textContent="Error de interfaz";
@@ -88,7 +91,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase11c-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -104,9 +107,71 @@ async function loadNbodyResult(){
 
 
 
+
+async function loadThresholdAtlas(){
+  try{
+    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    if(!response.ok)throw new Error("threshold atlas not published");
+    thresholdAtlas=await response.json();
+    renderThresholdAtlas();
+  }catch(err){
+    console.info("Transition threshold atlas not available yet",err);
+    const interpretation=$("#thresholdInterpretation");
+    if(interpretation)interpretation.textContent="El atlas aparecerá cuando el pipeline publique el barrido reproducible.";
+  }
+}
+
+function thresholdParameterLabel(key){
+  return ({
+    capability_multiplier:"Capacidad funcional",
+    founder_size:"Grupo fundador",
+    exchange_strength:"Intercambio posterior",
+    resupply_strength:"Reabastecimiento",
+    infrastructure_shock:"Choque de infraestructura"
+  })[key]||key;
+}
+
+function renderThresholdAtlas(){
+  if(!thresholdAtlas)return;
+  const r=thresholdAtlas;
+  const summary=r.summary||{};
+  const inputs=r.inputs||{};
+  const scans=r.scans||[];
+  $("#thresholdTarget").textContent=Math.round((summary.target_frequency||0)*100)+"%";
+  $("#thresholdParameterCount").textContent=String(summary.parameter_count??scans.length);
+  $("#thresholdReachedCount").textContent=
+    (summary.parameters_reaching_target??0)+"/"+(summary.parameter_count??scans.length);
+  $("#thresholdSeed").textContent=String(inputs.seed??"—");
+
+  $("#thresholdGrid").innerHTML=scans.map(scan=>{
+    const max=Math.max(0,Math.min(1,scan.maximum_non_no_launch_frequency||0));
+    const threshold=scan.threshold_reached
+      ?("Cruce ≥ "+Math.round((scan.target_frequency||0)*100)+"% en "+fmt(scan.first_target_crossing_value,2))
+      :"No cruza el objetivo en el rango";
+    return '<article class="thresholdCard"><span>'+thresholdParameterLabel(scan.parameter)+
+      '</span><strong>'+threshold+'</strong><p>Mejor frecuencia fuera de no-launch: '+
+      Math.round(max*100)+'% · valor explorado '+fmt(scan.best_scanned_value,2)+
+      '</p><div class="thresholdBar"><i style="width:'+Math.round(max*100)+'%"></i></div><em>'+
+      scan.direction.replaceAll("-"," ")+'</em></article>';
+  }).join("");
+
+  const reached=scans.filter(scan=>scan.threshold_reached);
+  const capability=reached.find(scan=>scan.parameter==="capability_multiplier");
+  const downstreamReached=reached.some(scan=>scan.parameter!=="capability_multiplier");
+  let text="Ninguna variable explorada supera el objetivo dentro del rango ensayado.";
+  if(capability&&!downstreamReached){
+    text="El bloqueo actual es principalmente pre-lanzamiento: aumentar capacidad funcional cruza el umbral modelado, mientras las variables que actúan después de la salida no resuelven por sí solas el estado no-launch.";
+  }else if(capability&&downstreamReached){
+    text="El atlas identifica más de una vía modelada para abandonar no-launch; sus efectos ocurren en etapas distintas y no deben interpretarse como equivalentes.";
+  }else if(reached.length){
+    text="Al menos una variable cruza el objetivo dentro del rango, pero la capacidad funcional no es la única vía modelada.";
+  }
+  $("#thresholdInterpretation").textContent=text+" Estos cruces son propiedades del simulador, no requisitos reales.";
+}
+
 async function loadManuscriptReviewGate(){
   try{
-    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=phase11c-20260925",{cache:"no-store"});
+    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("manuscript review gate not published");
     manuscriptReviewGate=await response.json();
     renderManuscriptReviewGate();
@@ -144,7 +209,7 @@ function renderManuscriptReviewGate(){
 
 async function loadResearchNote(){
   try{
-    const response=await fetch(RESEARCH_NOTE_URL+"?v=phase11c-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_NOTE_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("research note not published");
     researchNote=await response.json();
     renderResearchNote();
@@ -173,7 +238,7 @@ function renderResearchNote(){
 
 async function loadResearchRelease(){
   try{
-    const response=await fetch(RESEARCH_RELEASE_URL+"?v=phase11c-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_RELEASE_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("research release not published");
     researchRelease=await response.json();
     renderResearchRelease();

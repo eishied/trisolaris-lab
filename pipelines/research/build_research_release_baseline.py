@@ -29,6 +29,7 @@ DATASETS = [
     ("offworld_divergence", "frontend/data/offworld-divergence-baseline.json"),
     ("evolutionary_replay", "frontend/data/evolutionary-replay-baseline.json"),
     ("counterfactual_replay", "frontend/data/counterfactual-replay-baseline.json"),
+    ("transition_thresholds", "frontend/data/transition-thresholds-baseline.json"),
 ]
 OUTPUTS = [
     ROOT / "frontend/data/research-release-baseline.json",

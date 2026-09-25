@@ -8,3 +8,5 @@ from .replay import run_evolutionary_replay
 __all__ = ["simulate_lineage_divergence", "mix_populations", "simulate_offworld_divergence", "run_evolutionary_replay"]
 
 from .counterfactual import compare_counterfactual
+
+from .thresholds import scan_transition_thresholds
