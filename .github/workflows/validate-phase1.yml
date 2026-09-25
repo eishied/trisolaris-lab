@@ -26,6 +26,8 @@ jobs:
           python -m py_compile pipelines/climate/build_climate_baseline.py
           python -m py_compile engine/planetary/surface_systems.py
           python -m py_compile pipelines/planetary/build_surface_baseline.py
+          python -m py_compile engine/ecology/food_web.py
+          python -m py_compile pipelines/ecology/build_foodweb_baseline.py
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
@@ -42,6 +44,12 @@ jobs:
       - name: Build surface systems baseline
         run: python pipelines/planetary/build_surface_baseline.py
 
+      - name: Build food-web baseline
+        run: python pipelines/ecology/build_foodweb_baseline.py
+
+      - name: Build ecology baseline
+        run: python pipelines/ecology/build_foodweb_baseline.py
+
       - name: Validate JSON
         run: |
           python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
@@ -55,6 +63,8 @@ jobs:
           python -m json.tool docs/data/climate-baseline.json > /dev/null
           python -m json.tool frontend/data/surface-baseline.json > /dev/null
           python -m json.tool docs/data/surface-baseline.json > /dev/null
+          python -m json.tool frontend/data/foodweb-baseline.json > /dev/null
+          python -m json.tool docs/data/foodweb-baseline.json > /dev/null
 
       - name: Validate public app files
         run: |
@@ -72,6 +82,7 @@ jobs:
           cmp frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
           cmp frontend/data/climate-baseline.json docs/data/climate-baseline.json
           cmp frontend/data/surface-baseline.json docs/data/surface-baseline.json
+          cmp frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
 
       - name: Validate JavaScript syntax
         run: |

@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase4-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase4b-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -290,6 +290,42 @@
         <p class="surfaceCaveat">La productividad es un potencial ambiental. No representa organismos observados ni una biosfera ya existente.</p>
       </section>
 
+      <section class="ecologySystem" aria-labelledby="ecologyHeadline">
+        <div class="ecologyIntro">
+          <p class="eyebrow">ECOLOGÍA · PHASE 4.1</p>
+          <h3 id="ecologyHeadline">Condiciones para una cadena alimentaria.</h3>
+          <p id="ecologyText">TRISOLARIS no asume que la vida aparezca por sí sola. Primero calcula qué gremios ecológicos podrían sostenerse si existiera una biosfera.</p>
+        </div>
+
+        <div class="ecologyControls">
+          <label>
+            <span>Oxígeno atmosférico</span>
+            <output id="oxygenOut">21%</output>
+            <input id="oxygen" type="range" min="0" max="30" step="0.5" value="21" />
+          </label>
+          <label>
+            <span>Disponibilidad de nutrientes</span>
+            <output id="nutrientOut">1.00×</output>
+            <input id="nutrients" type="range" min="0" max="2" step="0.05" value="1" />
+          </label>
+          <button id="seedLifeBtn" class="seedLifeButton" aria-pressed="false">
+            Biosfera no asumida
+          </button>
+        </div>
+
+        <div class="ecologyStage">
+          <canvas id="foodWebCanvas" width="1200" height="520" aria-label="Red de gremios ecológicos potenciales"></canvas>
+        </div>
+
+        <div class="ecologyNarrative">
+          <strong id="ecologyState">Capacidad ambiental, no vida observada.</strong>
+          <p id="ecologyDetail">Los nodos muestran soporte potencial. Una red más profunda requiere energía, agua, nutrientes y condiciones atmosféricas compatibles.</p>
+        </div>
+
+        <div id="ecologyMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">Los gremios son funciones ecológicas generales. No predicen especies, anatomías ni evolución automática.</p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -362,6 +398,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase4-20260925"></script>
+  <script type="module" src="./app.js?v=phase4b-20260925"></script>
 </body>
 </html>
