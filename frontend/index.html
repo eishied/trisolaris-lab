@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase2-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase3-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -227,6 +227,19 @@
             <span>0.22 AU</span>
           </div>
         </div>
+      </section>
+
+      <section class="climateWorld" aria-labelledby="climateHeadline">
+        <div class="climateIntro">
+          <p class="eyebrow">CLIMA REGIONAL · PHASE 3.0</p>
+          <h3 id="climateHeadline">Un planeta no tiene una sola temperatura.</h3>
+          <p id="climateText">TRISOLARIS divide H-01 en bandas latitudinales para mostrar dónde aparecen regiones frías, templadas y calientes bajo los supuestos actuales.</p>
+        </div>
+        <div class="climateStage">
+          <canvas id="climateCanvas" width="1200" height="430" aria-label="Modelo climático latitudinal de H-01"></canvas>
+        </div>
+        <div id="climateMetrics" class="metricGrid scientific-only"></div>
+        <p class="climateCaveat">Modelo EBM anual y latitudinal · todavía no resuelve continentes, estaciones, nubes ni corrientes oceánicas.</p>
       </section>
 
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
