@@ -3054,3 +3054,10 @@ body[data-context-view="research"] #experimento>.technicalSheet{
   .contextFact:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
   .contextFact:last-child{border-bottom:0}
 }
+
+.navCenter{display:none!important}
+.siteNav{grid-template-columns:auto 1fr auto!important}
+body[data-context-view="system"] [data-ui-scope]:not([data-ui-scope~="system"]){display:none!important}
+body[data-context-view="observed"] [data-ui-scope]:not([data-ui-scope~="observed"]){display:none!important}
+body[data-context-view="experimental"] [data-ui-scope]:not([data-ui-scope~="experimental"]){display:none!important}
+body[data-context-view="research"] [data-ui-scope]:not([data-ui-scope~="research"]){display:none!important}
