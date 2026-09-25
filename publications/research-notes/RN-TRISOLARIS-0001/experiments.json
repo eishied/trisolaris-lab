@@ -1,0 +1,44 @@
+{
+  "release_id": "REL-TRISOLARIS-0001",
+  "experiment_id": "EXP-TRISOLARIS-0001",
+  "replay": {
+    "model": "evolutionary_replay_v0.1",
+    "inputs": {
+      "years": 50000.0,
+      "runs": 64,
+      "seed": 1445,
+      "uncertainty": 0.25,
+      "founder_size": 500,
+      "exchange_strength": 0.3,
+      "resupply_strength": 0.35,
+      "infrastructure_shock": 0.0
+    },
+    "summary": {
+      "runs": 64,
+      "dominant_outcome": "no-launch",
+      "dominant_frequency": 1.0,
+      "mean_outcome_score": 0.0,
+      "mean_divergence_proxy": 0.0,
+      "max_divergence_proxy": 0.0
+    }
+  },
+  "counterfactual": {
+    "model": "counterfactual_replay_v0.1",
+    "inputs": {
+      "years": 50000.0,
+      "parameter": "capability",
+      "intervention_fraction": 0.2,
+      "runs": 64,
+      "seed": 1445,
+      "uncertainty": 0.25
+    },
+    "summary": {
+      "paired_run_count": 64,
+      "outcome_flip_count": 0,
+      "outcome_flip_fraction": 0.0,
+      "mean_outcome_score_delta": 0.0,
+      "mean_divergence_delta": 0.0,
+      "dominant_outcome_changed": false
+    }
+  }
+}

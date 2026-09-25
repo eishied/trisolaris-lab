@@ -1,0 +1,114 @@
+[
+  {
+    "evidence_id": "EV-OBS-0001",
+    "epistemic_level": "OBSERVED",
+    "claim_scope": "confirmed planets around LTT 1445 A",
+    "source": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync",
+    "detail": "2 planet rows retained from the official archive snapshot"
+  },
+  {
+    "evidence_id": "EV-LIT-0001",
+    "epistemic_level": "LITERATURE",
+    "claim_scope": "hierarchical triple-star architecture",
+    "source": "repository literature registry",
+    "detail": "hierarchical triple M-dwarf system"
+  },
+  {
+    "evidence_id": "EV-SPEC-0001",
+    "epistemic_level": "SPECULATIVE",
+    "claim_scope": "H-01 experimental world",
+    "source": "TRISOLARIS scenario definition",
+    "detail": "Interactive test world only. Its orbit is not asserted to be stable; future REBOUND ensembles must evaluate stability against observed planets and stellar companions."
+  },
+  {
+    "evidence_id": "EV-MOD-0001",
+    "epistemic_level": "MODELED",
+    "claim_scope": "climate",
+    "source": "frontend/data/climate-baseline.json",
+    "detail": "latitudinal_ebm_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0002",
+    "epistemic_level": "MODELED",
+    "claim_scope": "surface",
+    "source": "frontend/data/surface-baseline.json",
+    "detail": "surface_systems_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0003",
+    "epistemic_level": "MODELED",
+    "claim_scope": "foodweb",
+    "source": "frontend/data/foodweb-baseline.json",
+    "detail": "ecological_guild_support_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0004",
+    "epistemic_level": "MODELED",
+    "claim_scope": "settlement",
+    "source": "frontend/data/settlement-baseline.json",
+    "detail": "human_settlement_support_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0005",
+    "epistemic_level": "MODELED",
+    "claim_scope": "lineage",
+    "source": "frontend/data/lineage-baseline.json",
+    "detail": "population_lineage_divergence_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0006",
+    "epistemic_level": "MODELED",
+    "claim_scope": "population_genetics",
+    "source": "frontend/data/popgen-baseline.json",
+    "detail": "population_genetics_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0007",
+    "epistemic_level": "MODELED",
+    "claim_scope": "demography",
+    "source": "frontend/data/demography-baseline.json",
+    "detail": "time_dependent_demography_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0008",
+    "epistemic_level": "MODELED",
+    "claim_scope": "astroanthropology",
+    "source": "frontend/data/astroanthropology-baseline.json",
+    "detail": "functional_astroanthropology_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0009",
+    "epistemic_level": "MODELED",
+    "claim_scope": "interplanetary",
+    "source": "frontend/data/interplanetary-baseline.json",
+    "detail": "interplanetary_settlement_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0010",
+    "epistemic_level": "MODELED",
+    "claim_scope": "interplanetary_network",
+    "source": "frontend/data/interplanetary-network-baseline.json",
+    "detail": "interplanetary_network_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0011",
+    "epistemic_level": "MODELED",
+    "claim_scope": "offworld_divergence",
+    "source": "frontend/data/offworld-divergence-baseline.json",
+    "detail": "offworld_divergence_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0012",
+    "epistemic_level": "MODELED",
+    "claim_scope": "evolutionary_replay",
+    "source": "frontend/data/evolutionary-replay-baseline.json",
+    "detail": "evolutionary_replay_v0.1"
+  },
+  {
+    "evidence_id": "EV-MOD-0013",
+    "epistemic_level": "MODELED",
+    "claim_scope": "counterfactual_replay",
+    "source": "frontend/data/counterfactual-replay-baseline.json",
+    "detail": "counterfactual_replay_v0.1"
+  }
+]

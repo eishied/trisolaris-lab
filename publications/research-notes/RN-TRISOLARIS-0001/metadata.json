@@ -1,0 +1,42 @@
+{
+  "paper_id": "RN-TRISOLARIS-0001",
+  "release_id": "REL-TRISOLARIS-0001",
+  "experiment_id": "EXP-TRISOLARIS-0001",
+  "title": "Robustness of a modeled multiplanetary transition in the TRISOLARIS LTT 1445 scenario",
+  "status": "RESEARCH_NOTE",
+  "git_commit": "f56231a665b532414f041182f2ee46c56a3e4372",
+  "arxiv_ready": false,
+  "human_review_required": true,
+  "models": {
+    "climate": "latitudinal_ebm_v0.1",
+    "surface": "surface_systems_v0.1",
+    "foodweb": "ecological_guild_support_v0.1",
+    "settlement": "human_settlement_support_v0.1",
+    "lineage": "population_lineage_divergence_v0.1",
+    "population_genetics": "population_genetics_v0.1",
+    "demography": "time_dependent_demography_v0.1",
+    "astroanthropology": "functional_astroanthropology_v0.1",
+    "interplanetary": "interplanetary_settlement_v0.1",
+    "interplanetary_network": "interplanetary_network_v0.1",
+    "offworld_divergence": "offworld_divergence_v0.1",
+    "evolutionary_replay": "evolutionary_replay_v0.1",
+    "counterfactual_replay": "counterfactual_replay_v0.1"
+  },
+  "dataset_paths": [
+    "frontend/data/climate-baseline.json",
+    "frontend/data/surface-baseline.json",
+    "frontend/data/foodweb-baseline.json",
+    "frontend/data/settlement-baseline.json",
+    "frontend/data/lineage-baseline.json",
+    "frontend/data/popgen-baseline.json",
+    "frontend/data/demography-baseline.json",
+    "frontend/data/astroanthropology-baseline.json",
+    "frontend/data/interplanetary-baseline.json",
+    "frontend/data/interplanetary-network-baseline.json",
+    "frontend/data/offworld-divergence-baseline.json",
+    "frontend/data/evolutionary-replay-baseline.json",
+    "frontend/data/counterfactual-replay-baseline.json"
+  ],
+  "replay_seed": 1445,
+  "counterfactual_seed": 1445
+}

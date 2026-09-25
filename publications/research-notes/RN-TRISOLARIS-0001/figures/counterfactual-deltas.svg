@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="388" viewBox="0 0 960 388">
+<rect width="100%" height="100%" fill="#080d12"/>
+<text x="28" y="40" fill="#e4ecef" font-family="system-ui,sans-serif" font-size="23" font-weight="700">Paired counterfactual outcome-frequency deltas</text>
+<text x="28" y="62" fill="#7f8d96" font-family="system-ui,sans-serif" font-size="12">Generated from committed TRISOLARIS baseline data</text>
+<line x1="590.0" y1="64" x2="590.0" y2="354" stroke="#46545d"/>
+<text x="28" y="101" fill="#a8b4bb" font-family="system-ui,sans-serif" font-size="13">No launch</text>
+<rect x="590.0" y="87" width="0.0" height="18" rx="3" fill="#77bfd9" opacity="0.82"/>
+<text x="925" y="101" text-anchor="end" fill="#dce4e8" font-family="system-ui,sans-serif" font-size="13">+0.0 pp</text>
+<text x="28" y="153" fill="#a8b4bb" font-family="system-ui,sans-serif" font-size="13">Settlement failure</text>
+<rect x="590.0" y="139" width="0.0" height="18" rx="3" fill="#77bfd9" opacity="0.82"/>
+<text x="925" y="153" text-anchor="end" fill="#dce4e8" font-family="system-ui,sans-serif" font-size="13">+0.0 pp</text>
+<text x="28" y="205" fill="#a8b4bb" font-family="system-ui,sans-serif" font-size="13">Colony collapse</text>
+<rect x="590.0" y="191" width="0.0" height="18" rx="3" fill="#77bfd9" opacity="0.82"/>
+<text x="925" y="205" text-anchor="end" fill="#dce4e8" font-family="system-ui,sans-serif" font-size="13">+0.0 pp</text>
+<text x="28" y="257" fill="#a8b4bb" font-family="system-ui,sans-serif" font-size="13">Connected colony</text>
+<rect x="590.0" y="243" width="0.0" height="18" rx="3" fill="#77bfd9" opacity="0.82"/>
+<text x="925" y="257" text-anchor="end" fill="#dce4e8" font-family="system-ui,sans-serif" font-size="13">+0.0 pp</text>
+<text x="28" y="309" fill="#a8b4bb" font-family="system-ui,sans-serif" font-size="13">Divergent lineage</text>
+<rect x="590.0" y="295" width="0.0" height="18" rx="3" fill="#77bfd9" opacity="0.82"/>
+<text x="925" y="309" text-anchor="end" fill="#dce4e8" font-family="system-ui,sans-serif" font-size="13">+0.0 pp</text>
+</svg>
