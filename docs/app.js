@@ -1869,7 +1869,7 @@ function renderLineages(){
     "</button>"
   ).join("") || '<div class="lineageCard"><span>Sin ramas</span><strong>No hay poblaciones viables</strong><p>Ajusta el entorno o la tecnología para crear refugios antes de simular linajes.</p></div>';
 
-  $(".lineageCard[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".lineageCard[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
     selectedLineageId=btn.dataset.lineageId;
     renderLineages();
     renderGenetics();
