@@ -1,0 +1,41 @@
+{
+  "model": "refugia_migration_network_v0.1",
+  "epistemic_level": "MODELED",
+  "inputs": {
+    "mobility": 0.45,
+    "viability_threshold": 0.5
+  },
+  "summary": {
+    "refugia_count": 1,
+    "migration_links": 0,
+    "state": "single connected refugium",
+    "maximum_isolation_potential": 1.0
+  },
+  "refugia": [
+    {
+      "id": "R1",
+      "name": "Equatoria-1",
+      "center_latitude_deg": 0.0,
+      "latitude_min_deg": -87.5,
+      "latitude_max_deg": 87.5,
+      "natural_support": 0.5487256531520374,
+      "assisted_support": 0.7354192872196378,
+      "agriculture_potential": 0.11596085034035003,
+      "technology_dependency": 0.18669363406760037,
+      "relative_capacity_weight": 8.662262753272447,
+      "isolation_potential": 1.0,
+      "relative_population_share_if_settled": 1.0
+    }
+  ],
+  "links": [],
+  "limitations": [
+    "latitude-only geography",
+    "no continents, terrain, borders, transport corridors, or oceans",
+    "no actual population counts yet",
+    "migration potential is not observed migration",
+    "isolation potential does not imply genetic divergence",
+    "no culture, language, ethnicity, species, or anatomy is inferred",
+    "evolution requires explicit generations, heritable variation, selection, drift and gene flow in later phases"
+  ],
+  "next_model": "time-dependent demography, migration, gene flow, founder effects and named lineage histories"
+}
