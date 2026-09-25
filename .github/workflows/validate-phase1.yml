@@ -1,4 +1,4 @@
-name: Validate Phase 1
+name: Validate scientific application
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
     branches: ["main"]
 
 jobs:
-  phase1:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,52 +28,30 @@ jobs:
           python -m py_compile pipelines/planetary/build_surface_baseline.py
           python -m py_compile engine/ecology/food_web.py
           python -m py_compile pipelines/ecology/build_foodweb_baseline.py
+          python -m py_compile engine/human/settlement.py
+          python -m py_compile pipelines/human/build_settlement_baseline.py
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
 
-      - name: Build orbital baseline
-        run: python pipelines/orbital/build_screen.py
-
-      - name: Smoke-test N-body pipeline
-        run: python pipelines/orbital/build_nbody_ensemble.py --runs 2 --years 2 --samples 16
-
-      - name: Build climate baseline
-        run: python pipelines/climate/build_climate_baseline.py
-
-      - name: Build surface systems baseline
-        run: python pipelines/planetary/build_surface_baseline.py
-
-      - name: Build food-web baseline
-        run: python pipelines/ecology/build_foodweb_baseline.py
-
-      - name: Build ecology baseline
-        run: python pipelines/ecology/build_foodweb_baseline.py
+      - name: Build all public science baselines
+        run: |
+          python pipelines/orbital/build_screen.py
+          python pipelines/orbital/build_nbody_ensemble.py --runs 2 --years 2 --samples 16
+          python pipelines/climate/build_climate_baseline.py
+          python pipelines/planetary/build_surface_baseline.py
+          python pipelines/ecology/build_foodweb_baseline.py
+          python pipelines/human/build_settlement_baseline.py
 
       - name: Validate JSON
         run: |
-          python -m json.tool data/catalog/systems/ltt1445.json > /dev/null
-          python -m json.tool frontend/data/ltt1445.json > /dev/null
-          python -m json.tool docs/data/ltt1445.json > /dev/null
-          python -m json.tool frontend/data/orbital-screen.json > /dev/null
-          python -m json.tool docs/data/orbital-screen.json > /dev/null
-          python -m json.tool frontend/data/nbody-ensemble.json > /dev/null
-          python -m json.tool docs/data/nbody-ensemble.json > /dev/null
-          python -m json.tool frontend/data/climate-baseline.json > /dev/null
-          python -m json.tool docs/data/climate-baseline.json > /dev/null
-          python -m json.tool frontend/data/surface-baseline.json > /dev/null
-          python -m json.tool docs/data/surface-baseline.json > /dev/null
-          python -m json.tool frontend/data/foodweb-baseline.json > /dev/null
-          python -m json.tool docs/data/foodweb-baseline.json > /dev/null
+          for file in             data/catalog/systems/ltt1445.json             frontend/data/ltt1445.json docs/data/ltt1445.json             frontend/data/orbital-screen.json docs/data/orbital-screen.json             frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json             frontend/data/climate-baseline.json docs/data/climate-baseline.json             frontend/data/surface-baseline.json docs/data/surface-baseline.json             frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json             frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
+          do
+            python -m json.tool "$file" > /dev/null
+          done
 
-      - name: Validate public app files
+      - name: Validate frontend and Pages parity
         run: |
-          test -f frontend/index.html
-          test -f frontend/styles.css
-          test -f frontend/app.js
-          test -f docs/index.html
-          test -f docs/styles.css
-          test -f docs/app.js
           cmp frontend/index.html docs/index.html
           cmp frontend/styles.css docs/styles.css
           cmp frontend/app.js docs/app.js
@@ -83,6 +61,7 @@ jobs:
           cmp frontend/data/climate-baseline.json docs/data/climate-baseline.json
           cmp frontend/data/surface-baseline.json docs/data/surface-baseline.json
           cmp frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
+          cmp frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
 
       - name: Validate JavaScript syntax
         run: |

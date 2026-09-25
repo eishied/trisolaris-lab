@@ -8,7 +8,7 @@ on:
     branches: ["main"]
     paths:
       - "data/catalog/systems/ltt1445.json"
-      - "pipelines/nasa_exoplanet/build_frontend_dataset.py"
+      - "pipelines/nasa_exoplanet/**"
       - "engine/orbital/**"
       - "pipelines/orbital/**"
       - "engine/climate/**"
@@ -17,6 +17,8 @@ on:
       - "pipelines/planetary/**"
       - "engine/ecology/**"
       - "pipelines/ecology/**"
+      - "engine/human/**"
+      - "pipelines/human/**"
       - "requirements-science.txt"
       - ".github/workflows/refresh-science-data.yml"
 
@@ -24,7 +26,7 @@ permissions:
   contents: write
 
 jobs:
-  nasa:
+  science:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,36 +34,45 @@ jobs:
       - name: Install science engine
         run: python -m pip install --disable-pip-version-check -r requirements-science.txt
 
-      - name: Build current LTT 1445 public dataset
+      - name: Refresh official NASA dataset
         run: python pipelines/nasa_exoplanet/build_frontend_dataset.py
 
-      - name: Build baseline orbital screen
+      - name: Build analytic orbital screen
         run: python pipelines/orbital/build_screen.py
 
       - name: Build pilot N-body ensemble
         run: python pipelines/orbital/build_nbody_ensemble.py --runs 12 --years 100 --samples 160
 
-      - name: Build climate baseline
+      - name: Build regional climate baseline
         run: python pipelines/climate/build_climate_baseline.py
 
       - name: Build surface systems baseline
         run: python pipelines/planetary/build_surface_baseline.py
 
-      - name: Build ecology baseline
+      - name: Build ecological guild baseline
         run: python pipelines/ecology/build_foodweb_baseline.py
 
-      - name: Build food-web baseline
-        run: python pipelines/ecology/build_foodweb_baseline.py
+      - name: Build human settlement baseline
+        run: python pipelines/human/build_settlement_baseline.py
 
       - name: Commit derived datasets if changed
         shell: bash
         run: |
-          if git diff --quiet -- frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json frontend/data/climate-baseline.json docs/data/climate-baseline.json frontend/data/surface-baseline.json docs/data/surface-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json; then
+          FILES=(
+            frontend/data/ltt1445.json docs/data/ltt1445.json
+            frontend/data/orbital-screen.json docs/data/orbital-screen.json
+            frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json
+            frontend/data/climate-baseline.json docs/data/climate-baseline.json
+            frontend/data/surface-baseline.json docs/data/surface-baseline.json
+            frontend/data/foodweb-baseline.json docs/data/foodweb-baseline.json
+            frontend/data/settlement-baseline.json docs/data/settlement-baseline.json
+          )
+          if git diff --quiet -- "${FILES[@]}" && git ls-files --others --exclude-standard -- "${FILES[@]}" | grep -q '^$'; then
             echo "No scientific-data changes detected."
             exit 0
           fi
           git config user.name "trisolaris-data-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add frontend/data/ltt1445.json docs/data/ltt1445.json frontend/data/orbital-screen.json docs/data/orbital-screen.json frontend/data/nbody-ensemble.json docs/data/nbody-ensemble.json frontend/data/climate-baseline.json docs/data/climate-baseline.json frontend/data/surface-baseline.json docs/data/surface-baseline.json
-          git commit -m "data: refresh NASA, orbital, climate, surface and ecology baselines"
+          git add "${FILES[@]}"
+          git commit -m "data: refresh orbital, climate, ecology and settlement baselines"
           git push

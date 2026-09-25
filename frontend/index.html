@@ -6,7 +6,7 @@
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
   <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase4b-20260925" />
+  <link rel="stylesheet" href="./styles.css?v=phase5-20260925" />
 </head>
 <body data-mode="simple">
   <nav class="siteNav" aria-label="Navegación principal">
@@ -326,6 +326,47 @@
         <p class="surfaceCaveat">Los gremios son funciones ecológicas generales. No predicen especies, anatomías ni evolución automática.</p>
       </section>
 
+      <section class="settlementSystem" aria-labelledby="settlementHeadline">
+        <div class="settlementIntro">
+          <p class="eyebrow">POBLACIÓN · PHASE 5.0</p>
+          <h3 id="settlementHeadline">¿Dónde podría vivir una población humana?</h3>
+          <p id="settlementText">TRISOLARIS separa compatibilidad natural de supervivencia asistida. La tecnología puede abrir refugios, pero también crea dependencia.</p>
+        </div>
+
+        <div class="settlementControls">
+          <label>
+            <span>Infraestructura de soporte</span>
+            <output id="techSupportOut">40%</output>
+            <input id="techSupport" type="range" min="0" max="100" step="1" value="40" />
+          </label>
+          <button id="seedHumansBtn" class="seedHumanButton" aria-pressed="false">
+            Población no introducida
+          </button>
+        </div>
+
+        <div class="settlementStage">
+          <canvas id="settlementCanvas" width="1200" height="500" aria-label="Mapa regional de soporte para asentamientos humanos"></canvas>
+        </div>
+
+        <div class="settlementNarrative">
+          <article>
+            <span>Sin tecnología</span>
+            <strong id="naturalSettlementNarrative">Calculando soporte natural…</strong>
+          </article>
+          <article>
+            <span>Con soporte</span>
+            <strong id="assistedSettlementNarrative">Calculando refugios asistidos…</strong>
+          </article>
+          <article>
+            <span>Dependencia</span>
+            <strong id="dependencyNarrative">Calculando dependencia tecnológica…</strong>
+          </article>
+        </div>
+
+        <div id="settlementMetrics" class="metricGrid scientific-only"></div>
+        <p class="surfaceCaveat">Modelo poblacional ambiental. No es una predicción médica individual ni implica adaptación genética automática.</p>
+      </section>
+
       <section class="nbodyBand" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
@@ -398,6 +439,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase4b-20260925"></script>
+  <script type="module" src="./app.js?v=phase5-20260925"></script>
 </body>
 </html>

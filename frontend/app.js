@@ -8,6 +8,7 @@ let phase=0;
 let candidateInitialized=false;
 let orbitScanInitialized=false;
 let lifeSeeded=localStorage.getItem("trisolaris-life-seeded")==="true";
+let humanSeeded=localStorage.getItem("trisolaris-human-seeded")==="true";
 let hitTargets=[];
 let selectedFocus=null;
 
@@ -32,7 +33,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase4b-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase5-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -60,7 +61,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase4b-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase5-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -401,6 +402,8 @@ function initCandidate(){
     });
     $("#seedLifeBtn").setAttribute("aria-pressed",String(lifeSeeded));
     $("#seedLifeBtn").textContent=lifeSeeded?"Biosfera experimental activa":"Biosfera no asumida";
+    $("#seedHumansBtn").setAttribute("aria-pressed",String(humanSeeded));
+    $("#seedHumansBtn").textContent=humanSeeded?"Población experimental activa":"Población no introducida";
     initOrbitWindow();
     candidateInitialized=true;
   }
@@ -1198,6 +1201,294 @@ function renderFoodWeb(){
     stat("Estado de vida",lifeSeeded?"sembrada":"no asumida","SPECULATIVE");
 }
 
+function humanBell(value,center,width){
+  return Math.exp(-.5*Math.pow((value-center)/Math.max(width,1e-6),2));
+}
+
+function humanOxygenSupport(partialPressureBar){
+  if(partialPressureBar<=0)return 0;
+  const low=1/(1+Math.exp(-(partialPressureBar-.13)/.025));
+  const high=1/(1+Math.exp((partialPressureBar-.34)/.04));
+  return Math.max(0,Math.min(1,low*high));
+}
+
+function humanPressureSupport(pressureBar){
+  if(pressureBar<=0)return 0;
+  const low=1/(1+Math.exp(-(pressureBar-.45)/.12));
+  const high=1/(1+Math.exp((pressureBar-2.6)/.45));
+  return Math.max(0,Math.min(1,low*high));
+}
+
+function evaluateSettlementSupport(surface,foodWeb,{pressureBar=1,oxygenFraction=.21,technologySupport=.4,nutrients=1}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const tech=clamp(technologySupport);
+  const pO2=pressureBar*oxygenFraction;
+  const oxygen=humanOxygenSupport(pO2);
+  const pressure=humanPressureSupport(pressureBar);
+
+  let producer=0,consumer=0;
+  foodWeb.guilds.forEach(g=>{
+    if(["primary_producers","aquatic_primary"].includes(g.id))producer=Math.max(producer,g.support);
+    if(["grazers","aquatic_consumers"].includes(g.id))consumer=Math.max(consumer,g.support);
+  });
+  const nutrientFactor=clamp(1-Math.exp(-Math.max(0,nutrients)));
+  const environmentalFood=clamp(.72*producer+.18*consumer+.10*nutrientFactor);
+
+  const techBuffer=(base,ceiling)=>clamp(base+tech*(ceiling-base));
+  let totalWeight=0,naturalSum=0,assistedSum=0,agricultureSum=0,viableWeight=0,naturalViableWeight=0;
+
+  const bands=surface.rows.map(row=>{
+    const lat=row.latitudeDeg;
+    const tempC=row.temperatureC;
+    const water=clamp(row.liquidWaterProxy);
+    const hydro=clamp(row.hydrologicalCycleProxy);
+    const productivity=clamp(row.productivityPotential);
+    const weight=Math.max(0,Math.cos(lat*Math.PI/180));
+    totalWeight+=weight;
+
+    const thermal=clamp(humanBell(tempC,18,18));
+    const naturalFood=clamp(.55*productivity+.30*environmentalFood+.15*hydro);
+
+    const natural=Math.pow(
+      Math.max(1e-6,thermal)*
+      Math.max(1e-6,oxygen)*
+      Math.max(1e-6,pressure)*
+      Math.max(1e-6,water)*
+      Math.max(1e-6,naturalFood),
+      .2
+    );
+
+    const thermalA=techBuffer(thermal,.93);
+    const oxygenA=techBuffer(oxygen,.90);
+    const pressureA=techBuffer(pressure,.90);
+    const waterA=techBuffer(water,.92);
+    const foodA=techBuffer(naturalFood,.88);
+
+    const assisted=Math.pow(
+      Math.max(1e-6,thermalA)*
+      Math.max(1e-6,oxygenA)*
+      Math.max(1e-6,pressureA)*
+      Math.max(1e-6,waterA)*
+      Math.max(1e-6,foodA),
+      .2
+    );
+
+    const agriculture=clamp(productivity*waterA*(.55+.45*nutrientFactor)*(.65+.35*thermalA));
+    const dependency=clamp(assisted-natural);
+
+    naturalSum+=weight*natural;
+    assistedSum+=weight*assisted;
+    agricultureSum+=weight*agriculture;
+    if(assisted>=.50)viableWeight+=weight;
+    if(natural>=.60)naturalViableWeight+=weight;
+
+    return {
+      latitudeDeg:lat,
+      temperatureC:tempC,
+      naturalSupport:natural,
+      assistedSupport:assisted,
+      technologyDependency:dependency,
+      agriculturePotential:agriculture,
+      stress:{
+        thermal:1-thermal,
+        oxygen:1-oxygen,
+        pressure:1-pressure,
+        water:1-water,
+        food:1-naturalFood
+      }
+    };
+  });
+
+  totalWeight=totalWeight||1;
+  const naturalMean=naturalSum/totalWeight;
+  const assistedMean=assistedSum/totalWeight;
+  const viableFraction=viableWeight/totalWeight;
+  const naturalViableFraction=naturalViableWeight/totalWeight;
+
+  let state="little settlement potential under current assumptions";
+  if(naturalViableFraction>=.45)state="broad natural settlement potential";
+  else if(viableFraction>=.45)state="broad technology-assisted settlement potential";
+  else if(viableFraction>=.12)state="regional refugia with technology dependence";
+
+  return {
+    bands,
+    summary:{
+      naturalMean,
+      assistedMean,
+      dependencyMean:Math.max(0,assistedMean-naturalMean),
+      agricultureMean:agricultureSum/totalWeight,
+      viableFraction,
+      naturalViableFraction,
+      state,
+      pO2
+    }
+  };
+}
+
+function renderSettlementWorld(){
+  const canvas=$("#settlementCanvas");
+  if(!canvas||!data)return;
+
+  const a=+$("#axis").value;
+  const albedo=+$("#albedo").value;
+  const gh=+$("#greenhouse").value;
+  const pressure=+$("#pressure").value;
+  const water=+$("#water").value;
+  const oxygen=(+$("#oxygen").value)/100;
+  const nutrients=+$("#nutrients").value;
+  const tech=(+$("#techSupport").value)/100;
+
+  $("#techSupportOut").textContent=Math.round(tech*100)+"%";
+
+  const point=evaluateOrbitPoint(a,albedo,gh);
+  const climate=solveClimateBands(point.flux,albedo,gh,36);
+  const surface=solveSurfaceSystems(climate,{
+    pressureBar:pressure,
+    waterOceans:water,
+    stellarFluxEarth:point.flux,
+    spectralFactor:.55
+  });
+  const web=evaluateFoodWeb(surface,{
+    oxygenFraction:oxygen,
+    nutrientAvailability:nutrients,
+    seeded:lifeSeeded
+  });
+  const settlement=evaluateSettlementSupport(surface,web,{
+    pressureBar:pressure,
+    oxygenFraction:oxygen,
+    technologySupport:tech,
+    nutrients
+  });
+
+  const s=settlement.summary;
+  const naturalPct=Math.round(s.naturalMean*100);
+  const assistedPct=Math.round(s.assistedMean*100);
+  const viablePct=Math.round(s.viableFraction*100);
+  const naturalAreaPct=Math.round(s.naturalViableFraction*100);
+  const depPct=Math.round(s.dependencyMean*100);
+  const agPct=Math.round(s.agricultureMean*100);
+
+  $("#settlementHeadline").textContent=s.naturalViableFraction>=.45
+    ?"El planeta ofrece regiones naturalmente compatibles"
+    :s.viableFraction>=.45
+      ?"La población dependería de infraestructura"
+      :s.viableFraction>=.12
+        ?"La supervivencia se concentra en refugios"
+        :"El planeta sigue siendo muy exigente para asentamientos";
+
+  $("#settlementText").textContent=humanSeeded
+    ?`Escenario poblacional activo: ${viablePct}% del área latitudinal supera el umbral de refugio asistido bajo el nivel tecnológico actual.`
+    :`Capacidad ambiental solamente: ${viablePct}% del área latitudinal podría superar el umbral asistido, pero no se asume que exista una población.`;
+
+  $("#naturalSettlementNarrative").textContent=naturalAreaPct>=45
+    ?`Una fracción amplia (${naturalAreaPct}%) supera el soporte natural de referencia.`
+    :naturalAreaPct>0
+      ?`Solo ${naturalAreaPct}% del área latitudinal supera el soporte natural; el resto exige protección o adaptación conductual.`
+      :"No aparecen regiones con soporte natural robusto bajo estos supuestos.";
+
+  $("#assistedSettlementNarrative").textContent=viablePct>=45
+    ?`Con infraestructura, ${viablePct}% del área latitudinal entra en la categoría de refugio compatible.`
+    :viablePct>0
+      ?`La tecnología abre refugios limitados (${viablePct}% del área), sin convertir todo el planeta en habitable.`
+      :"Incluso con el soporte actual, los refugios siguen siendo insuficientes.";
+
+  $("#dependencyNarrative").textContent=depPct>=25
+    ?`El soporte tecnológico aporta ${depPct} puntos porcentuales medios: la continuidad de infraestructura sería crítica.`
+    :depPct>8
+      ?`Existe dependencia tecnológica moderada (${depPct} puntos de soporte medio adicional).`
+      :"La diferencia entre soporte natural y asistido es relativamente pequeña.";
+
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#060b0f";ctx.fillRect(0,0,w,h);
+
+  // Planet on left.
+  const cx=250,cy=h/2,r=155;
+  const glow=ctx.createRadialGradient(cx,cy,20,cx,cy,r*1.7);
+  glow.addColorStop(0,"rgba(86,161,191,.12)");
+  glow.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=glow;ctx.beginPath();ctx.arc(cx,cy,r*1.7,0,Math.PI*2);ctx.fill();
+
+  ctx.save();
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
+  for(let y=Math.floor(cy-r);y<=Math.ceil(cy+r);y++){
+    const norm=(cy-y)/r;
+    if(Math.abs(norm)>1)continue;
+    const lat=Math.asin(norm)*180/Math.PI;
+    const row=settlement.bands.reduce((best,item)=>
+      Math.abs(item.latitudeDeg-lat)<Math.abs(best.latitudeDeg-lat)?item:best
+    );
+    let fill="rgba(91,100,108,.75)";
+    if(row.assistedSupport>=.70)fill="rgba(78,151,128,.92)";
+    else if(row.assistedSupport>=.50)fill="rgba(91,137,157,.90)";
+    else if(row.assistedSupport>=.30)fill="rgba(154,126,76,.86)";
+    ctx.fillStyle=fill;
+    const half=Math.sqrt(Math.max(0,r*r-(y-cy)*(y-cy)));
+    ctx.fillRect(cx-half,y,half*2,2);
+  }
+  ctx.restore();
+  ctx.strokeStyle="rgba(217,237,245,.25)";ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+
+  // Settlement points only when the scenario includes humans.
+  if(humanSeeded){
+    settlement.bands.filter(b=>b.assistedSupport>=.5).forEach((b,i)=>{
+      if(i%3!==0)return;
+      const yy=cy-r*Math.sin(b.latitudeDeg*Math.PI/180);
+      const half=Math.sqrt(Math.max(0,r*r-(yy-cy)*(yy-cy)));
+      const xx=cx+(i%2===0?.42:-.35)*half;
+      ctx.fillStyle="rgba(239,244,247,.88)";
+      ctx.beginPath();ctx.arc(xx,yy,2.4+2*b.assistedSupport,0,Math.PI*2);ctx.fill();
+    });
+  }
+
+  // Regional support curves.
+  const left=500,right=w-60,top=95,bottom=h-75;
+  ctx.strokeStyle="rgba(255,255,255,.08)";
+  ctx.beginPath();ctx.moveTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+
+  const xFor=i=>left+(right-left)*(i/(settlement.bands.length-1));
+  const yFor=v=>bottom-v*(bottom-top);
+
+  const drawCurve=(key,color)=>{
+    ctx.strokeStyle=color;ctx.lineWidth=3;ctx.beginPath();
+    settlement.bands.forEach((b,i)=>{
+      const x=xFor(i),y=yFor(b[key]);
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+  };
+  drawCurve("naturalSupport","rgba(133,158,171,.85)");
+  drawCurve("assistedSupport","rgba(106,205,166,.95)");
+
+  ctx.setLineDash([4,6]);ctx.strokeStyle="rgba(255,255,255,.16)";ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(left,yFor(.5));ctx.lineTo(right,yFor(.5));ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle="rgba(241,245,247,.94)";ctx.font="700 24px system-ui";
+  ctx.fillText("Soporte regional",left,48);
+  ctx.font="13px system-ui";ctx.fillStyle="rgba(151,165,174,.92)";
+  ctx.fillText("natural",left,72);
+  ctx.fillStyle="rgba(133,158,171,.85)";ctx.fillRect(left+50,63,34,3);
+  ctx.fillStyle="rgba(151,165,174,.92)";ctx.fillText("asistido",left+110,72);
+  ctx.fillStyle="rgba(106,205,166,.95)";ctx.fillRect(left+171,63,34,3);
+
+  ctx.fillStyle="rgba(118,132,141,.9)";ctx.font="11px system-ui";
+  ctx.fillText("90°S",left,bottom+25);
+  ctx.fillText("Ecuador",(left+right)/2-22,bottom+25);
+  ctx.fillText("90°N",right-34,bottom+25);
+
+  $("#settlementMetrics").innerHTML=
+    stat("Soporte natural",naturalPct+"%","media ponderada")+
+    stat("Soporte asistido",assistedPct+"%","media ponderada")+
+    stat("Área asistida viable",viablePct+"%","umbral ≥50%")+
+    stat("Área natural viable",naturalAreaPct+"%","umbral ≥60%")+
+    stat("Dependencia tecnológica",depPct+" pts")+
+    stat("Agricultura potencial",agPct+"%","MODELED")+
+    stat("pO₂ proxy",s.pO2.toFixed(3)+" bar","ambiental");
+}
+
 function candidateLabel(score,celsius){
   if(score>.78){
     return {
@@ -1292,6 +1583,7 @@ function renderCandidate(){
     +"<br><br><b>Filtro orbital preliminar.</b> La órbita de H-01 se compara con los planetas confirmados mediante separación en radios de Hill mutuos. Si Δ < 2√3, el escenario falla este filtro idealizado. Incluso cuando pasa, TRISOLARIS todavía necesita integración N-body, incertidumbres orbitales y la órbita completa A–BC. "
     +"<br><br>No incluye escape atmosférico, actividad de llamaradas, circulación climática 3D, hidrología ni biosfera.";
 
+  renderSettlementWorld();
   renderFoodWeb();
   renderSurfaceWorld();
   renderClimateWorld();
