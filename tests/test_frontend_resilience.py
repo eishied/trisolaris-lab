@@ -144,7 +144,7 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn('safeRender("lineage-inspector",renderLineageInspector)', app)
         self.assertIn('safeRender("genetics",renderGenetics)', app)
         self.assertIn('safeRender("surface",renderSurfaceWorld)', app)
-        self.assertIn('const $$=s=>[...document.querySelectorAll(s)]', app)
+        self.assertIn('document.querySelectorAll(".lineageCard[data-lineage-id]").forEach', app)
         self.assertNotIn('\n  $(".lineageCard[data-lineage-id]").forEach', app)
 
     def test_all_interactive_controls_are_wired(self):
