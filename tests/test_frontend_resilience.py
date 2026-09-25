@@ -242,10 +242,33 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn("knowledgeLossPressure", app)
         self.assertNotIn("technologyRank", app)
 
+    def test_phase9_interplanetary_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        for element_id in (
+            "interplanetaryHeadline",
+            "interplanetaryWorldList",
+            "interplanetaryDestination",
+            "interplanetaryFounder",
+            "interplanetaryExchange",
+            "interplanetaryLaunchBtn",
+            "interplanetaryStatus",
+            "interplanetaryBranch",
+            "interplanetaryMetrics",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+        self.assertIn("function interplanetaryHohmannDays(", app)
+        self.assertIn("function simulateInterplanetarySettlement(", app)
+        self.assertIn("function renderInterplanetary()", app)
+        self.assertIn('safeRender("interplanetary",renderInterplanetary)', app)
+        self.assertIn("launch-not-feasible", app)
+        self.assertIn("persistent-offworld-branch", app)
+        self.assertNotIn("newSpecies", app)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase8a-20260925", html)
-        self.assertIn("app.js?v=phase8a-20260925", html)
+        self.assertIn("styles.css?v=phase9a-20260925", html)
+        self.assertIn("app.js?v=phase9a-20260925", html)
 
 
 if __name__ == "__main__":
