@@ -15,6 +15,50 @@ Outputs:
 - time-dependent distances
 - stellar flux by source
 
+### Phase 2 — analytic orbital pre-screen
+
+Before long N-body integrations, TRISOLARIS applies a transparent pairwise spacing screen to H-01.
+
+For two low-mass planets around the same host:
+
+```
+R_H,m = ((m1 + m2) / (3 M★))^(1/3) × (a1 + a2)/2
+Δ = |a2 - a1| / R_H,m
+```
+
+The classic idealized two-planet Hill threshold is:
+
+```
+Δ > 2√3
+```
+
+TRISOLARIS uses this only as a **rejection / spacing screen**. It must never be described as proof of long-term stability.
+
+The screen also reports a Keplerian period:
+
+```
+P² = a³ / (M★ + Mp)
+```
+
+in canonical AU / solar-mass / year units.
+
+Current assumptions:
+- H-01 mass defaults to 1 Earth mass,
+- nearly circular and coplanar pairwise comparison,
+- observed planet masses and semimajor axes from the current NASA snapshot,
+- outer B+C forcing shown only as an approximate scale based on projected separation.
+
+Not yet included:
+- full N-body integration,
+- stellar A–BC orbital solution,
+- mean-motion resonances,
+- parameter uncertainties,
+- inclinations,
+- eccentricity distributions,
+- secular dynamics.
+
+Therefore the allowed output language is **fails screen**, **passes screen**, or **well separated in the analytic screen** — never simply **stable**.
+
 ## Layer B — radiation
 For each surface cell, the local stellar contribution is evaluated separately and then combined.
 
