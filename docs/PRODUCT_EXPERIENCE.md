@@ -82,3 +82,16 @@ TRISOLARIS remains the product. Noodbox Lab appears discretely as the studio beh
 
 Footer signature:
 **Made with ❤️ for Noodbox Lab**
+
+
+## Direct manipulation
+
+When a scientific object is visible, it should be explorable directly.
+
+Prefer:
+- tap/click a star to understand that star,
+- tap/click a planet to enter its record,
+- select a lineage from the lineage itself,
+- preserve context while revealing deeper information.
+
+Avoid forcing users to translate a visual object into a separate menu choice. The interface should feel like an explorable scientific environment rather than a collection of detached screens.
