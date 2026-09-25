@@ -11,7 +11,10 @@ on:
       - "pipelines/nasa_exoplanet/build_frontend_dataset.py"
       - "engine/orbital/**"
       - "pipelines/orbital/**"
+      - "engine/climate/**"
+      - "pipelines/climate/**"
       - "requirements-science.txt"
+      - ".github/workflows/refresh-science-data.yml"
 
 permissions:
   contents: write
