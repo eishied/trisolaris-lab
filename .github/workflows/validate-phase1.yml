@@ -48,6 +48,8 @@ jobs:
           python -m py_compile pipelines/evolution/build_evolutionary_replay_baseline.py
           python -m py_compile engine/evolution/counterfactual.py
           python -m py_compile pipelines/evolution/build_counterfactual_replay_baseline.py
+          python -m py_compile engine/evolution/thresholds.py
+          python -m py_compile pipelines/evolution/build_transition_thresholds_baseline.py
           python -m py_compile engine/research/release.py
           python -m py_compile pipelines/research/build_research_release_baseline.py
           python -m py_compile engine/research/note_builder.py
@@ -82,6 +84,7 @@ jobs:
           python pipelines/evolution/build_offworld_divergence_baseline.py
           python pipelines/evolution/build_evolutionary_replay_baseline.py
           python pipelines/evolution/build_counterfactual_replay_baseline.py
+          python pipelines/evolution/build_transition_thresholds_baseline.py
           python pipelines/research/build_research_release_baseline.py
           python pipelines/research/build_research_note.py
           python pipelines/research/build_manuscript_review_gate.py
@@ -108,6 +111,7 @@ jobs:
             frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
             frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
             frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
+            frontend/data/transition-thresholds-baseline.json docs/data/transition-thresholds-baseline.json
             frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
             research/evidence/research-release-baseline.json
             frontend/data/research-note-baseline.json docs/data/research-note-baseline.json
@@ -146,6 +150,7 @@ jobs:
           cmp frontend/data/offworld-divergence-baseline.json docs/data/offworld-divergence-baseline.json
           cmp frontend/data/evolutionary-replay-baseline.json docs/data/evolutionary-replay-baseline.json
           cmp frontend/data/counterfactual-replay-baseline.json docs/data/counterfactual-replay-baseline.json
+          cmp frontend/data/transition-thresholds-baseline.json docs/data/transition-thresholds-baseline.json
           cmp frontend/data/research-release-baseline.json docs/data/research-release-baseline.json
           cmp frontend/data/research-note-baseline.json docs/data/research-note-baseline.json
           cmp frontend/data/manuscript-review-gate-baseline.json docs/data/manuscript-review-gate-baseline.json
