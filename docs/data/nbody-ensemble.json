@@ -1,0 +1,188 @@
+{
+  "model": "rebound_bc_barycenter_pilot_v0.1",
+  "engine": "REBOUND 5.2.0",
+  "epistemic_level": "MODELED",
+  "candidate": {
+    "name": "TRISOLARIS H-01",
+    "semimajor_axis_au": 0.09,
+    "assumed_mass_earth": 1.0
+  },
+  "ensemble": {
+    "runs": 12,
+    "integration_years_per_run": 100.0,
+    "samples_per_run": 160,
+    "seed_base": 1445
+  },
+  "outcomes": {
+    "survived_pilot_interval": 12,
+    "did_not_survive_pilot_interval": 0,
+    "survival_fraction": 1.0,
+    "survived_with_strong_perturbation": 0,
+    "survived_with_measurable_perturbation": 0,
+    "maximum_eccentricity_seen": 0.06859214480862111,
+    "maximum_semimajor_drift_fraction_seen": 0.00034716682252177046
+  },
+  "runs": [
+    {
+      "seed": 1445,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.005056457494058065,
+      "min_pericenter_au": 0.0895337640200234,
+      "max_apocenter_au": 0.09045549842945616,
+      "max_semimajor_drift_fraction": 0.00034570064834094083,
+      "final_semimajor_axis_au": 0.08999170973678229,
+      "sampled_outer_eccentricity": 0.048042081911871024,
+      "sampled_h01_eccentricity": 0.0021576836406310296
+    },
+    {
+      "seed": 1446,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.022718331830091518,
+      "min_pericenter_au": 0.08794568737991455,
+      "max_apocenter_au": 0.09203803452985845,
+      "max_semimajor_drift_fraction": 0.0003323878694440804,
+      "final_semimajor_axis_au": 0.08999011261983937,
+      "sampled_outer_eccentricity": 0.13184251908068512,
+      "sampled_h01_eccentricity": 0.021332599781105514
+    },
+    {
+      "seed": 1447,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.037157002119873765,
+      "min_pericenter_au": 0.0866588689382663,
+      "max_apocenter_au": 0.09336872216502182,
+      "max_semimajor_drift_fraction": 0.0002950290480819974,
+      "final_semimajor_axis_au": 0.09000223645268719,
+      "sampled_outer_eccentricity": 0.1265244925247918,
+      "sampled_h01_eccentricity": 0.03700543963841501
+    },
+    {
+      "seed": 1448,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.00450464766456488,
+      "min_pericenter_au": 0.08959699675245253,
+      "max_apocenter_au": 0.09042630949553575,
+      "max_semimajor_drift_fraction": 0.0002767771801623353,
+      "final_semimajor_axis_au": 0.09000362004700911,
+      "sampled_outer_eccentricity": 0.20039253534633322,
+      "sampled_h01_eccentricity": 0.0015636949863373317
+    },
+    {
+      "seed": 1449,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.030194839657771002,
+      "min_pericenter_au": 0.08728630235542098,
+      "max_apocenter_au": 0.09273382846811395,
+      "max_semimajor_drift_fraction": 0.00030121888889829266,
+      "final_semimajor_axis_au": 0.09000395741822927,
+      "sampled_outer_eccentricity": 0.4017659507611103,
+      "sampled_h01_eccentricity": 0.025971182228035676
+    },
+    {
+      "seed": 1450,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.04707338648552774,
+      "min_pericenter_au": 0.08574973458641753,
+      "max_apocenter_au": 0.09424520294923361,
+      "max_semimajor_drift_fraction": 0.0002801274812319312,
+      "final_semimajor_axis_au": 0.08999165991489695,
+      "sampled_outer_eccentricity": 0.4302410558504545,
+      "sampled_h01_eccentricity": 0.04610604799024908
+    },
+    {
+      "seed": 1451,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.05684851018460666,
+      "min_pericenter_au": 0.08488054830462285,
+      "max_apocenter_au": 0.09513146373071835,
+      "max_semimajor_drift_fraction": 0.00027069209661109397,
+      "final_semimajor_axis_au": 0.08998708678531765,
+      "sampled_outer_eccentricity": 0.16292895314950426,
+      "sampled_h01_eccentricity": 0.056034119598020474
+    },
+    {
+      "seed": 1452,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.007139080822358058,
+      "min_pericenter_au": 0.0893620913915706,
+      "max_apocenter_au": 0.09065712313541296,
+      "max_semimajor_drift_fraction": 0.00024563197448087794,
+      "final_semimajor_axis_au": 0.09001756212603125,
+      "sampled_outer_eccentricity": 0.25562226400307725,
+      "sampled_h01_eccentricity": 0.007085996881409971
+    },
+    {
+      "seed": 1453,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.021849084184269105,
+      "min_pericenter_au": 0.08803756393352011,
+      "max_apocenter_au": 0.09198957436157038,
+      "max_semimajor_drift_fraction": 0.0002602472977942003,
+      "final_semimajor_axis_au": 0.09002001199013641,
+      "sampled_outer_eccentricity": 0.06473130469834736,
+      "sampled_h01_eccentricity": 0.021720289395342755
+    },
+    {
+      "seed": 1454,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.06749018215938146,
+      "min_pericenter_au": 0.08392585424642686,
+      "max_apocenter_au": 0.09609439163802641,
+      "max_semimajor_drift_fraction": 0.0002492449605991869,
+      "final_semimajor_axis_au": 0.08999029447755544,
+      "sampled_outer_eccentricity": 0.1039077386501681,
+      "sampled_h01_eccentricity": 0.0647775683139068
+    },
+    {
+      "seed": 1455,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.06859214480862111,
+      "min_pericenter_au": 0.08382900273298906,
+      "max_apocenter_au": 0.0961999464654513,
+      "max_semimajor_drift_fraction": 0.00027713964901171506,
+      "final_semimajor_axis_au": 0.08999589817754332,
+      "sampled_outer_eccentricity": 0.3655184652274641,
+      "sampled_h01_eccentricity": 0.06846848212143072
+    },
+    {
+      "seed": 1456,
+      "survived": true,
+      "classification": "survived pilot interval",
+      "max_eccentricity": 0.06293574408806442,
+      "min_pericenter_au": 0.08434336625521797,
+      "max_apocenter_au": 0.09569667207863329,
+      "max_semimajor_drift_fraction": 0.00034716682252177046,
+      "final_semimajor_axis_au": 0.09001293109561531,
+      "sampled_outer_eccentricity": 0.4221307240825438,
+      "sampled_h01_eccentricity": 0.06218928834798359
+    }
+  ],
+  "model_scope": {
+    "host_and_confirmed_planets": "included",
+    "H01": "included",
+    "BC_pair": "replaced by combined barycentric perturber",
+    "outer_semimajor_axis_basis": "Keplerian estimate from approximate 250-year literature period",
+    "unknown_orbital_angles": "sampled",
+    "unknown_outer_eccentricity": "uniform 0.00\u20130.45 exploratory prior"
+  },
+  "limitations": [
+    "100-year pilot is short relative to the age of the system",
+    "the internal B-C binary is unresolved",
+    "outer stellar orbital elements are incompletely constrained in the project dataset",
+    "planetary parameter uncertainties are not yet sampled from measurement posteriors",
+    "no tides, relativity, stellar mass loss, atmosphere, or climate coupling",
+    "survived means survived this pilot integration only; it does not mean long-term stable"
+  ],
+  "next_model": "resolve B and C individually, ingest astrometric/orbital posteriors, and expand to long-term Monte Carlo ensembles"
+}
