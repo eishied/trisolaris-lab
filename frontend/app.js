@@ -846,50 +846,66 @@ function installCanvasFocus(){
 
 function renderPlanets(){
   const rows=data.observed_planets||[];
-  $("#planetCount").textContent=rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
+  const h=data.hypothetical_experiment||{};
+  $("#planetCount").textContent=rows.length+" confirmado"+(rows.length===1?"":"s")+" · H-01 experimental";
 
-  if(!rows.length){
-    $("#planetCards").innerHTML=`
-      <article class="world">
-        <div class="worldBody">
-          <span class="worldKicker">Sin datos planetarios</span>
-          <h3>Esperando el archivo oficial</h3>
-          <p>La estructura de la página permanece disponible, pero esta copia todavía no contiene planetas observados.</p>
-        </div>
-      </article>`;
-    $("#planetTable").innerHTML='<div class="methodNote">No hay filas observadas disponibles en esta copia del dataset.</div>';
-    return;
-  }
-
-  $("#planetCards").innerHTML=rows.map((p,i)=>`
-    <article class="world reveal" data-focus-name="${p.name}" tabindex="0" role="button" aria-label="Explorar ${p.name} en el sistema">
+  const observedCards=rows.map(p=>`
+    <article class="world reveal" data-focus-name="${p.name}" tabindex="0" role="button" aria-label="Ver ficha de ${p.name}">
       <div class="worldHero" aria-hidden="true"><div class="worldSphere"></div></div>
       <div class="worldBody">
-        <span class="worldKicker">Planeta confirmado · NASA</span>
+        <span class="worldKicker">OBSERVED · NASA</span>
         <h3>${p.name}</h3>
         <p>${planetPlainLanguage(p)}</p>
         <div class="worldFacts">
-          <span>${fmt(p.period_days,2)} días por órbita</span>
+          <span>${fmt(p.period_days,2)} días</span>
           <span>${fmt(p.radius_earth,2)} R⊕</span>
-          <span>desc. ${p.discovery_year==null?"—":Math.round(p.discovery_year)}</span>
+          <span>${fmt(p.mass_earth,2)} M⊕</span>
         </div>
-        <div class="worldExplore">Entrar al mundo <span>↗</span></div>
+        <div class="worldExplore">Ver planeta <span>→</span></div>
       </div>
     </article>
   `).join("");
 
-  $("#planetTable").innerHTML=`<table><thead><tr>
-    <th>Planeta</th><th>Período</th><th>Semieje mayor</th><th>Radio</th><th>Masa</th><th>Teq</th><th>Descubrimiento</th><th>Procedencia</th>
-  </tr></thead><tbody>${rows.map(p=>`<tr>
-    <td><b>${p.name}</b></td>
-    <td>${fmt(p.period_days,3)} d</td>
-    <td>${fmt(p.semi_major_axis_au,4)} AU</td>
-    <td>${fmt(p.radius_earth,2)} R⊕</td>
-    <td>${fmt(p.mass_earth,2)} M⊕</td>
-    <td>${p.equilibrium_temperature_k==null?"—":fmt(p.equilibrium_temperature_k,0)+" K"}</td>
-    <td>${p.discovery_year==null?"—":Math.round(p.discovery_year)}</td>
-    <td>OBSERVED · NASA</td>
-  </tr>`).join("")}</tbody></table>`;
+  const experimentalCard=`
+    <article class="world worldSpeculative reveal" data-focus-name="H-01" tabindex="0" role="button" aria-label="Abrir simulación TRISOLARIS H-01">
+      <div class="worldHero speculativeHero" aria-hidden="true"><div class="worldSphere speculativeSphere"></div></div>
+      <div class="worldBody">
+        <span class="worldKicker speculative">SPECULATIVE · LABORATORIO</span>
+        <h3>${h.name||"TRISOLARIS H-01"}</h3>
+        <p>Mundo experimental del simulador. No es un planeta descubierto y sus parámetros pueden modificarse.</p>
+        <div class="worldFacts">
+          <span>${fmt(h.semi_major_axis_au,2)} AU</span>
+          <span>albedo ${fmt(h.albedo,2)}</span>
+          <span>+${fmt(h.greenhouse_k,0)} K</span>
+        </div>
+        <div class="worldExplore">Abrir simulación <span>→</span></div>
+      </div>
+    </article>
+  `;
+
+  $("#planetCards").innerHTML=(observedCards||`
+    <article class="world">
+      <div class="worldBody">
+        <span class="worldKicker">Sin planetas confirmados en el snapshot</span>
+        <h3>El laboratorio sigue disponible</h3>
+      </div>
+    </article>
+  `)+experimentalCard;
+
+  $("#planetTable").innerHTML=rows.length
+    ?`<table><thead><tr>
+      <th>Planeta</th><th>Período</th><th>Semieje mayor</th><th>Radio</th><th>Masa</th><th>Teq</th><th>Descubrimiento</th><th>Procedencia</th>
+    </tr></thead><tbody>${rows.map(p=>`<tr>
+      <td><b>${p.name}</b></td>
+      <td>${fmt(p.period_days,3)} d</td>
+      <td>${fmt(p.semi_major_axis_au,4)} AU</td>
+      <td>${fmt(p.radius_earth,2)} R⊕</td>
+      <td>${fmt(p.mass_earth,2)} M⊕</td>
+      <td>${p.equilibrium_temperature_k==null?"—":fmt(p.equilibrium_temperature_k,0)+" K"}</td>
+      <td>${p.discovery_year==null?"—":Math.round(p.discovery_year)}</td>
+      <td>OBSERVED · NASA</td>
+    </tr>`).join("")}</tbody></table>`
+    :'<div class="methodNote">No hay filas observadas disponibles en esta copia del dataset.</div>';
 
   activateRevealObserver();
   activateWorldFocus();
