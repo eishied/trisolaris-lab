@@ -425,41 +425,10 @@ class FrontendResilienceTests(unittest.TestCase):
             (ROOT / "docs/TRANSITION_THRESHOLD_ATLAS.md").read_text(encoding="utf-8"),
         )
 
-    def test_ux_v4_routed_light_shell_contract(self):
-        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
-        css = (ROOT / "frontend/styles.css").read_text(encoding="utf-8")
-
-        for element_id in (
-            "navPlanetButtons",
-            "subViewNav",
-            "worldsTitle",
-            "worldsIntro",
-        ):
-            self.assertIn(f'id="{element_id}"', html)
-
-        for section_name in ("environment", "life", "humanity", "expansion"):
-            self.assertIn(f'data-h01-section="{section_name}"', html)
-        for section_name in ("replay", "thresholds", "publication", "method"):
-            self.assertIn(f'data-research-section="{section_name}"', html)
-
-        self.assertIn('data-app-view="system"', html)
-        self.assertIn("function initAppNavigation()", app)
-        self.assertIn("function setAppView(", app)
-        self.assertIn("function setH01Panel(", app)
-        self.assertIn("function setResearchPanel(", app)
-        self.assertIn("function updateObservedHeading()", app)
-        self.assertIn('appView==="observed"', app)
-        self.assertIn("UX v4 — routed light application shell", css)
-        self.assertIn('body[data-app-view="observed"]', css)
-        self.assertIn('data-h01-tab="environment"', css)
-        self.assertIn("color-scheme:light", css)
-        self.assertNotIn('id="contextSwitcher"', html)
-
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=uxv4-20260925", html)
-        self.assertIn("app.js?v=uxv4-20260925", html)
+        self.assertIn("styles.css?v=phase12a-20260925", html)
+        self.assertIn("app.js?v=phase12a-20260925", html)
 
 
 if __name__ == "__main__":

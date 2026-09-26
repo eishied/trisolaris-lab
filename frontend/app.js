@@ -32,148 +32,6 @@ const fmt=(v,d=2)=>v==null||Number.isNaN(Number(v))?"—":Number(v).toFixed(d);
 const stat=(label,value,note="")=>`<div class="stat"><small>${label}</small><strong>${value}</strong>${note?`<em>${note}</em>`:""}</div>`;
 const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><strong>${value}</strong></div>`;
 const EARTH_MASS_IN_SOLAR=3.0034896e-6;
-
-let appView=localStorage.getItem("trisolaris-app-view")||"system";
-let selectedObservedWorldName=localStorage.getItem("trisolaris-observed-world")||null;
-let h01Panel=localStorage.getItem("trisolaris-h01-panel")||"environment";
-let researchPanel=localStorage.getItem("trisolaris-research-panel")||"replay";
-let appNavigationInitialized=false;
-
-function validAppView(value){
-  return ["system","observed","h01","research"].includes(value)?value:"system";
-}
-function validH01Panel(value){
-  return ["environment","life","humanity","expansion"].includes(value)?value:"environment";
-}
-function validResearchPanel(value){
-  return ["replay","thresholds","publication","method"].includes(value)?value:"replay";
-}
-
-function populatePlanetNavigation(){
-  const host=$("#navPlanetButtons");
-  if(!host||!data)return;
-  host.innerHTML=(data.observed_planets||[]).map(p=>
-    '<button type="button" class="appViewBtn planetViewBtn" data-app-view="observed" data-world-name="'+p.name+'">'+p.name.replace("LTT 1445 ","")+'</button>'
-  ).join("");
-  host.querySelectorAll("[data-world-name]").forEach(btn=>{
-    btn.addEventListener("click",()=>setAppView("observed",btn.dataset.worldName));
-  });
-}
-
-function syncNavigationState(){
-  document.body.dataset.appView=appView;
-  document.body.dataset.h01Tab=h01Panel;
-  document.body.dataset.researchTab=researchPanel;
-
-  $(".appViewBtn").forEach(btn=>{
-    const sameView=btn.dataset.appView===appView;
-    const sameWorld=appView!=="observed"||btn.dataset.worldName===selectedObservedWorldName;
-    const active=sameView&&sameWorld;
-    btn.classList.toggle("active",active);
-    btn.setAttribute("aria-pressed",String(active));
-  });
-  $("[data-h01-tab]").forEach(btn=>{
-    const active=btn.dataset.h01Tab===h01Panel;
-    btn.classList.toggle("active",active);
-    btn.setAttribute("aria-pressed",String(active));
-  });
-  $("[data-research-tab]").forEach(btn=>{
-    const active=btn.dataset.researchTab===researchPanel;
-    btn.classList.toggle("active",active);
-    btn.setAttribute("aria-pressed",String(active));
-  });
-}
-
-function setH01Panel(panel,{scroll=true}={}){
-  h01Panel=validH01Panel(panel);
-  localStorage.setItem("trisolaris-h01-panel",h01Panel);
-  syncNavigationState();
-  if(scroll)$("#experimento")?.scrollIntoView({behavior:"smooth",block:"start"});
-}
-
-function setResearchPanel(panel,{scroll=true}={}){
-  researchPanel=validResearchPanel(panel);
-  localStorage.setItem("trisolaris-research-panel",researchPanel);
-  syncNavigationState();
-  if(scroll){
-    const target=researchPanel==="method"?$("#evidencia"):$("#experimento");
-    target?.scrollIntoView({behavior:"smooth",block:"start"});
-  }
-}
-
-function updateObservedHeading(){
-  const title=$("#worldsTitle");
-  const intro=$("#worldsIntro");
-  if(!title||!intro)return;
-  if(appView==="observed"&&selectedObservedWorldName){
-    title.textContent=selectedObservedWorldName;
-    intro.textContent="Ficha observacional aislada. Aquí no se heredan clima, biosfera, población o historia de H-01: solo datos que pertenecen a este planeta confirmado.";
-  }else{
-    title.textContent="No empezamos inventando planetas.";
-    intro.textContent="Primero mostramos lo que el archivo científico reporta. Después, y solo después, abrimos el laboratorio para preguntar qué condiciones necesitaría otro mundo.";
-  }
-}
-
-function setAppView(view,worldName=null,{scroll=true}={}){
-  appView=validAppView(view);
-  if(appView==="observed"){
-    const available=(data?.observed_planets||[]).some(p=>p.name===worldName);
-    if(available)selectedObservedWorldName=worldName;
-    if(!selectedObservedWorldName||(data&&!(data.observed_planets||[]).some(p=>p.name===selectedObservedWorldName))){
-      selectedObservedWorldName=data?.observed_planets?.[0]?.name||null;
-    }
-    if(!selectedObservedWorldName)appView="system";
-  }
-
-  localStorage.setItem("trisolaris-app-view",appView);
-  if(selectedObservedWorldName)localStorage.setItem("trisolaris-observed-world",selectedObservedWorldName);
-  syncNavigationState();
-  updateObservedHeading();
-  if(data)safeRender("planet-context",renderPlanets);
-
-  if(selectedFocus&&appView!=="system")closeFocus();
-
-  if(scroll){
-    const target=appView==="system"?$("#inicio")
-      :appView==="observed"?$("#mundos")
-      :appView==="h01"?$("#experimento")
-      :(researchPanel==="method"?$("#evidencia"):$("#experimento"));
-    target?.scrollIntoView({behavior:"smooth",block:"start"});
-  }
-}
-
-function initAppNavigation(){
-  if(!data)return;
-  appView=validAppView(appView);
-  h01Panel=validH01Panel(h01Panel);
-  researchPanel=validResearchPanel(researchPanel);
-  if(appView==="observed"&&!(data.observed_planets||[]).some(p=>p.name===selectedObservedWorldName)){
-    selectedObservedWorldName=data.observed_planets?.[0]?.name||null;
-    if(!selectedObservedWorldName)appView="system";
-  }
-
-  populatePlanetNavigation();
-  if(!appNavigationInitialized){
-    $(".appViewBtn:not(.planetViewBtn)").forEach(btn=>{
-      btn.addEventListener("click",()=>setAppView(btn.dataset.appView));
-    });
-    $("[data-h01-tab]").forEach(btn=>{
-      btn.addEventListener("click",()=>setH01Panel(btn.dataset.h01Tab));
-    });
-    $("[data-research-tab]").forEach(btn=>{
-      btn.addEventListener("click",()=>setResearchPanel(btn.dataset.researchTab));
-    });
-    $(".wordmark")?.addEventListener("click",event=>{
-      event.preventDefault();
-      setAppView("system");
-    });
-    appNavigationInitialized=true;
-  }
-  syncNavigationState();
-  updateObservedHeading();
-  renderPlanets();
-}
-
 const HILL_THRESHOLD=2*Math.sqrt(3);
 
 const runtimeIssues=[];
@@ -201,7 +59,7 @@ setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=uxv4-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -233,7 +91,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=uxv4-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -252,7 +110,7 @@ async function loadNbodyResult(){
 
 async function loadThresholdAtlas(){
   try{
-    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=uxv4-20260925",{cache:"no-store"});
+    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("threshold atlas not published");
     thresholdAtlas=await response.json();
     renderThresholdAtlas();
@@ -313,7 +171,7 @@ function renderThresholdAtlas(){
 
 async function loadManuscriptReviewGate(){
   try{
-    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=uxv4-20260925",{cache:"no-store"});
+    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("manuscript review gate not published");
     manuscriptReviewGate=await response.json();
     renderManuscriptReviewGate();
@@ -351,7 +209,7 @@ function renderManuscriptReviewGate(){
 
 async function loadResearchNote(){
   try{
-    const response=await fetch(RESEARCH_NOTE_URL+"?v=uxv4-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_NOTE_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("research note not published");
     researchNote=await response.json();
     renderResearchNote();
@@ -380,7 +238,7 @@ function renderResearchNote(){
 
 async function loadResearchRelease(){
   try{
-    const response=await fetch(RESEARCH_RELEASE_URL+"?v=uxv4-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_RELEASE_URL+"?v=phase12a-20260925",{cache:"no-store"});
     if(!response.ok)throw new Error("research release not published");
     researchRelease=await response.json();
     renderResearchRelease();
@@ -618,14 +476,6 @@ function focusContent(target){
 }
 
 function openFocus(target,{scroll=true}={}){
-  if(target?.kind==="planet"){
-    setAppView("observed",target.name,{scroll});
-    return;
-  }
-  if(target?.kind==="hypothetical"){
-    setAppView("h01",null,{scroll});
-    return;
-  }
   selectedFocus=target;
   const content=focusContent(target);
   $("#focusKicker").textContent=content.kicker;
@@ -651,7 +501,7 @@ function closeFocus(){
 function activateWorldFocus(){
   $$(".world[data-focus-name]").forEach(card=>{
     const activate=()=>{
-      setAppView("observed",card.dataset.focusName);
+      openFocus({kind:"planet",name:card.dataset.focusName});
     };
     card.addEventListener("click",activate);
     card.addEventListener("keydown",event=>{
@@ -689,13 +539,8 @@ function installCanvasFocus(){
 }
 
 function renderPlanets(){
-  const allRows=data.observed_planets||[];
-  const rows=appView==="observed"&&selectedObservedWorldName
-    ?allRows.filter(p=>p.name===selectedObservedWorldName)
-    :allRows;
-  $("#planetCount").textContent=appView==="observed"
-    ?(rows.length?"Planeta confirmado · NASA":"Planeta no disponible")
-    :rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
+  const rows=data.observed_planets||[];
+  $("#planetCount").textContent=rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
 
   if(!rows.length){
     $("#planetCards").innerHTML=`
@@ -722,7 +567,7 @@ function renderPlanets(){
           <span>${fmt(p.radius_earth,2)} R⊕</span>
           <span>desc. ${p.discovery_year==null?"—":Math.round(p.discovery_year)}</span>
         </div>
-        <div class="worldExplore">${appView==="observed"?"Ficha observacional":"Abrir ficha"} <span>↗</span></div>
+        <div class="worldExplore">Entrar al mundo <span>↗</span></div>
       </div>
     </article>
   `).join("");
@@ -4421,13 +4266,13 @@ function draw(){
 
   const cx=w*.47;
   const cy=h*.46;
-  x.fillStyle="#eef4f7";
+  x.fillStyle="#020609";
   x.fillRect(0,0,w,h);
 
   const field=x.createRadialGradient(cx,cy,20,cx,cy,w*.64);
-  field.addColorStop(0,"rgba(108,174,207,.20)");
-  field.addColorStop(.45,"rgba(190,218,231,.15)");
-  field.addColorStop(1,"rgba(238,244,247,0)");
+  field.addColorStop(0,"rgba(22,43,58,.44)");
+  field.addColorStop(.45,"rgba(7,18,25,.20)");
+  field.addColorStop(1,"rgba(2,6,9,0)");
   x.fillStyle=field;
   x.fillRect(0,0,w,h);
 
@@ -4435,7 +4280,7 @@ function draw(){
     const px=(i*137.1)%w;
     const py=(i*83.7)%h;
     const a=.09+((i*17)%48)/100;
-    x.fillStyle=`rgba(74,105,123,${a*.34})`;
+    x.fillStyle=`rgba(215,237,248,${a})`;
     const s=i%13===0?1.7:1;
     x.fillRect(px,py,s,s);
   }
@@ -4460,7 +4305,7 @@ function draw(){
     y:bcCenter.y-bcR*.48*Math.sin(phase*.65)
   };
 
-  x.strokeStyle="rgba(57,112,142,.24)";
+  x.strokeStyle="rgba(128,177,203,.145)";
   x.lineWidth=1.1;
   x.beginPath();
   x.ellipse(cx+65,cy,outerR,outerR*.48,0,0,Math.PI*2);
@@ -4483,7 +4328,7 @@ function draw(){
   planets.slice(0,5).forEach((p,i)=>{
     const r=66+i*34;
     const ang=phase*(1.45/(i+1))+(i*1.4);
-    x.strokeStyle="rgba(42,129,171,.23)";
+    x.strokeStyle="rgba(112,210,255,.115)";
     x.beginPath();
     x.ellipse(apos.x,apos.y,r,r*.42,0,0,Math.PI*2);
     x.stroke();
@@ -4492,7 +4337,7 @@ function draw(){
       x:apos.x+r*Math.cos(ang),
       y:apos.y+r*.42*Math.sin(ang)
     };
-    x.fillStyle="#2b8db8";
+    x.fillStyle="#79d4ef";
     x.beginPath();
     x.arc(pp.x,pp.y,5.3,0,Math.PI*2);
     x.fill();
@@ -4503,7 +4348,7 @@ function draw(){
     });
 
     if(document.body.dataset.mode==="scientific"){
-      x.fillStyle="#486574";
+      x.fillStyle="#bfd5df";
       x.font="11px system-ui";
       x.fillText(p.name,pp.x+10,pp.y-7);
     }
@@ -4513,7 +4358,7 @@ function draw(){
   const hr=140+((a-.04)/.18)*82;
   const ha=phase*.52+1.2;
   x.setLineDash([6,8]);
-  x.strokeStyle="rgba(109,79,161,.42)";
+  x.strokeStyle="rgba(196,163,255,.31)";
   x.beginPath();
   x.ellipse(apos.x,apos.y,hr,hr*.42,0,0,Math.PI*2);
   x.stroke();
@@ -4524,13 +4369,13 @@ function draw(){
     y:apos.y+hr*.42*Math.sin(ha)
   };
   const hg=x.createRadialGradient(hp.x,hp.y,0,hp.x,hp.y,28);
-  hg.addColorStop(0,"rgba(125,95,179,.42)");
-  hg.addColorStop(1,"rgba(125,95,179,0)");
+  hg.addColorStop(0,"rgba(206,178,255,.78)");
+  hg.addColorStop(1,"rgba(206,178,255,0)");
   x.fillStyle=hg;
   x.beginPath();
   x.arc(hp.x,hp.y,28,0,Math.PI*2);
   x.fill();
-  x.fillStyle="#7454a8";
+  x.fillStyle="#caa9ff";
   x.beginPath();
   x.arc(hp.x,hp.y,7,0,Math.PI*2);
   x.fill();
@@ -4545,7 +4390,7 @@ function draw(){
     const selected=hitTargets.find(t=>focusKey(t.target)===key);
     if(selected){
       x.save();
-      x.strokeStyle=selectedFocus.kind==="hypothetical"?"rgba(109,79,161,.78)":"rgba(37,130,171,.72)";
+      x.strokeStyle=selectedFocus.kind==="hypothetical"?"rgba(206,178,255,.82)":"rgba(142,224,255,.78)";
       x.lineWidth=1.6;
       x.setLineDash([5,6]);
       x.beginPath();
@@ -4557,7 +4402,7 @@ function draw(){
   }
 
   if(document.body.dataset.mode==="scientific"){
-    x.fillStyle="#684a99";
+    x.fillStyle="#e4d6ff";
     x.font="600 11px system-ui";
     x.fillText("H-01 · HYPOTHETICAL",hp.x+12,hp.y-8);
   }
@@ -4583,7 +4428,7 @@ function drawStar(x,p,r,label,color,s){
   x.fillText(label,p.x-4,p.y+4);
 
   if(document.body.dataset.mode==="scientific"){
-    x.fillStyle="#526b78";
+    x.fillStyle="#91a5af";
     x.font="10px system-ui";
     x.fillText(fmt(s.mass_solar,3)+" M☉",p.x-r,p.y+r+17);
   }
