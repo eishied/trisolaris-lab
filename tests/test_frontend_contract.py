@@ -12,8 +12,16 @@ class FrontendContractTests(unittest.TestCase):
 
     def test_world_selector_uses_query_selector_all(self):
         app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
-        self.assertNotIn('\n  $(".world[data-focus-name]").forEach', app)
         self.assertIn('$(".world[data-focus-name]").forEach', app)
+        self.assertNotRegex(
+            app,
+            r'(?<!\$)\$\("\.world\[data-focus-name\]"\)\.forEach',
+        )
+
+    def test_selector_helpers_cannot_crash_at_runtime(self):
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertNotIn("$$$(", app)
+        self.assertNotRegex(app, r'(?<!\$)\$\([^;\n]+?\)\.forEach')
 
     def test_selector_helpers_cannot_crash_at_runtime(self):
         app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
