@@ -31,7 +31,8 @@ const $$=s=>[...document.querySelectorAll(s)];
 const fmt=(v,d=2)=>v==null||Number.isNaN(Number(v))?"—":Number(v).toFixed(d);
 const stat=(label,value,note="")=>`<div class="stat"><small>${label}</small><strong>${value}</strong>${note?`<em>${note}</em>`:""}</div>`;
 const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><strong>${value}</strong></div>`;
-const EARTH_MASS_IN_SOLAR=3.0034896e-6;\n
+const EARTH_MASS_IN_SOLAR=3.0034896e-6;
+
 let appView=localStorage.getItem("trisolaris-app-view")||"system";
 let selectedObservedWorldName=localStorage.getItem("trisolaris-observed-world")||null;
 let h01Panel=localStorage.getItem("trisolaris-h01-panel")||"environment";
