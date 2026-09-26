@@ -32,7 +32,9 @@ const fmt=(v,d=2)=>v==null||Number.isNaN(Number(v))?"—":Number(v).toFixed(d);
 const stat=(label,value,note="")=>`<div class="stat"><small>${label}</small><strong>${value}</strong>${note?`<em>${note}</em>`:""}</div>`;
 const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><strong>${value}</strong></div>`;
 const EARTH_MASS_IN_SOLAR=3.0034896e-6;
-const HILL_THRESHOLD=2*Math.sqrt(3);\n\n
+const HILL_THRESHOLD=2*Math.sqrt(3);
+
+
 const APP_CONTEXT_KEY="trisolaris-app-context-v1";
 let appContext={
   systemId:"LTT-1445-ABC",
