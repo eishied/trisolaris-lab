@@ -4420,13 +4420,13 @@ function draw(){
 
   const cx=w*.47;
   const cy=h*.46;
-  x.fillStyle="#020609";
+  x.fillStyle="#eef4f7";
   x.fillRect(0,0,w,h);
 
   const field=x.createRadialGradient(cx,cy,20,cx,cy,w*.64);
-  field.addColorStop(0,"rgba(22,43,58,.44)");
-  field.addColorStop(.45,"rgba(7,18,25,.20)");
-  field.addColorStop(1,"rgba(2,6,9,0)");
+  field.addColorStop(0,"rgba(108,174,207,.20)");
+  field.addColorStop(.45,"rgba(190,218,231,.15)");
+  field.addColorStop(1,"rgba(238,244,247,0)");
   x.fillStyle=field;
   x.fillRect(0,0,w,h);
 
@@ -4434,7 +4434,7 @@ function draw(){
     const px=(i*137.1)%w;
     const py=(i*83.7)%h;
     const a=.09+((i*17)%48)/100;
-    x.fillStyle=`rgba(215,237,248,${a})`;
+    x.fillStyle=`rgba(74,105,123,${a*.34})`;
     const s=i%13===0?1.7:1;
     x.fillRect(px,py,s,s);
   }
@@ -4459,7 +4459,7 @@ function draw(){
     y:bcCenter.y-bcR*.48*Math.sin(phase*.65)
   };
 
-  x.strokeStyle="rgba(128,177,203,.145)";
+  x.strokeStyle="rgba(57,112,142,.24)";
   x.lineWidth=1.1;
   x.beginPath();
   x.ellipse(cx+65,cy,outerR,outerR*.48,0,0,Math.PI*2);
@@ -4482,7 +4482,7 @@ function draw(){
   planets.slice(0,5).forEach((p,i)=>{
     const r=66+i*34;
     const ang=phase*(1.45/(i+1))+(i*1.4);
-    x.strokeStyle="rgba(112,210,255,.115)";
+    x.strokeStyle="rgba(42,129,171,.23)";
     x.beginPath();
     x.ellipse(apos.x,apos.y,r,r*.42,0,0,Math.PI*2);
     x.stroke();
@@ -4491,7 +4491,7 @@ function draw(){
       x:apos.x+r*Math.cos(ang),
       y:apos.y+r*.42*Math.sin(ang)
     };
-    x.fillStyle="#79d4ef";
+    x.fillStyle="#2b8db8";
     x.beginPath();
     x.arc(pp.x,pp.y,5.3,0,Math.PI*2);
     x.fill();
@@ -4502,7 +4502,7 @@ function draw(){
     });
 
     if(document.body.dataset.mode==="scientific"){
-      x.fillStyle="#bfd5df";
+      x.fillStyle="#486574";
       x.font="11px system-ui";
       x.fillText(p.name,pp.x+10,pp.y-7);
     }
@@ -4512,7 +4512,7 @@ function draw(){
   const hr=140+((a-.04)/.18)*82;
   const ha=phase*.52+1.2;
   x.setLineDash([6,8]);
-  x.strokeStyle="rgba(196,163,255,.31)";
+  x.strokeStyle="rgba(109,79,161,.42)";
   x.beginPath();
   x.ellipse(apos.x,apos.y,hr,hr*.42,0,0,Math.PI*2);
   x.stroke();
@@ -4523,13 +4523,13 @@ function draw(){
     y:apos.y+hr*.42*Math.sin(ha)
   };
   const hg=x.createRadialGradient(hp.x,hp.y,0,hp.x,hp.y,28);
-  hg.addColorStop(0,"rgba(206,178,255,.78)");
-  hg.addColorStop(1,"rgba(206,178,255,0)");
+  hg.addColorStop(0,"rgba(125,95,179,.42)");
+  hg.addColorStop(1,"rgba(125,95,179,0)");
   x.fillStyle=hg;
   x.beginPath();
   x.arc(hp.x,hp.y,28,0,Math.PI*2);
   x.fill();
-  x.fillStyle="#caa9ff";
+  x.fillStyle="#7454a8";
   x.beginPath();
   x.arc(hp.x,hp.y,7,0,Math.PI*2);
   x.fill();
@@ -4544,7 +4544,7 @@ function draw(){
     const selected=hitTargets.find(t=>focusKey(t.target)===key);
     if(selected){
       x.save();
-      x.strokeStyle=selectedFocus.kind==="hypothetical"?"rgba(206,178,255,.82)":"rgba(142,224,255,.78)";
+      x.strokeStyle=selectedFocus.kind==="hypothetical"?"rgba(109,79,161,.78)":"rgba(37,130,171,.72)";
       x.lineWidth=1.6;
       x.setLineDash([5,6]);
       x.beginPath();
@@ -4556,7 +4556,7 @@ function draw(){
   }
 
   if(document.body.dataset.mode==="scientific"){
-    x.fillStyle="#e4d6ff";
+    x.fillStyle="#684a99";
     x.font="600 11px system-ui";
     x.fillText("H-01 · HYPOTHETICAL",hp.x+12,hp.y-8);
   }
@@ -4582,7 +4582,7 @@ function drawStar(x,p,r,label,color,s){
   x.fillText(label,p.x-4,p.y+4);
 
   if(document.body.dataset.mode==="scientific"){
-    x.fillStyle="#91a5af";
+    x.fillStyle="#526b78";
     x.font="10px system-ui";
     x.fillText(fmt(s.mass_solar,3)+" M☉",p.x-r,p.y+r+17);
   }
