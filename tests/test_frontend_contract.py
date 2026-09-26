@@ -15,6 +15,11 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('\n  $(".world[data-focus-name]").forEach', app)
         self.assertIn('$(".world[data-focus-name]").forEach', app)
 
+    def test_selector_helpers_cannot_crash_at_runtime(self):
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        self.assertNotIn("$$$(", app)
+        self.assertNotRegex(app, r'(?<!\$)\$\([^;\n]+?\)\.forEach')
+
     def test_required_interactive_elements_exist(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
         for element_id in (
