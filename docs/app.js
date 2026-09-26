@@ -258,12 +258,12 @@ function syncAppShell(){
         ? data.system.name+" — TRISOLARIS LAB"
         : "TRISOLARIS LAB — Ciencia para explorar";
 
-  $(".appNavBtn").forEach(btn=>{
+  $$(".appNavBtn").forEach(btn=>{
     const active=btn.dataset.route===appContext.view;
     btn.classList.toggle("active",active);
     btn.setAttribute("aria-pressed",String(active));
   });
-  $("[data-research-tab]").forEach(btn=>{
+  $$("[data-research-tab]").forEach(btn=>{
     const active=btn.dataset.researchTab===appContext.researchTab;
     btn.classList.toggle("active",active);
     btn.setAttribute("aria-pressed",String(active));
@@ -321,10 +321,10 @@ function initAppShell(){
   $("#enterSystemBtn")?.addEventListener("click",()=>routeApp("system"));
   $("#enterResearchBtn")?.addEventListener("click",()=>routeApp("research"));
   $("#planetBackBtn")?.addEventListener("click",()=>routeApp("system"));
-  $(".appNavBtn").forEach(btn=>{
+  $$(".appNavBtn").forEach(btn=>{
     btn.addEventListener("click",()=>routeApp(btn.dataset.route));
   });
-  $("[data-research-tab]").forEach(btn=>{
+  $$("[data-research-tab]").forEach(btn=>{
     btn.addEventListener("click",()=>setResearchTab(btn.dataset.researchTab));
   });
   $("#systemSelect")?.addEventListener("change",event=>{
@@ -351,12 +351,12 @@ function safeRender(label,fn){
 
 function setMode(mode){
   document.body.dataset.mode=mode;
-  $$(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
+  $$$(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
   localStorage.setItem("trisolaris-detail-mode",mode);
   draw();
 }
 
-$$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
+$$$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
 setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 
 async function load(){
@@ -813,7 +813,7 @@ function closeFocus(){
 }
 
 function activateWorldFocus(){
-  $(".world[data-focus-name]").forEach(card=>{
+  $$(".world[data-focus-name]").forEach(card=>{
     const activate=()=>{
       const worldId=card.dataset.focusName;
       routeApp("planet",{worldId,tab:worldId==="H-01"?"environment":"summary"});
@@ -3692,7 +3692,7 @@ function renderAstroanthropology(){
     '</button>'
   ).join("");
 
-  $(".astroAnthroPopulation[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
+  $$(".astroAnthroPopulation[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
     selectedLineageId=btn.dataset.lineageId;
     safeRender("lineages",renderLineages);
     safeRender("genetics",renderGenetics);
@@ -4819,7 +4819,7 @@ function activateRevealObserver(){
   },1400);
 }
 
-$$(".chapter").forEach(el=>el.classList.add("reveal"));
+$$$(".chapter").forEach(el=>el.classList.add("reveal"));
 activateRevealObserver();
 
 const logo=$(".noodboxLogo");
