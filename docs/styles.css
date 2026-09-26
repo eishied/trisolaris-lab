@@ -2592,3 +2592,689 @@ body[data-mode="scientific"] .simple-only{display:none!important}
   .thresholdAtlasIntro>p:last-child{grid-column:1;grid-row:auto}
   .thresholdAtlasSummary article+article{border-left:0;border-top:1px solid var(--line);padding-left:0}
 }
+
+
+/* UX Architecture 1.0 — HOME / SYSTEM / PLANET / RESEARCH */
+:root{
+  color-scheme:light;
+  --bg:#f3f6f7;
+  --surface:#ffffff;
+  --surface2:#f7f9fa;
+  --text:#152a31;
+  --muted:#63757c;
+  --soft:#3d555f;
+  --line:rgba(21,42,49,.12);
+  --lineStrong:rgba(21,42,49,.22);
+  --cyan:#147aa2;
+  --green:#1f7a57;
+  --amber:#9c6816;
+  --violet:#7450a4;
+  --danger:#a84949;
+  --shadow:0 18px 50px rgba(28,53,62,.08)
+}
+*{scroll-margin-top:86px}
+body{
+  background:#f3f6f7!important;
+  color:var(--text)!important
+}
+body[data-app-view="planet"]{
+  color-scheme:dark;
+  --bg:#05090b;
+  --surface:#091015;
+  --surface2:#0d161c;
+  --text:#f2f5f6;
+  --muted:#91a0a7;
+  --soft:#c9d2d6;
+  --line:rgba(255,255,255,.10);
+  --lineStrong:rgba(255,255,255,.18);
+  --cyan:#7fddff;
+  --green:#78e1b1;
+  --amber:#f2c36f;
+  --violet:#c2a5ff;
+  --danger:#ef8f8b;
+  --shadow:0 28px 80px rgba(0,0,0,.30);
+  background:#05090b!important
+}
+body[data-app-view="planet"] main{background:#05090b}
+body[data-app-view="home"] main{display:none}
+
+/* Route visibility is CSS-first to prevent mixed contexts. */
+[data-app-view-section]{display:none!important}
+body[data-app-view="home"] [data-app-view-section~="home"]{display:flex!important}
+body[data-app-view="system"] [data-app-view-section~="system"]{display:block!important}
+body[data-app-view="planet"] [data-app-view-section~="planet"]{display:block!important}
+body[data-app-view="research"] [data-app-view-section~="research"]{display:block!important}
+
+/* Global navigation */
+.siteNav{
+  background:rgba(255,255,255,.95)!important;
+  border-bottom:1px solid rgba(21,42,49,.10)!important;
+  color:#173039!important;
+  box-shadow:0 4px 18px rgba(28,53,62,.05);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  grid-template-columns:auto minmax(230px,.8fr) 1fr auto!important
+}
+.wordmarkButton{
+  border:0;
+  background:transparent;
+  padding:0;
+  color:#122a33!important;
+  cursor:pointer
+}
+.wordmarkButton span{color:#75868d!important}
+.systemPicker{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0
+}
+.systemPicker>span{
+  color:#819097;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.systemPicker select{
+  min-width:0;
+  width:min(260px,100%);
+  border:1px solid rgba(21,42,49,.12);
+  border-radius:999px;
+  background:#f5f8f9;
+  color:#213b45;
+  padding:8px 34px 8px 12px;
+  font-weight:700
+}
+.appNav{
+  display:flex;
+  justify-content:center;
+  gap:7px
+}
+.appNavBtn{
+  border:1px solid transparent;
+  border-radius:999px;
+  background:transparent;
+  color:#60747d;
+  padding:8px 13px;
+  font-size:12px;
+  font-weight:750;
+  cursor:pointer
+}
+.appNavBtn:hover{background:#edf3f5;color:#284b59}
+.appNavBtn.active{
+  background:#dff0f3;
+  border-color:#b7d7dd;
+  color:#0c6373
+}
+.viewControl{
+  background:#f2f6f7!important;
+  border-color:rgba(21,42,49,.12)!important
+}
+.modeBtn{color:#65777f!important}
+.modeBtn.active{
+  background:#17343e!important;
+  color:#fff!important;
+  box-shadow:none!important
+}
+
+/* HOME — editorial landing */
+.hero{
+  min-height:calc(100vh - 66px)!important;
+  background:
+    radial-gradient(circle at 78% 28%,rgba(27,139,151,.12),transparent 30%),
+    radial-gradient(circle at 67% 72%,rgba(113,171,192,.09),transparent 25%),
+    #f7f9fa!important;
+  color:#173039!important
+}
+.heroGlow{
+  background:radial-gradient(circle at 42% 44%,rgba(41,155,166,.15),rgba(255,255,255,0) 66%)!important
+}
+.hero h1{color:#142a33!important}
+.heroLead{color:#5e737c!important}
+.overline,.eyebrow{color:#197789!important}
+.ctaPrimary{
+  border:0!important;
+  background:#0d788b!important;
+  color:#fff!important;
+  cursor:pointer
+}
+.ctaTextButton{
+  border:0;
+  background:transparent;
+  color:#4b6873!important;
+  cursor:pointer
+}
+.heroFacts{
+  background:rgba(255,255,255,.72)!important;
+  border-color:rgba(21,42,49,.10)!important
+}
+.heroFacts span{color:#829097!important}
+.heroFacts strong{color:#18313b!important}
+
+/* SYSTEM — white, global context */
+.systemOverview{
+  width:var(--content);
+  margin:0 auto;
+  padding:82px 0 34px;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.1fr) minmax(480px,.9fr);
+  gap:48px;
+  align-items:end
+}
+.systemViewLabel{
+  color:#9a6816;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.12em
+}
+.systemOverview h1{
+  margin:8px 0 7px;
+  color:#152c35;
+  font-size:clamp(48px,6vw,82px);
+  line-height:.94;
+  letter-spacing:-.055em
+}
+.systemOverview p{
+  max-width:720px;
+  margin:0;
+  color:#667981;
+  font-size:16px
+}
+.systemViewKpis{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  border-top:1px solid rgba(21,42,49,.12);
+  border-left:1px solid rgba(21,42,49,.12)
+}
+.appFact{
+  padding:13px 14px;
+  border-right:1px solid rgba(21,42,49,.12);
+  border-bottom:1px solid rgba(21,42,49,.12)
+}
+.appFact span{
+  display:block;
+  color:#809098;
+  font-size:9px;
+  font-weight:750;
+  letter-spacing:.09em;
+  text-transform:uppercase
+}
+.appFact strong{
+  display:block;
+  margin-top:4px;
+  color:inherit;
+  font-size:15px
+}
+.appFact em{
+  display:block;
+  margin-top:2px;
+  color:#839199;
+  font-size:9px;
+  font-style:normal
+}
+body[data-app-view="system"] .chapter{
+  color:#19323c!important
+}
+body[data-app-view="system"] .chapterIntro h2,
+body[data-app-view="system"] .chapterIntro h3{color:#18313a!important}
+body[data-app-view="system"] .chapterIntro p{color:#647981!important}
+body[data-app-view="system"] .chapterNumber{color:#a0adb2!important}
+body[data-app-view="system"] .systemVisual{
+  border:1px solid rgba(21,42,49,.15)!important;
+  box-shadow:0 15px 45px rgba(28,53,62,.10)!important
+}
+body[data-app-view="system"] .contextRail article,
+body[data-app-view="system"] .technicalSheet,
+body[data-app-view="system"] .world{
+  background:#fff!important;
+  color:#233e48!important;
+  border-color:rgba(21,42,49,.12)!important;
+  box-shadow:0 10px 32px rgba(28,53,62,.06)!important
+}
+body[data-app-view="system"] .contextRail article span,
+body[data-app-view="system"] .worldFacts,
+body[data-app-view="system"] .worldExplore,
+body[data-app-view="system"] .sheetHeading p{color:#70828a!important}
+body[data-app-view="system"] .contextRail h3,
+body[data-app-view="system"] .world h3,
+body[data-app-view="system"] .sheetHeading h3{color:#19323c!important}
+body[data-app-view="system"] .worldBody p{color:#60747d!important}
+body[data-app-view="system"] .worldHero{
+  background:linear-gradient(145deg,#e9f0f3,#f9fbfb)!important
+}
+body[data-app-view="system"] .worldGallery{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important
+}
+body[data-app-view="system"] .worldSpeculative{
+  border-color:rgba(116,80,164,.25)!important
+}
+body[data-app-view="system"] .speculativeHero{
+  background:linear-gradient(145deg,#f0eaf8,#faf9fc)!important
+}
+body[data-app-view="system"] .speculativeSphere{
+  background:radial-gradient(circle at 33% 27%,#d2c4ea 0,#785b9b 38%,#2f223e 76%)!important
+}
+body[data-app-view="system"] .tableWrap{
+  background:#fff!important;
+  border-color:rgba(21,42,49,.12)!important
+}
+body[data-app-view="system"] table{color:#344e59!important}
+body[data-app-view="system"] thead{background:#eef3f5!important}
+body[data-app-view="system"] td,
+body[data-app-view="system"] th{border-color:rgba(21,42,49,.09)!important}
+
+/* PLANET — deliberate dark immersion */
+.planetShell{
+  background:
+    radial-gradient(circle at 82% 5%,rgba(47,125,156,.18),transparent 28%),
+    #05090b!important;
+  color:#f2f5f6;
+  min-height:calc(100vh - 66px);
+  padding:58px 0 34px
+}
+.planetShellInner{width:var(--content);margin:0 auto}
+.planetBackBtn{
+  border:0;
+  background:transparent;
+  color:#9eafb6;
+  padding:4px 0;
+  cursor:pointer;
+  font-size:12px
+}
+.planetBackBtn:hover{color:#fff}
+.planetIdentity{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(520px,.9fr);
+  gap:48px;
+  align-items:end;
+  margin-top:42px
+}
+.planetEpistemic{
+  display:inline-flex;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.1em
+}
+.planetEpistemic.observed{background:rgba(120,225,177,.12);color:#78e1b1}
+.planetEpistemic.speculative{background:rgba(194,165,255,.12);color:#c2a5ff}
+.planetHostLabel{
+  margin:14px 0 5px;
+  color:#82949c;
+  font-size:11px;
+  letter-spacing:.1em
+}
+.planetIdentity h1{
+  margin:0;
+  color:#f4f7f8;
+  font-size:clamp(54px,7vw,94px);
+  line-height:.92;
+  letter-spacing:-.06em
+}
+.planetViewLead{
+  max-width:760px;
+  margin:18px 0 0;
+  color:#9dacb2;
+  font-size:16px
+}
+.planetKpis{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  border-top:1px solid rgba(255,255,255,.11);
+  border-left:1px solid rgba(255,255,255,.11)
+}
+.planetKpis .appFact{
+  border-color:rgba(255,255,255,.11)
+}
+.planetKpis .appFact span{color:#7f929a}
+.planetKpis .appFact strong{color:#f0f4f5}
+.planetKpis .appFact em{color:#798b93}
+.planetTabNav{
+  display:flex;
+  gap:8px;
+  margin-top:42px;
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(255,255,255,.10);
+  overflow-x:auto
+}
+.planetTabNav button{
+  flex:0 0 auto;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:999px;
+  background:#0a1115;
+  color:#92a3aa;
+  padding:8px 14px;
+  cursor:pointer
+}
+.planetTabNav button.active{
+  background:#f2f5f6;
+  border-color:#f2f5f6;
+  color:#0b1216
+}
+.observedPlanetView{
+  padding:42px 0 70px
+}
+body[data-world-kind="h01"] #observedPlanetView{display:none!important}
+.planetPanel{display:none}
+body[data-world-kind="observed"][data-planet-tab="summary"] [data-observed-panel="summary"],
+body[data-world-kind="observed"][data-planet-tab="orbit"] [data-observed-panel="orbit"],
+body[data-world-kind="observed"][data-planet-tab="environment"] [data-observed-panel="environment"],
+body[data-world-kind="observed"][data-planet-tab="evidence"] [data-observed-panel="evidence"]{
+  display:block
+}
+.planetPanelHeading p{
+  margin:0 0 6px;
+  color:#78e1b1;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.12em
+}
+.planetPanelHeading h2{
+  max-width:850px;
+  margin:0;
+  color:#edf3f5;
+  font-size:clamp(34px,4.5vw,58px);
+  line-height:1.02;
+  letter-spacing:-.045em
+}
+.observedSummaryGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  margin-top:28px;
+  border-top:1px solid rgba(255,255,255,.10);
+  border-left:1px solid rgba(255,255,255,.10)
+}
+.observedSummaryGrid .appFact{border-color:rgba(255,255,255,.10)}
+.observedSummaryGrid .appFact strong{color:#edf2f4}
+.knowledgeSplit{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  margin-top:28px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.10)
+}
+.knowledgeSplit article{
+  background:#081015;
+  padding:24px
+}
+.knowledgeSplit article>span,
+.epistemicColumns article>span{
+  color:#7f929a;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.1em
+}
+.knowledgeSplit article:first-child>span{color:#78e1b1}
+.knowledgeSplit strong{
+  display:block;
+  margin-top:5px;
+  color:#edf2f4;
+  font-size:18px
+}
+.knowledgeRows{
+  margin:16px 0 0
+}
+.knowledgeRows div{
+  display:grid;
+  grid-template-columns:minmax(160px,.8fr) minmax(0,1.2fr);
+  gap:16px;
+  padding:10px 0;
+  border-top:1px solid rgba(255,255,255,.08)
+}
+.knowledgeRows dt{color:#7e9098}
+.knowledgeRows dd{
+  margin:0;
+  color:#dce5e8;
+  text-align:right
+}
+.planetOrbitLayout{
+  display:grid;
+  grid-template-columns:minmax(340px,.9fr) minmax(0,1.1fr);
+  gap:42px;
+  margin-top:28px;
+  align-items:center
+}
+.planetOrbitGraphic{
+  position:relative;
+  min-height:360px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.09);
+  background:radial-gradient(circle,rgba(35,94,117,.18),transparent 56%)
+}
+.planetOrbitStar{
+  width:76px;height:76px;border-radius:50%;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 32%,#fff5c7,#c48542 50%,#4b2818 80%);
+  color:#3b2419;
+  font-weight:900;
+  box-shadow:0 0 40px rgba(225,179,101,.30)
+}
+.planetOrbitRing{
+  position:absolute;
+  width:270px;height:270px;
+  border:1px solid rgba(127,221,255,.30);
+  border-radius:50%
+}
+.planetOrbitRing i{
+  --orbit-pos:.5;
+  position:absolute;
+  left:calc(50% + (var(--orbit-pos) - .5) * 230px);
+  top:11px;
+  width:17px;height:17px;border-radius:50%;
+  background:#7fddff;
+  box-shadow:0 0 18px rgba(127,221,255,.55)
+}
+.planetFactList{border-top:1px solid rgba(255,255,255,.10)}
+.epistemicColumns{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  margin-top:28px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.10)
+}
+.epistemicColumns article{
+  min-height:280px;
+  padding:22px;
+  background:#081015
+}
+.observedColumn>span{color:#78e1b1!important}
+.derivedColumn>span{color:#7fddff!important}
+.unknownColumn>span{color:#a2adb2!important}
+.planetEvidence{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  margin-top:28px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.10)
+}
+.planetEvidence article{padding:22px;background:#081015}
+.planetEvidence span{color:#78e1b1;font-size:9px;font-weight:850;letter-spacing:.1em}
+.planetEvidence strong{display:block;margin-top:8px;color:#eef3f4;font-size:17px}
+.planetEvidence p{color:#82949c}
+
+/* H-01 uses the existing scientific modules but only one causal layer at a time. */
+body[data-app-view="planet"][data-world-kind="observed"] #experimento{display:none!important}
+body[data-app-view="planet"][data-world-kind="h01"] #experimento{
+  background:#05090b!important;
+  color:#f2f5f6!important;
+  padding-top:16px!important
+}
+body[data-app-view="planet"][data-world-kind="h01"] #experimento>.chapterIntro{
+  display:none!important
+}
+body[data-app-view="planet"][data-world-kind="h01"] #experimento>[data-h01-panel]{
+  display:none!important
+}
+body[data-app-view="planet"][data-world-kind="h01"][data-planet-tab="environment"] #experimento>[data-h01-panel="environment"],
+body[data-app-view="planet"][data-world-kind="h01"][data-planet-tab="life"] #experimento>[data-h01-panel="life"],
+body[data-app-view="planet"][data-world-kind="h01"][data-planet-tab="humanity"] #experimento>[data-h01-panel="humanity"],
+body[data-app-view="planet"][data-world-kind="h01"][data-planet-tab="expansion"] #experimento>[data-h01-panel="expansion"]{
+  display:block!important
+}
+body[data-app-view="planet"] #experimento>[data-research-panel]:not([data-h01-panel]){
+  display:none!important
+}
+
+/* RESEARCH — white metacognition layer */
+.researchShell{
+  width:var(--content);
+  margin:0 auto;
+  padding:82px 0 26px
+}
+.researchShellIntro>span{
+  color:#197789;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.12em
+}
+.researchShell h1{
+  max-width:900px;
+  margin:8px 0 10px;
+  color:#152d36;
+  font-size:clamp(46px,6vw,78px);
+  line-height:.96;
+  letter-spacing:-.055em
+}
+.researchShell p{
+  max-width:850px;
+  margin:0;
+  color:#647981;
+  font-size:16px
+}
+.researchTabNav{
+  display:flex;
+  gap:7px;
+  margin-top:30px;
+  padding:13px 0;
+  border-top:1px solid rgba(21,42,49,.12);
+  border-bottom:1px solid rgba(21,42,49,.12);
+  overflow-x:auto
+}
+.researchTabNav button{
+  flex:0 0 auto;
+  border:1px solid rgba(21,42,49,.12);
+  border-radius:999px;
+  background:#fff;
+  color:#62767e;
+  padding:8px 13px;
+  cursor:pointer
+}
+.researchTabNav button.active{
+  background:#153a43;
+  border-color:#153a43;
+  color:#fff
+}
+body[data-app-view="research"] #experimento{
+  background:#f3f6f7!important;
+  color:#19323c!important;
+  padding-top:8px!important
+}
+body[data-app-view="research"] #experimento>*{display:none!important}
+body[data-app-view="research"][data-research-tab="replay"] #experimento>[data-research-panel="replay"],
+body[data-app-view="research"][data-research-tab="thresholds"] #experimento>[data-research-panel="thresholds"],
+body[data-app-view="research"][data-research-tab="publication"] #experimento>[data-research-panel="publication"]{
+  display:block!important
+}
+body[data-app-view="research"] [data-research-panel]{display:none!important}
+body[data-app-view="research"][data-research-tab="evidence"] [data-research-panel="evidence"]{
+  display:block!important
+}
+body[data-app-view="research"][data-research-tab="replay"] [data-research-panel="replay"],
+body[data-app-view="research"][data-research-tab="thresholds"] [data-research-panel="thresholds"],
+body[data-app-view="research"][data-research-tab="publication"] [data-research-panel="publication"]{
+  display:block!important
+}
+body[data-app-view="research"] .evolutionaryReplaySystem,
+body[data-app-view="research"] .thresholdAtlasSystem,
+body[data-app-view="research"] .researchReleaseSystem,
+body[data-app-view="research"] .nbodyBand,
+body[data-app-view="research"] .methodChapter{
+  background:#fff!important;
+  color:#213b45!important;
+  border-color:rgba(21,42,49,.12)!important;
+  box-shadow:0 12px 36px rgba(28,53,62,.06)!important;
+  border-radius:18px!important;
+  padding-left:clamp(20px,3vw,34px)!important;
+  padding-right:clamp(20px,3vw,34px)!important
+}
+body[data-app-view="research"] .methodChapter{
+  width:var(--content);
+  margin-left:auto!important;
+  margin-right:auto!important
+}
+body[data-app-view="research"] h2,
+body[data-app-view="research"] h3,
+body[data-app-view="research"] h4,
+body[data-app-view="research"] strong{color:#213b45!important}
+body[data-app-view="research"] p{color:#657982!important}
+body[data-app-view="research"] .replayOutcomeRow,
+body[data-app-view="research"] .replaySensitivityRow,
+body[data-app-view="research"] .counterfactualDeltaRow,
+body[data-app-view="research"] .thresholdCard,
+body[data-app-view="research"] .researchEvidenceRow,
+body[data-app-view="research"] .researchClaim,
+body[data-app-view="research"] .researchCheck,
+body[data-app-view="research"] .manuscriptHumanCheck{
+  background:#f7f9fa!important;
+  border-color:rgba(21,42,49,.10)!important
+}
+body[data-app-view="research"] input[type="number"],
+body[data-app-view="research"] select{
+  background:#fff!important;
+  color:#213b45!important;
+  border-color:rgba(21,42,49,.20)!important
+}
+body[data-app-view="research"] .replayRunButton{
+  background:#edf4f5!important;
+  color:#1f5360!important
+}
+body[data-app-view="research"] .evidenceList article{
+  background:#fff!important;
+  border-color:rgba(21,42,49,.10)!important
+}
+body[data-app-view="research"] .evidenceList h3{color:#213b45!important}
+
+/* semantic evidence colors */
+.evidenceMark.observed,.contextObserved{color:#1f7a57!important}
+.evidenceMark.literature{color:#9c6816!important}
+.evidenceMark.derived{color:#147aa2!important}
+.evidenceMark.speculative,.worldKicker.speculative{color:#7450a4!important}
+
+.siteFooter{
+  background:#e9eef0!important;
+  color:#5d7179!important;
+  border-color:rgba(21,42,49,.10)!important
+}
+.siteFooter strong{color:#173039!important}
+
+@media(max-width:1050px){
+  .siteNav{grid-template-columns:auto 1fr auto!important}
+  .systemPicker{display:none}
+  .systemOverview,.planetIdentity{grid-template-columns:1fr}
+  .systemViewKpis,.planetKpis{max-width:760px}
+  body[data-app-view="system"] .worldGallery{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:780px){
+  .siteNav{height:58px;padding:0 14px;gap:10px}
+  .viewControl{display:none}
+  .appNav{justify-content:flex-end}
+  .appNavBtn{padding:6px 9px}
+  .systemOverview,.researchShell,.planetShellInner{width:92vw}
+  .systemOverview,.researchShell{padding-top:54px}
+  .systemOverview h1,.researchShell h1{font-size:48px}
+  body[data-app-view="system"] .worldGallery{grid-template-columns:1fr!important}
+  .planetShell{padding-top:38px}
+  .planetIdentity{margin-top:28px}
+  .planetIdentity h1{font-size:52px}
+  .observedSummaryGrid{grid-template-columns:1fr 1fr}
+  .knowledgeSplit,.epistemicColumns,.planetEvidence,.planetOrbitLayout{grid-template-columns:1fr}
+  .planetOrbitGraphic{min-height:300px}
+  .researchTabNav,.planetTabNav{scrollbar-width:none}
+}

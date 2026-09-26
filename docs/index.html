@@ -5,25 +5,32 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>TRISOLARIS LAB — Ciencia para explorar</title>
   <meta name="description" content="Astrobiología y astroantropología computacional en sistemas estelares múltiples." />
-  <meta name="theme-color" content="#05080b" />
-  <link rel="stylesheet" href="./styles.css?v=phase12a-20260925" />
+  <meta name="theme-color" content="#f5f7f8" />
+  <link rel="stylesheet" href="./styles.css?v=uxarch1-20260926" />
 </head>
-<body data-mode="simple">
+<body data-mode="simple" data-app-view="home" data-world-kind="none" data-planet-tab="summary" data-research-tab="replay">
   <nav class="siteNav" aria-label="Navegación principal">
-    <a class="wordmark" href="#inicio">TRISOLARIS <span>LAB</span></a>
-    <div class="navCenter">
-      <a href="#sistema">Sistema</a>
-      <a href="#mundos">Mundos</a>
-      <a href="#experimento">Experimento</a>
-      <a href="#evidencia">Método</a>
+    <button id="homeBtn" class="wordmark wordmarkButton" type="button">TRISOLARIS <span>LAB</span></button>
+
+    <label class="systemPicker">
+      <span>Sistema</span>
+      <select id="systemSelect" aria-label="Sistema estelar">
+        <option value="LTT-1445-ABC">LTT 1445 ABC</option>
+      </select>
+    </label>
+
+    <div class="appNav" aria-label="Vista principal">
+      <button type="button" class="appNavBtn" data-route="system">Sistema</button>
+      <button type="button" class="appNavBtn" data-route="research">Research</button>
     </div>
+
     <div class="viewControl" aria-label="Nivel de detalle">
       <button class="modeBtn active" data-mode="simple">Explorar</button>
       <button class="modeBtn" data-mode="scientific">Científico</button>
     </div>
   </nav>
 
-  <header id="inicio" class="hero">
+  <header id="inicio" class="hero" data-app-view-section="home">
     <div class="heroGlow" aria-hidden="true"></div>
     <div class="heroCopy">
       <p class="overline">ASTROBIOLOGÍA COMPUTACIONAL · SISTEMAS MÚLTIPLES</p>
@@ -33,8 +40,8 @@
         órbita, energía, clima, supervivencia, adaptación y, más adelante, evolución y civilización.
       </p>
       <div class="heroCtas">
-        <a class="ctaPrimary" href="#sistema">Entrar al sistema</a>
-        <a class="ctaText" href="#evidencia">Cómo sabemos lo que sabemos <span>↘</span></a>
+        <button id="enterSystemBtn" class="ctaPrimary" type="button">Entrar al sistema</button>
+        <button id="enterResearchBtn" class="ctaText ctaTextButton" type="button">Cómo sabemos lo que sabemos <span>↘</span></button>
       </div>
     </div>
 
@@ -46,8 +53,31 @@
     </div>
   </header>
 
-  <main>
-    <section id="sistema" class="chapter">
+  <main>\n
+    <section id="systemOverview" class="systemOverview" data-app-view-section="system">
+      <div>
+        <span class="systemViewLabel">SISTEMA REAL · CONTEXTO GENERAL</span>
+        <h1 id="systemViewName">LTT 1445 ABC</h1>
+        <p id="systemViewMeta">Arquitectura estelar, mundos confirmados y datos generales del sistema.</p>
+      </div>
+      <div id="systemViewKpis" class="systemViewKpis"></div>
+    </section>
+\n
+    <section id="researchShell" class="researchShell" data-app-view-section="research">
+      <div class="researchShellIntro">
+        <span>RESEARCH · METACAPA CIENTÍFICA</span>
+        <h1>Cómo sabemos lo que sabemos.</h1>
+        <p>Experimentos reproducibles, sensibilidad, evidencia y publicación. Aquí analizamos el modelo; ya no estamos “dentro” de un planeta.</p>
+      </div>
+      <nav id="researchTabNav" class="researchTabNav" aria-label="Secciones de investigación">
+        <button type="button" data-research-tab="replay" class="active">Replay</button>
+        <button type="button" data-research-tab="thresholds">Umbrales</button>
+        <button type="button" data-research-tab="evidence">Evidencia</button>
+        <button type="button" data-research-tab="publication">Publicaciones</button>
+      </nav>
+    </section>
+
+    <section id="sistema" class="chapter" data-app-view-section="system">
       <div class="chapterIntro">
         <p class="chapterNumber">01</p>
         <div>
@@ -114,7 +144,7 @@
       </div>
     </section>
 
-    <section id="mundos" class="chapter worldsChapter">
+    <section id="mundos" class="chapter worldsChapter" data-app-view-section="system">
       <div class="chapterIntro">
         <p class="chapterNumber">02</p>
         <div>
@@ -146,7 +176,90 @@
       </div>
     </section>
 
-    <section id="experimento" class="chapter experimentChapter">
+    
+    <section id="planetShell" class="planetShell" data-app-view-section="planet" aria-live="polite">
+      <div class="planetShellInner">
+        <button id="planetBackBtn" class="planetBackBtn" type="button">← <span id="planetBackSystem">LTT 1445 ABC</span></button>
+
+        <div class="planetIdentity">
+          <div>
+            <span id="planetEpistemic" class="planetEpistemic observed">OBSERVED</span>
+            <p id="planetHostLabel" class="planetHostLabel">LTT 1445 A</p>
+            <h1 id="planetViewTitle">—</h1>
+            <p id="planetViewLead">Selecciona un mundo desde el sistema.</p>
+          </div>
+          <div id="planetKpis" class="planetKpis"></div>
+        </div>
+
+        <nav id="planetTabNav" class="planetTabNav" aria-label="Secciones del planeta"></nav>
+
+        <div id="observedPlanetView" class="observedPlanetView" data-world-kind-section="observed">
+          <section class="planetPanel" data-observed-panel="summary">
+            <div class="planetPanelHeading">
+              <p>RESUMEN</p>
+              <h2>Lo que sabemos y lo que todavía no.</h2>
+            </div>
+            <div id="observedSummaryGrid" class="observedSummaryGrid"></div>
+            <div class="knowledgeSplit">
+              <article>
+                <span>OBSERVADO</span>
+                <strong>Datos del catálogo</strong>
+                <div id="observedKnownList"></div>
+              </article>
+              <article>
+                <span>NO OBSERVADO</span>
+                <strong>No se rellena automáticamente</strong>
+                <div id="observedUnknownList"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="planetPanel" data-observed-panel="orbit">
+            <div class="planetPanelHeading">
+              <p>ÓRBITA</p>
+              <h2>Este mundo dentro del sistema.</h2>
+            </div>
+            <div class="planetOrbitLayout">
+              <div class="planetOrbitGraphic" aria-hidden="true">
+                <div class="planetOrbitStar">A</div>
+                <div class="planetOrbitRing"><i id="planetOrbitDot"></i></div>
+              </div>
+              <div id="observedOrbitFacts" class="planetFactList"></div>
+            </div>
+          </section>
+
+          <section class="planetPanel" data-observed-panel="environment">
+            <div class="planetPanelHeading">
+              <p>AMBIENTE</p>
+              <h2>Separar dato, derivación y desconocido.</h2>
+            </div>
+            <div class="epistemicColumns">
+              <article class="observedColumn">
+                <span>OBSERVED</span>
+                <div id="observedEnvironmentObserved"></div>
+              </article>
+              <article class="derivedColumn">
+                <span>DERIVED</span>
+                <div id="observedEnvironmentDerived"></div>
+              </article>
+              <article class="unknownColumn">
+                <span>UNKNOWN</span>
+                <div id="observedEnvironmentUnknown"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="planetPanel" data-observed-panel="evidence">
+            <div class="planetPanelHeading">
+              <p>EVIDENCIA</p>
+              <h2>De dónde sale cada dato.</h2>
+            </div>
+            <div id="observedEvidence" class="planetEvidence"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+\n    <section id="experimento" class="chapter experimentChapter" data-app-view-section="planet research">
       <div class="chapterIntro">
         <p class="chapterNumber">03</p>
         <div>
@@ -159,7 +272,7 @@
         </div>
       </div>
 
-      <div class="labSurface">
+      <div class="labSurface" data-h01-panel="environment">
         <div class="controlsColumn">
           <label class="controlRow">
             <div>
@@ -219,7 +332,7 @@
         </div>
       </div>
 
-      <div class="technicalSheet scientific-only">
+      <div class="technicalSheet scientific-only" data-h01-panel="environment">
         <div class="sheetHeading">
           <div>
             <span class="evidenceMark derived">Derivado</span>
@@ -231,7 +344,7 @@
         <div id="candidateWhy" class="methodNote"></div>
       </div>
 
-      <section class="orbitWindow" aria-labelledby="orbitWindowTitle">
+      <section class="orbitWindow" data-h01-panel="environment" aria-labelledby="orbitWindowTitle">
         <div class="orbitWindowIntro">
           <p class="eyebrow">VENTANA ORBITAL · PHASE 2.2</p>
           <h3 id="orbitWindowTitle">¿Dónde conviene colocar H-01?</h3>
@@ -247,7 +360,7 @@
         </div>
       </section>
 
-      <section class="climateWorld" aria-labelledby="climateHeadline">
+      <section class="climateWorld" data-h01-panel="environment" aria-labelledby="climateHeadline">
         <div class="climateIntro">
           <p class="eyebrow">CLIMA REGIONAL · PHASE 3.0</p>
           <h3 id="climateHeadline">Un planeta no tiene una sola temperatura.</h3>
@@ -260,7 +373,7 @@
         <p class="climateCaveat">Modelo EBM anual y latitudinal · todavía no resuelve continentes, estaciones, nubes ni corrientes oceánicas.</p>
       </section>
 
-      <section class="surfaceSystems" aria-labelledby="surfaceHeadline">
+      <section class="surfaceSystems" data-h01-panel="environment" aria-labelledby="surfaceHeadline">
         <div class="surfaceIntro">
           <p class="eyebrow">ATMÓSFERA · AGUA · BIOSFERA POTENCIAL</p>
           <h3 id="surfaceHeadline">¿Dónde podría sostenerse un ecosistema?</h3>
@@ -290,7 +403,7 @@
         <p class="surfaceCaveat">La productividad es un potencial ambiental. No representa organismos observados ni una biosfera ya existente.</p>
       </section>
 
-      <section class="ecologySystem" aria-labelledby="ecologyHeadline">
+      <section class="ecologySystem" data-h01-panel="life" aria-labelledby="ecologyHeadline">
         <div class="ecologyIntro">
           <p class="eyebrow">ECOLOGÍA · PHASE 4.1</p>
           <h3 id="ecologyHeadline">Condiciones para una cadena alimentaria.</h3>
@@ -326,7 +439,7 @@
         <p class="surfaceCaveat">Los gremios son funciones ecológicas generales. No predicen especies, anatomías ni evolución automática.</p>
       </section>
 
-      <section class="settlementSystem" aria-labelledby="settlementHeadline">
+      <section class="settlementSystem" data-h01-panel="humanity" aria-labelledby="settlementHeadline">
         <div class="settlementIntro">
           <p class="eyebrow">POBLACIÓN · PHASE 5.0</p>
           <h3 id="settlementHeadline">¿Dónde podría vivir una población humana?</h3>
@@ -367,7 +480,7 @@
         <p class="surfaceCaveat">Modelo poblacional ambiental. No es una predicción médica individual ni implica adaptación genética automática.</p>
       </section>
 
-      <section class="refugiaSystem" aria-labelledby="refugiaHeadline">
+      <section class="refugiaSystem" data-h01-panel="humanity" aria-labelledby="refugiaHeadline">
         <div class="refugiaIntro">
           <p class="eyebrow">MIGRACIÓN · PHASE 5.1</p>
           <h3 id="refugiaHeadline">Poblaciones separadas por el planeta.</h3>
@@ -395,7 +508,7 @@
         <div id="refugiaMetrics" class="metricGrid scientific-only"></div>
       </section>
 
-      <section class="lineageSystem" aria-labelledby="lineageHeadline">
+      <section class="lineageSystem" data-h01-panel="humanity" aria-labelledby="lineageHeadline">
         <div class="lineageIntro">
           <p class="eyebrow">LINAJES · PHASE 6.0</p>
           <h3 id="lineageHeadline">La historia biológica empieza con poblaciones.</h3>
@@ -425,7 +538,7 @@
         <p class="surfaceCaveat">Los rasgos son índices fisiológicos poblacionales. No representan ideales corporales, etnias ni cambios de un individuo durante su vida.</p>
       </section>
 
-      <section class="geneticsSystem" aria-labelledby="geneticsHeadline">
+      <section class="geneticsSystem" data-h01-panel="humanity" aria-labelledby="geneticsHeadline">
         <div class="geneticsIntro">
           <p class="eyebrow">GENÉTICA POBLACIONAL · PHASE 6.1</p>
           <h3 id="geneticsHeadline">Ahora los linajes tienen frecuencias alélicas.</h3>
@@ -445,7 +558,7 @@
         <div id="geneticsMetrics" class="metricGrid scientific-only"></div>
       </section>
 
-      <section class="lineageInspector" aria-labelledby="lineageInspectorHeadline">
+      <section class="lineageInspector" data-h01-panel="humanity" aria-labelledby="lineageInspectorHeadline">
         <div class="lineageInspectorIntro">
           <p class="eyebrow">ANATOMÍA FUNCIONAL · PHASE 6.2</p>
           <h3 id="lineageInspectorHeadline">Qué cambia realmente en cada linaje.</h3>
@@ -485,7 +598,7 @@
         <p class="surfaceCaveat">El modelo actual no inventa cambios craneofaciales, estéticos ni una “apariencia alienígena”. Solo muestra cambios funcionales cuando la genética y la selección los sostienen.</p>
       </section>
 
-      <section class="planetHistorySystem" aria-labelledby="planetHistoryHeadline">
+      <section class="planetHistorySystem" data-h01-panel="humanity" aria-labelledby="planetHistoryHeadline">
         <div class="planetHistoryIntro">
           <p class="eyebrow">HUELLA PLANETARIA · PHASE 7.1</p>
           <h3 id="planetHistoryHeadline">Los linajes empiezan a dejar historia sobre el planeta.</h3>
@@ -562,7 +675,7 @@
         <p class="surfaceCaveat">El modelo físico actual resuelve latitud. La longitud del globo se usa solo para separar visualmente poblaciones y trayectorias; no es una predicción geográfica.</p>
       </section>
 
-      <section class="astroanthropologySystem" aria-labelledby="astroAnthroHeadline">
+      <section class="astroanthropologySystem" data-h01-panel="humanity" aria-labelledby="astroAnthroHeadline">
         <div class="astroAnthroIntro">
           <p class="eyebrow">ASTROANTROPOLOGÍA · PHASE 8.0</p>
           <h3 id="astroAnthroHeadline">Cada población resuelve el mismo planeta de una manera distinta.</h3>
@@ -637,7 +750,7 @@
       </section>
 
 
-      <section class="interplanetarySystem" aria-labelledby="interplanetaryHeadline">
+      <section class="interplanetarySystem" data-h01-panel="expansion" aria-labelledby="interplanetaryHeadline">
         <div class="interplanetaryIntro">
           <p class="eyebrow">MULTIPLANETARIO · PHASE 9.0</p>
           <h3 id="interplanetaryHeadline">Salir de H-01 deja de ser una idea y se convierte en una cadena de consecuencias.</h3>
@@ -815,7 +928,7 @@
       </section>
 
 
-      <section class="evolutionaryReplaySystem" aria-labelledby="evolutionaryReplayHeadline">
+      <section class="evolutionaryReplaySystem" data-h01-panel="expansion" data-research-panel="replay" aria-labelledby="evolutionaryReplayHeadline">
         <div class="evolutionaryReplayIntro">
           <p class="eyebrow">EVOLUTIONARY REPLAY · PHASE 10.0</p>
           <h3 id="evolutionaryReplayHeadline">Una historia no demuestra que era inevitable.</h3>
@@ -947,7 +1060,7 @@
 
 
 
-      <section class="thresholdAtlasSystem" aria-labelledby="thresholdAtlasHeadline">
+      <section class="thresholdAtlasSystem" data-h01-panel="expansion" data-research-panel="thresholds" aria-labelledby="thresholdAtlasHeadline">
         <div class="thresholdAtlasIntro">
           <p class="eyebrow">TRANSITION THRESHOLDS · PHASE 12.0</p>
           <h3 id="thresholdAtlasHeadline">¿Qué tendría que cambiar para que la historia deje de quedar atrapada en H-01?</h3>
@@ -973,7 +1086,7 @@
         </div>
       </section>
 
-      <section class="researchReleaseSystem" aria-labelledby="researchReleaseHeadline">
+      <section class="researchReleaseSystem" data-research-panel="publication" aria-labelledby="researchReleaseHeadline">
         <div class="researchReleaseIntro">
           <p class="eyebrow">RESEARCH RELEASES · PHASE 11.0</p>
           <h3 id="researchReleaseHeadline">La simulación empieza a producir evidencia, no solo pantallas.</h3>
@@ -1075,7 +1188,7 @@
         </p>
       </section>
 
-      <section class="nbodyBand" aria-labelledby="nbodyHeadline">
+      <section class="nbodyBand" data-research-panel="evidence" aria-labelledby="nbodyHeadline">
         <div class="nbodyLead">
           <p class="eyebrow">DINÁMICA NUMÉRICA · PHASE 2.1</p>
           <h3 id="nbodyHeadline">Preparando el primer ensemble N-body…</h3>
@@ -1085,13 +1198,13 @@
         <div id="nbodyDetail" class="metricGrid scientific-only"></div>
       </section>
 
-      <div class="plainMethod simple-only">
+      <div class="plainMethod simple-only" data-h01-panel="environment">
         <p><strong>Lo importante:</strong> un porcentaje alto aquí solo significa que este escenario merece una prueba más seria.
           Todavía debemos demostrar estabilidad orbital, atmósfera viable y clima regional.</p>
       </div>
     </section>
 
-    <section id="evidencia" class="chapter methodChapter">
+    <section id="evidencia" class="chapter methodChapter" data-app-view-section="research" data-research-panel="evidence">
       <div class="chapterIntro">
         <p class="chapterNumber">04</p>
         <div>
@@ -1147,6 +1260,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./app.js?v=phase12a-20260925"></script>
+  <script type="module" src="./app.js?v=uxarch1-20260926"></script>
 </body>
 </html>

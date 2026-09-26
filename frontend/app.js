@@ -34,6 +34,309 @@ const focusFact=(label,value)=>`<div class="focusFact"><span>${label}</span><str
 const EARTH_MASS_IN_SOLAR=3.0034896e-6;
 const HILL_THRESHOLD=2*Math.sqrt(3);
 
+
+const APP_CONTEXT_KEY="trisolaris-app-context-v1";
+let appContext={
+  systemId:"LTT-1445-ABC",
+  view:"home",
+  worldId:null,
+  tab:"summary",
+  researchTab:"replay"
+};
+let appShellInitialized=false;
+
+function loadAppContext(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(APP_CONTEXT_KEY)||"null");
+    if(saved&&typeof saved==="object"){
+      appContext={...appContext,...saved};
+    }
+  }catch(err){
+    console.info("TRISOLARIS app context reset",err);
+  }
+  if(!["home","system","planet","research"].includes(appContext.view))appContext.view="home";
+  if(!["replay","thresholds","evidence","publication"].includes(appContext.researchTab))appContext.researchTab="replay";
+}
+
+function saveAppContext(){
+  localStorage.setItem(APP_CONTEXT_KEY,JSON.stringify(appContext));
+}
+
+function observedWorldById(worldId){
+  return (data?.observed_planets||[]).find(p=>p.name===worldId)||null;
+}
+
+function selectedWorld(){
+  if(appContext.worldId==="H-01")return data?.hypothetical_experiment||null;
+  return observedWorldById(appContext.worldId);
+}
+
+function selectedWorldKind(){
+  return appContext.worldId==="H-01"?"h01":(observedWorldById(appContext.worldId)?"observed":"none");
+}
+
+function planetTabs(kind){
+  if(kind==="h01"){
+    return [
+      ["environment","Entorno"],
+      ["life","Vida"],
+      ["humanity","Humanidad"],
+      ["expansion","Expansión"]
+    ];
+  }
+  return [
+    ["summary","Resumen"],
+    ["orbit","Órbita"],
+    ["environment","Ambiente"],
+    ["evidence","Evidencia"]
+  ];
+}
+
+function appFact(label,value,note=""){
+  return '<div class="appFact"><span>'+label+'</span><strong>'+value+'</strong>'+(note?'<em>'+note+'</em>':'')+'</div>';
+}
+
+function renderSystemOverview(){
+  if(!data)return;
+  const s=data.system;
+  const rows=data.observed_planets||[];
+  const name=$("#systemViewName");
+  const meta=$("#systemViewMeta");
+  const kpis=$("#systemViewKpis");
+  if(name)name.textContent=s.name;
+  if(meta)meta.textContent=s.architecture+" · catálogo observacional y contexto estelar.";
+  if(kpis){
+    kpis.innerHTML=
+      appFact("Distancia",fmt(s.distance_pc,2)+" pc","≈ "+fmt(s.distance_pc*3.26156,1)+" años luz")+
+      appFact("Estrellas",String((data.stars||[]).length),"arquitectura jerárquica")+
+      appFact("Planetas",String(rows.length),"confirmados")+
+      appFact("Escenario","H-01","SPECULATIVE");
+  }
+  const option=$("#systemSelect option[value='LTT-1445-ABC']");
+  if(option)option.textContent=s.name;
+}
+
+function listRows(items){
+  return '<dl class="knowledgeRows">'+items.map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+value+'</dd></div>').join("")+'</dl>';
+}
+
+function renderObservedPlanetDetails(p){
+  if(!p)return;
+  const A=data.stars.find(s=>s.id==="A");
+  const gravity=(p.mass_earth!=null&&p.radius_earth!=null)?p.mass_earth/(p.radius_earth*p.radius_earth):null;
+  const flux=(A?.luminosity_solar!=null&&p.semi_major_axis_au)?A.luminosity_solar/(p.semi_major_axis_au*p.semi_major_axis_au):null;
+  const teq=p.equilibrium_temperature_k;
+
+  $("#observedSummaryGrid").innerHTML=
+    appFact("Estado","PLANETA CONFIRMADO","OBSERVED")+
+    appFact("Host",p.host||"LTT 1445 A")+
+    appFact("Descubrimiento",p.discovery_year==null?"—":String(Math.round(p.discovery_year)))+
+    appFact("Fuente","NASA Exoplanet Archive","tabla ps");
+
+  $("#observedKnownList").innerHTML=listRows([
+    ["Período",fmt(p.period_days,6)+" días"],
+    ["Semieje mayor",fmt(p.semi_major_axis_au,5)+" AU"],
+    ["Radio",fmt(p.radius_earth,3)+" R⊕"],
+    ["Masa",fmt(p.mass_earth,2)+" M⊕"],
+    ["Teq de catálogo",teq==null?"—":fmt(teq,0)+" K"]
+  ]);
+  $("#observedUnknownList").innerHTML=listRows([
+    ["Atmósfera","No determinada por este dataset"],
+    ["Presión superficial","Desconocida"],
+    ["Temperatura superficial","No inferida desde Teq"],
+    ["Océanos","Desconocidos"],
+    ["Biosfera / población","No se asumen"]
+  ]);
+
+  $("#observedOrbitFacts").innerHTML=listRows([
+    ["Host",p.host||"LTT 1445 A"],
+    ["Período",fmt(p.period_days,7)+" días"],
+    ["Semieje mayor",fmt(p.semi_major_axis_au,5)+" AU"],
+    ["Excentricidad",p.eccentricity==null?"—":fmt(p.eccentricity,3)],
+    ["Arquitectura",data.system.architecture]
+  ]);
+  const dot=$("#planetOrbitDot");
+  if(dot){
+    const maxA=Math.max(...(data.observed_planets||[]).map(x=>x.semi_major_axis_au||0),.04);
+    dot.style.setProperty("--orbit-pos",Math.max(.12,Math.min(.88,(p.semi_major_axis_au||0)/maxA*.72+.10)));
+  }
+
+  $("#observedEnvironmentObserved").innerHTML=listRows([
+    ["Masa",fmt(p.mass_earth,2)+" M⊕"],
+    ["Radio",fmt(p.radius_earth,3)+" R⊕"],
+    ["Teq catálogo",teq==null?"—":fmt(teq,0)+" K"]
+  ]);
+  $("#observedEnvironmentDerived").innerHTML=listRows([
+    ["Gravedad proxy",gravity==null?"—":fmt(gravity,2)+" g⊕"],
+    ["Flujo A proxy",flux==null?"—":fmt(flux,2)+" S⊕"],
+    ["Lectura","Derivaciones de cribado; no clima superficial"]
+  ]);
+  $("#observedEnvironmentUnknown").innerHTML=listRows([
+    ["Composición atmosférica","UNKNOWN"],
+    ["Temperatura superficial","UNKNOWN"],
+    ["Agua superficial","UNKNOWN"],
+    ["Habitabilidad real","UNKNOWN"]
+  ]);
+
+  $("#observedEvidence").innerHTML=
+    '<article><span>OBSERVED</span><strong>NASA Exoplanet Archive</strong><p>'+String(p.source||"NASA Exoplanet Archive / ps")+'</p></article>'+
+    '<article><span>LITERATURE</span><strong>Arquitectura LTT 1445 ABC</strong><p>Propiedades estelares y jerarquía del sistema registradas separadamente.</p></article>'+
+    '<article><span>DERIVED</span><strong>Proxies mostrados aquí</strong><p>Gravedad y flujo se calculan a partir de masa, radio, luminosidad y distancia orbital. No sustituyen observación directa.</p></article>';
+}
+
+function renderPlanetShell(){
+  if(!data)return;
+  const kind=selectedWorldKind();
+  const world=selectedWorld();
+  if(appContext.view!=="planet"||!world)return;
+
+  document.body.dataset.worldKind=kind;
+  $("#planetBackSystem").textContent=data.system.name;
+  const badge=$("#planetEpistemic");
+  const host=$("#planetHostLabel");
+  const title=$("#planetViewTitle");
+  const lead=$("#planetViewLead");
+  const kpis=$("#planetKpis");
+  const tabs=$("#planetTabNav");
+
+  const availableTabs=planetTabs(kind);
+  if(!availableTabs.some(([id])=>id===appContext.tab)){
+    appContext.tab=availableTabs[0][0];
+    saveAppContext();
+  }
+  document.body.dataset.planetTab=appContext.tab;
+
+  tabs.innerHTML=availableTabs.map(([id,label])=>
+    '<button type="button" data-planet-tab="'+id+'" class="'+(appContext.tab===id?"active":"")+'">'+label+'</button>'
+  ).join("");
+  tabs.querySelectorAll("[data-planet-tab]").forEach(btn=>{
+    btn.addEventListener("click",()=>setPlanetTab(btn.dataset.planetTab));
+  });
+
+  if(kind==="observed"){
+    badge.textContent="OBSERVED";
+    badge.className="planetEpistemic observed";
+    host.textContent=(world.host||"LTT 1445 A")+" · NASA EXOPLANET ARCHIVE";
+    title.textContent=world.name;
+    lead.textContent="Planeta confirmado. Esta vista contiene solo información que pertenece a este mundo y separa explícitamente dato, derivación y desconocido.";
+    kpis.innerHTML=
+      appFact("Período",fmt(world.period_days,4)+" d")+
+      appFact("Órbita",fmt(world.semi_major_axis_au,4)+" AU")+
+      appFact("Radio",fmt(world.radius_earth,2)+" R⊕")+
+      appFact("Masa",fmt(world.mass_earth,2)+" M⊕")+
+      appFact("Teq*",world.equilibrium_temperature_k==null?"—":fmt(world.equilibrium_temperature_k,0)+" K","*no superficie");
+    renderObservedPlanetDetails(world);
+  }else{
+    badge.textContent="SPECULATIVE";
+    badge.className="planetEpistemic speculative";
+    host.textContent=(world.host||"LTT 1445 A")+" · EXPERIMENTAL WORLD";
+    title.textContent=world.name||"TRISOLARIS H-01";
+    lead.textContent="Laboratorio planetario del simulador. No es un planeta descubierto: aquí sí se habilitan clima, vida, humanidad y expansión modelada.";
+    const axis=$("#axis")?.value||world.semi_major_axis_au;
+    const albedo=$("#albedo")?.value||world.albedo;
+    const greenhouse=$("#greenhouse")?.value||world.greenhouse_k;
+    kpis.innerHTML=
+      appFact("Órbita",fmt(axis,3)+" AU","control experimental")+
+      appFact("Albedo",fmt(albedo,2))+
+      appFact("Invernadero","+"+fmt(greenhouse,0)+" K")+
+      appFact("Estado","Escenario","SPECULATIVE");
+  }
+}
+
+function syncAppShell(){
+  document.body.dataset.appView=appContext.view;
+  document.body.dataset.worldKind=appContext.view==="planet"?selectedWorldKind():"none";
+  document.body.dataset.planetTab=appContext.tab;
+  document.body.dataset.researchTab=appContext.researchTab;
+
+  const activeWorld=selectedWorld();
+  document.title=appContext.view==="planet"&&activeWorld
+    ? activeWorld.name+" — TRISOLARIS LAB"
+    : appContext.view==="research"
+      ? "Research — TRISOLARIS LAB"
+      : appContext.view==="system"
+        ? data.system.name+" — TRISOLARIS LAB"
+        : "TRISOLARIS LAB — Ciencia para explorar";
+
+  $$(".appNavBtn").forEach(btn=>{
+    const active=btn.dataset.route===appContext.view;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-pressed",String(active));
+  });
+  $$("[data-research-tab]").forEach(btn=>{
+    const active=btn.dataset.researchTab===appContext.researchTab;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-pressed",String(active));
+  });
+
+  renderSystemOverview();
+  if(appContext.view==="planet")renderPlanetShell();
+}
+
+function routeApp(view,{worldId=null,tab=null,scroll=true}={}){
+  if(!["home","system","planet","research"].includes(view))view="system";
+  appContext.view=view;
+  if(view==="planet"){
+    if(worldId)appContext.worldId=worldId;
+    if(!selectedWorld()){
+      appContext.worldId=(data?.observed_planets||[])[0]?.name||"H-01";
+    }
+    const kind=selectedWorldKind();
+    const tabs=planetTabs(kind);
+    if(tab&&tabs.some(([id])=>id===tab))appContext.tab=tab;
+    if(!tabs.some(([id])=>id===appContext.tab))appContext.tab=tabs[0][0];
+  }
+  saveAppContext();
+  closeFocus();
+  syncAppShell();
+  if(scroll){
+    const target=view==="home"?$("#inicio")
+      :view==="system"?$("#systemOverview")
+      :view==="planet"?$("#planetShell")
+      :$("#researchShell");
+    target?.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+function setPlanetTab(tab){
+  const tabs=planetTabs(selectedWorldKind());
+  if(!tabs.some(([id])=>id===tab))return;
+  appContext.tab=tab;
+  saveAppContext();
+  syncAppShell();
+}
+
+function setResearchTab(tab){
+  if(!["replay","thresholds","evidence","publication"].includes(tab))return;
+  appContext.researchTab=tab;
+  saveAppContext();
+  syncAppShell();
+}
+
+function initAppShell(){
+  if(appShellInitialized||!data)return;
+  loadAppContext();
+
+  $("#homeBtn")?.addEventListener("click",()=>routeApp("home"));
+  $("#enterSystemBtn")?.addEventListener("click",()=>routeApp("system"));
+  $("#enterResearchBtn")?.addEventListener("click",()=>routeApp("research"));
+  $("#planetBackBtn")?.addEventListener("click",()=>routeApp("system"));
+  $$(".appNavBtn").forEach(btn=>{
+    btn.addEventListener("click",()=>routeApp(btn.dataset.route));
+  });
+  $$("[data-research-tab]").forEach(btn=>{
+    btn.addEventListener("click",()=>setResearchTab(btn.dataset.researchTab));
+  });
+  $("#systemSelect")?.addEventListener("change",event=>{
+    appContext.systemId=event.target.value;
+    routeApp("system");
+  });
+
+  appShellInitialized=true;
+  syncAppShell();
+}
+
+
 const runtimeIssues=[];
 function safeRender(label,fn){
   try{
@@ -48,18 +351,18 @@ function safeRender(label,fn){
 
 function setMode(mode){
   document.body.dataset.mode=mode;
-  $$(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
+  $$$(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
   localStorage.setItem("trisolaris-detail-mode",mode);
   draw();
 }
 
-$$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
+$$$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
 setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 
 async function load(){
   let runtimeSource="official-file";
   try{
-    const response=await fetch(DATA_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(DATA_URL+"?v=uxarch1-20260926",{cache:"no-store"});
     if(!response.ok) throw new Error("No se pudo cargar el dataset científico");
     data=await response.json();
   }catch(err){
@@ -72,6 +375,7 @@ async function load(){
 
   try{
     renderAll();
+    initAppShell();
     requestAnimationFrame(loop);
     loadNbodyResult();
     loadResearchRelease();
@@ -91,7 +395,7 @@ async function loadNbodyResult(){
   if(!headline||!summary)return;
 
   try{
-    const response=await fetch(NBODY_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(NBODY_URL+"?v=uxarch1-20260926",{cache:"no-store"});
     if(!response.ok) throw new Error("N-body result not published yet");
     nbodyResult=await response.json();
     renderNbodyResult(nbodyResult);
@@ -110,7 +414,7 @@ async function loadNbodyResult(){
 
 async function loadThresholdAtlas(){
   try{
-    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(THRESHOLD_ATLAS_URL+"?v=uxarch1-20260926",{cache:"no-store"});
     if(!response.ok)throw new Error("threshold atlas not published");
     thresholdAtlas=await response.json();
     renderThresholdAtlas();
@@ -171,7 +475,7 @@ function renderThresholdAtlas(){
 
 async function loadManuscriptReviewGate(){
   try{
-    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(MANUSCRIPT_REVIEW_URL+"?v=uxarch1-20260926",{cache:"no-store"});
     if(!response.ok)throw new Error("manuscript review gate not published");
     manuscriptReviewGate=await response.json();
     renderManuscriptReviewGate();
@@ -209,7 +513,7 @@ function renderManuscriptReviewGate(){
 
 async function loadResearchNote(){
   try{
-    const response=await fetch(RESEARCH_NOTE_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_NOTE_URL+"?v=uxarch1-20260926",{cache:"no-store"});
     if(!response.ok)throw new Error("research note not published");
     researchNote=await response.json();
     renderResearchNote();
@@ -238,7 +542,7 @@ function renderResearchNote(){
 
 async function loadResearchRelease(){
   try{
-    const response=await fetch(RESEARCH_RELEASE_URL+"?v=phase12a-20260925",{cache:"no-store"});
+    const response=await fetch(RESEARCH_RELEASE_URL+"?v=uxarch1-20260926",{cache:"no-store"});
     if(!response.ok)throw new Error("research release not published");
     researchRelease=await response.json();
     renderResearchRelease();
@@ -340,6 +644,8 @@ function renderAll(){
 
   renderPlanets();
   initCandidate();
+  renderSystemOverview();
+  if(appShellInitialized)syncAppShell();
 }
 
 function planetPlainLanguage(p){
@@ -476,6 +782,14 @@ function focusContent(target){
 }
 
 function openFocus(target,{scroll=true}={}){
+  if(target?.kind==="planet"){
+    routeApp("planet",{worldId:target.name,tab:"summary",scroll});
+    return;
+  }
+  if(target?.kind==="hypothetical"){
+    routeApp("planet",{worldId:"H-01",tab:"environment",scroll});
+    return;
+  }
   selectedFocus=target;
   const content=focusContent(target);
   $("#focusKicker").textContent=content.kicker;
@@ -501,7 +815,8 @@ function closeFocus(){
 function activateWorldFocus(){
   $$(".world[data-focus-name]").forEach(card=>{
     const activate=()=>{
-      openFocus({kind:"planet",name:card.dataset.focusName});
+      const worldId=card.dataset.focusName;
+      routeApp("planet",{worldId,tab:worldId==="H-01"?"environment":"summary"});
     };
     card.addEventListener("click",activate);
     card.addEventListener("keydown",event=>{
@@ -540,50 +855,66 @@ function installCanvasFocus(){
 
 function renderPlanets(){
   const rows=data.observed_planets||[];
-  $("#planetCount").textContent=rows.length+" planeta"+(rows.length===1?"":"s")+" confirmado"+(rows.length===1?"":"s");
+  const h=data.hypothetical_experiment||{};
+  $("#planetCount").textContent=rows.length+" confirmado"+(rows.length===1?"":"s")+" · H-01 experimental";
 
-  if(!rows.length){
-    $("#planetCards").innerHTML=`
-      <article class="world">
-        <div class="worldBody">
-          <span class="worldKicker">Sin datos planetarios</span>
-          <h3>Esperando el archivo oficial</h3>
-          <p>La estructura de la página permanece disponible, pero esta copia todavía no contiene planetas observados.</p>
-        </div>
-      </article>`;
-    $("#planetTable").innerHTML='<div class="methodNote">No hay filas observadas disponibles en esta copia del dataset.</div>';
-    return;
-  }
-
-  $("#planetCards").innerHTML=rows.map((p,i)=>`
-    <article class="world reveal" data-focus-name="${p.name}" tabindex="0" role="button" aria-label="Explorar ${p.name} en el sistema">
+  const observedCards=rows.map(p=>`
+    <article class="world reveal" data-focus-name="${p.name}" tabindex="0" role="button" aria-label="Ver ficha de ${p.name}">
       <div class="worldHero" aria-hidden="true"><div class="worldSphere"></div></div>
       <div class="worldBody">
-        <span class="worldKicker">Planeta confirmado · NASA</span>
+        <span class="worldKicker">OBSERVED · NASA</span>
         <h3>${p.name}</h3>
         <p>${planetPlainLanguage(p)}</p>
         <div class="worldFacts">
-          <span>${fmt(p.period_days,2)} días por órbita</span>
+          <span>${fmt(p.period_days,2)} días</span>
           <span>${fmt(p.radius_earth,2)} R⊕</span>
-          <span>desc. ${p.discovery_year==null?"—":Math.round(p.discovery_year)}</span>
+          <span>${fmt(p.mass_earth,2)} M⊕</span>
         </div>
-        <div class="worldExplore">Entrar al mundo <span>↗</span></div>
+        <div class="worldExplore">Ver planeta <span>→</span></div>
       </div>
     </article>
   `).join("");
 
-  $("#planetTable").innerHTML=`<table><thead><tr>
-    <th>Planeta</th><th>Período</th><th>Semieje mayor</th><th>Radio</th><th>Masa</th><th>Teq</th><th>Descubrimiento</th><th>Procedencia</th>
-  </tr></thead><tbody>${rows.map(p=>`<tr>
-    <td><b>${p.name}</b></td>
-    <td>${fmt(p.period_days,3)} d</td>
-    <td>${fmt(p.semi_major_axis_au,4)} AU</td>
-    <td>${fmt(p.radius_earth,2)} R⊕</td>
-    <td>${fmt(p.mass_earth,2)} M⊕</td>
-    <td>${p.equilibrium_temperature_k==null?"—":fmt(p.equilibrium_temperature_k,0)+" K"}</td>
-    <td>${p.discovery_year==null?"—":Math.round(p.discovery_year)}</td>
-    <td>OBSERVED · NASA</td>
-  </tr>`).join("")}</tbody></table>`;
+  const experimentalCard=`
+    <article class="world worldSpeculative reveal" data-focus-name="H-01" tabindex="0" role="button" aria-label="Abrir simulación TRISOLARIS H-01">
+      <div class="worldHero speculativeHero" aria-hidden="true"><div class="worldSphere speculativeSphere"></div></div>
+      <div class="worldBody">
+        <span class="worldKicker speculative">SPECULATIVE · LABORATORIO</span>
+        <h3>${h.name||"TRISOLARIS H-01"}</h3>
+        <p>Mundo experimental del simulador. No es un planeta descubierto y sus parámetros pueden modificarse.</p>
+        <div class="worldFacts">
+          <span>${fmt(h.semi_major_axis_au,2)} AU</span>
+          <span>albedo ${fmt(h.albedo,2)}</span>
+          <span>+${fmt(h.greenhouse_k,0)} K</span>
+        </div>
+        <div class="worldExplore">Abrir simulación <span>→</span></div>
+      </div>
+    </article>
+  `;
+
+  $("#planetCards").innerHTML=(observedCards||`
+    <article class="world">
+      <div class="worldBody">
+        <span class="worldKicker">Sin planetas confirmados en el snapshot</span>
+        <h3>El laboratorio sigue disponible</h3>
+      </div>
+    </article>
+  `)+experimentalCard;
+
+  $("#planetTable").innerHTML=rows.length
+    ?`<table><thead><tr>
+      <th>Planeta</th><th>Período</th><th>Semieje mayor</th><th>Radio</th><th>Masa</th><th>Teq</th><th>Descubrimiento</th><th>Procedencia</th>
+    </tr></thead><tbody>${rows.map(p=>`<tr>
+      <td><b>${p.name}</b></td>
+      <td>${fmt(p.period_days,3)} d</td>
+      <td>${fmt(p.semi_major_axis_au,4)} AU</td>
+      <td>${fmt(p.radius_earth,2)} R⊕</td>
+      <td>${fmt(p.mass_earth,2)} M⊕</td>
+      <td>${p.equilibrium_temperature_k==null?"—":fmt(p.equilibrium_temperature_k,0)+" K"}</td>
+      <td>${p.discovery_year==null?"—":Math.round(p.discovery_year)}</td>
+      <td>OBSERVED · NASA</td>
+    </tr>`).join("")}</tbody></table>`
+    :'<div class="methodNote">No hay filas observadas disponibles en esta copia del dataset.</div>';
 
   activateRevealObserver();
   activateWorldFocus();
@@ -3361,7 +3692,7 @@ function renderAstroanthropology(){
     '</button>'
   ).join("");
 
-  $(".astroAnthroPopulation[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
+  $$(".astroAnthroPopulation[data-lineage-id]").forEach(btn=>btn.addEventListener("click",()=>{
     selectedLineageId=btn.dataset.lineageId;
     safeRender("lineages",renderLineages);
     safeRender("genetics",renderGenetics);
@@ -4250,6 +4581,9 @@ function renderCandidate(){
   safeRender("climate",renderClimateWorld);
   safeRender("orbit-window",renderOrbitWindow);
 
+  if(appContext.view==="planet"&&appContext.worldId==="H-01"){
+    renderPlanetShell();
+  }
   if(selectedFocus?.kind==="hypothetical"){
     openFocus(selectedFocus,{scroll:false});
   }
@@ -4485,7 +4819,7 @@ function activateRevealObserver(){
   },1400);
 }
 
-$$(".chapter").forEach(el=>el.classList.add("reveal"));
+$$$(".chapter").forEach(el=>el.classList.add("reveal"));
 activateRevealObserver();
 
 const logo=$(".noodboxLogo");
