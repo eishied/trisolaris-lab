@@ -425,33 +425,41 @@ class FrontendResilienceTests(unittest.TestCase):
             (ROOT / "docs/TRANSITION_THRESHOLD_ATLAS.md").read_text(encoding="utf-8"),
         )
 
-    def test_contextual_light_ui_contract(self):
+    def test_ux_v4_routed_light_shell_contract(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
         app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
         css = (ROOT / "frontend/styles.css").read_text(encoding="utf-8")
+
         for element_id in (
-            "contextSwitcher",
-            "contextWorldChoices",
-            "contextSummary",
-            "contextEpistemic",
-            "contextTitle",
-            "contextDescription",
-            "contextFacts",
+            "navPlanetButtons",
+            "subViewNav",
+            "worldsTitle",
+            "worldsIntro",
         ):
             self.assertIn(f'id="{element_id}"', html)
-        self.assertIn('data-ui-scope="system observed"', html)
-        self.assertIn('data-ui-scope="system experimental research"', html)
-        self.assertIn("function setContextView(", app)
-        self.assertIn("function applyContextVisibility()", app)
-        self.assertIn("function renderContextSummary()", app)
-        self.assertIn('contextKind==="observed"', app)
+
+        for section_name in ("environment", "life", "humanity", "expansion"):
+            self.assertIn(f'data-h01-section="{section_name}"', html)
+        for section_name in ("replay", "thresholds", "publication", "method"):
+            self.assertIn(f'data-research-section="{section_name}"', html)
+
+        self.assertIn('data-app-view="system"', html)
+        self.assertIn("function initAppNavigation()", app)
+        self.assertIn("function setAppView(", app)
+        self.assertIn("function setH01Panel(", app)
+        self.assertIn("function setResearchPanel(", app)
+        self.assertIn("function updateObservedHeading()", app)
+        self.assertIn('appView==="observed"', app)
+        self.assertIn("UX v4 — routed light application shell", css)
+        self.assertIn('body[data-app-view="observed"]', css)
+        self.assertIn('data-h01-tab="environment"', css)
         self.assertIn("color-scheme:light", css)
-        self.assertIn("UX v3 — contextual light interface", css)
+        self.assertNotIn('id="contextSwitcher"', html)
 
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=uxlight-v3-20260925", html)
-        self.assertIn("app.js?v=uxlight-v3-20260925", html)
+        self.assertIn("styles.css?v=uxv4-20260925", html)
+        self.assertIn("app.js?v=uxv4-20260925", html)
 
 
 if __name__ == "__main__":
