@@ -425,10 +425,52 @@ class FrontendResilienceTests(unittest.TestCase):
             (ROOT / "docs/TRANSITION_THRESHOLD_ATLAS.md").read_text(encoding="utf-8"),
         )
 
+    def test_ux_architecture_system_planet_research_contract(self):
+        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
+        css = (ROOT / "frontend/styles.css").read_text(encoding="utf-8")
+
+        for element_id in (
+            "homeBtn",
+            "systemSelect",
+            "systemOverview",
+            "systemViewName",
+            "systemViewKpis",
+            "planetShell",
+            "planetViewTitle",
+            "planetKpis",
+            "planetTabNav",
+            "observedPlanetView",
+            "researchShell",
+            "researchTabNav",
+        ):
+            self.assertIn(f'id="{element_id}"', html)
+
+        for view in ("home", "system", "planet", "research"):
+            self.assertIn(view, app)
+        for tab in ("summary", "orbit", "environment", "evidence"):
+            self.assertIn(tab, app)
+        for tab in ("life", "humanity", "expansion"):
+            self.assertIn(tab, app)
+
+        self.assertIn('const APP_CONTEXT_KEY="trisolaris-app-context-v1"', app)
+        self.assertIn("function routeApp(", app)
+        self.assertIn("function selectedWorld()", app)
+        self.assertIn("function renderPlanetShell()", app)
+        self.assertIn("function renderObservedPlanetDetails(", app)
+        self.assertIn("function initAppShell()", app)
+        self.assertIn('worldId==="H-01"', app)
+
+        self.assertIn("UX Architecture 1.0", css)
+        self.assertIn('body[data-app-view="planet"]', css)
+        self.assertIn('body[data-app-view="research"]', css)
+        self.assertIn('data-world-kind="observed"', css)
+        self.assertNotIn('id="contextSwitcher"', html)
+
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=phase12a-20260925", html)
-        self.assertIn("app.js?v=phase12a-20260925", html)
+        self.assertIn("styles.css?v=uxarch1-20260926", html)
+        self.assertIn("app.js?v=uxarch1-20260926", html)
 
 
 if __name__ == "__main__":
