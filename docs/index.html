@@ -53,7 +53,30 @@
     </div>
   </header>
 
-  <main>
+  <main>\n
+    <section id="systemOverview" class="systemOverview" data-app-view-section="system">
+      <div>
+        <span class="systemViewLabel">SISTEMA REAL · CONTEXTO GENERAL</span>
+        <h1 id="systemViewName">LTT 1445 ABC</h1>
+        <p id="systemViewMeta">Arquitectura estelar, mundos confirmados y datos generales del sistema.</p>
+      </div>
+      <div id="systemViewKpis" class="systemViewKpis"></div>
+    </section>
+\n
+    <section id="researchShell" class="researchShell" data-app-view-section="research">
+      <div class="researchShellIntro">
+        <span>RESEARCH · METACAPA CIENTÍFICA</span>
+        <h1>Cómo sabemos lo que sabemos.</h1>
+        <p>Experimentos reproducibles, sensibilidad, evidencia y publicación. Aquí analizamos el modelo; ya no estamos “dentro” de un planeta.</p>
+      </div>
+      <nav id="researchTabNav" class="researchTabNav" aria-label="Secciones de investigación">
+        <button type="button" data-research-tab="replay" class="active">Replay</button>
+        <button type="button" data-research-tab="thresholds">Umbrales</button>
+        <button type="button" data-research-tab="evidence">Evidencia</button>
+        <button type="button" data-research-tab="publication">Publicaciones</button>
+      </nav>
+    </section>
+
     <section id="sistema" class="chapter" data-app-view-section="system">
       <div class="chapterIntro">
         <p class="chapterNumber">01</p>
