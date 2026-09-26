@@ -351,12 +351,12 @@ function safeRender(label,fn){
 
 function setMode(mode){
   document.body.dataset.mode=mode;
-  $$$(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
+  $(".modeBtn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
   localStorage.setItem("trisolaris-detail-mode",mode);
   draw();
 }
 
-$$$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
+$(".modeBtn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
 setMode(localStorage.getItem("trisolaris-detail-mode")||"simple");
 
 async function load(){
@@ -4819,7 +4819,7 @@ function activateRevealObserver(){
   },1400);
 }
 
-$$$(".chapter").forEach(el=>el.classList.add("reveal"));
+$(".chapter").forEach(el=>el.classList.add("reveal"));
 activateRevealObserver();
 
 const logo=$(".noodboxLogo");
