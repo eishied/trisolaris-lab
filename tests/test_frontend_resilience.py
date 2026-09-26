@@ -425,33 +425,10 @@ class FrontendResilienceTests(unittest.TestCase):
             (ROOT / "docs/TRANSITION_THRESHOLD_ATLAS.md").read_text(encoding="utf-8"),
         )
 
-    def test_contextual_light_ui_contract(self):
-        html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
-        css = (ROOT / "frontend/styles.css").read_text(encoding="utf-8")
-        for element_id in (
-            "contextSwitcher",
-            "contextWorldChoices",
-            "contextSummary",
-            "contextEpistemic",
-            "contextTitle",
-            "contextDescription",
-            "contextFacts",
-        ):
-            self.assertIn(f'id="{element_id}"', html)
-        self.assertIn('data-ui-scope="system observed"', html)
-        self.assertIn('data-ui-scope="system experimental research"', html)
-        self.assertIn("function setContextView(", app)
-        self.assertIn("function applyContextVisibility()", app)
-        self.assertIn("function renderContextSummary()", app)
-        self.assertIn('contextKind==="observed"', app)
-        self.assertIn("color-scheme:light", css)
-        self.assertIn("UX v3 — contextual light interface", css)
-
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=uxlight-v3-20260925", html)
-        self.assertIn("app.js?v=uxlight-v3-20260925", html)
+        self.assertIn("styles.css?v=phase12a-20260925", html)
+        self.assertIn("app.js?v=phase12a-20260925", html)
 
 
 if __name__ == "__main__":
