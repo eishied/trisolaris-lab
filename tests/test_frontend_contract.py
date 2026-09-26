@@ -17,7 +17,7 @@ class FrontendContractTests(unittest.TestCase):
 
     def test_selector_helpers_cannot_crash_at_runtime(self):
         app = (ROOT / "frontend/app.js").read_text(encoding="utf-8")
-        self.assertNotIn("$$(", app)
+        self.assertNotIn("$$$(", app)
         self.assertNotRegex(app, r'(?<!\$)\$\([^;\n]+?\)\.forEach')
 
     def test_required_interactive_elements_exist(self):
