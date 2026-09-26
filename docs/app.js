@@ -245,9 +245,18 @@ function renderPlanetShell(){
 
 function syncAppShell(){
   document.body.dataset.appView=appContext.view;
-  document.body.dataset.worldKind=selectedWorldKind();
+  document.body.dataset.worldKind=appContext.view==="planet"?selectedWorldKind():"none";
   document.body.dataset.planetTab=appContext.tab;
   document.body.dataset.researchTab=appContext.researchTab;
+
+  const activeWorld=selectedWorld();
+  document.title=appContext.view==="planet"&&activeWorld
+    ? activeWorld.name+" — TRISOLARIS LAB"
+    : appContext.view==="research"
+      ? "Research — TRISOLARIS LAB"
+      : appContext.view==="system"
+        ? data.system.name+" — TRISOLARIS LAB"
+        : "TRISOLARIS LAB — Ciencia para explorar";
 
   $(".appNavBtn").forEach(btn=>{
     const active=btn.dataset.route===appContext.view;
