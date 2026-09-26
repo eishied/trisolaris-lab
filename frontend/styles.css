@@ -3016,3 +3016,91 @@ tbody tr:hover{background:#f6fafc!important}
     padding-top:38px!important
   }
 }
+
+
+/* Light treatment for nested scientific cards that were authored for the old dark shell. */
+body[data-app-view="h01"] #experimento strong,
+body[data-app-view="research"] #experimento strong,
+body[data-app-view="research"] #evidencia strong{
+  color:#263a47!important
+}
+.astroAnthroProfile,
+.interplanetaryWorld,
+.interplanetaryWorld[aria-current="true"],
+.lineageCard,
+.lineageCard[aria-pressed="true"],
+.lineageDetail,
+.historyEvent,
+.geneticsCard,
+.refugiaCard,
+.astroAnthroPopulationButton,
+.interplanetarySequence article,
+.interplanetaryColonyTimeline article,
+.offworldDivergenceGrid article{
+  background:#f8fafc!important;
+  color:#304754!important;
+  border-color:var(--line)!important
+}
+.astroAnthroProfile{
+  background:
+    radial-gradient(circle at 12% 18%,rgba(74,144,174,.07),transparent 30%),
+    #fff!important
+}
+.interplanetaryWorld[aria-current="true"],
+.lineageCard[aria-pressed="true"]{
+  background:#eaf4f9!important
+}
+.interplanetaryWorld strong,
+.lineageCard strong,
+.lineageTraitGrid strong,
+.historyEvent strong,
+.astroAnthroNarrative strong,
+.thresholdCard strong,
+.researchEvidenceRow strong,
+.researchCheck strong,
+.counterfactualSummary strong,
+.researchReleaseSummary strong,
+.researchReleaseRepro strong,
+.manuscriptReviewSummary strong{
+  color:#263a47!important
+}
+.interplanetaryControls select,
+.evolutionaryReplayControls input[type="number"],
+.counterfactualControls select{
+  background:#fff!important;
+  color:#263a47!important;
+  border-color:var(--lineStrong)!important
+}
+.interplanetaryControls output,
+.evolutionaryReplayControls output,
+.counterfactualControls output{
+  color:#355361!important
+}
+.interplanetaryLaunchButton,
+.replayRunButton{
+  background:#edf5f8!important;
+  color:#24546c!important
+}
+.interplanetaryLaunchButton[aria-pressed="true"]{
+  background:#dceef6!important
+}
+.thresholdBar,.replayBar{
+  background:#e7eef2!important
+}
+.researchEvidenceRow,
+.researchClaim,
+.researchCheck,
+.counterfactualDeltaRow,
+.thresholdCard,
+.manuscriptHumanCheck{
+  background:#f8fafc!important
+}
+.researchEvidenceRow p,
+.researchClaim p,
+.researchCheck p,
+.counterfactualDeltaRow span,
+.thresholdCard p,
+.thresholdCard em,
+.manuscriptHumanCheck span{
+  color:#667985!important
+}
