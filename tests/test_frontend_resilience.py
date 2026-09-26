@@ -469,8 +469,8 @@ class FrontendResilienceTests(unittest.TestCase):
 
     def test_static_assets_are_version_busted(self):
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("styles.css?v=uxarch1b-20260926", html)
-        self.assertIn("app.js?v=uxarch1b-20260926", html)
+        self.assertIn("styles.css?v=uxarch1c-20260926", html)
+        self.assertIn("app.js?v=uxarch1c-20260926", html)
 
 
 if __name__ == "__main__":
