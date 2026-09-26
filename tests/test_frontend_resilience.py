@@ -452,7 +452,7 @@ class FrontendResilienceTests(unittest.TestCase):
         self.assertIn('appView==="observed"', app)
         self.assertIn("UX v4 — routed light application shell", css)
         self.assertIn('body[data-app-view="observed"]', css)
-        self.assertIn('body[data-h01-tab', css)
+        self.assertIn('data-h01-tab="environment"', css)
         self.assertIn("color-scheme:light", css)
         self.assertNotIn('id="contextSwitcher"', html)
 
